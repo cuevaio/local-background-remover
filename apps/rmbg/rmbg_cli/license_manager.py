@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 import platform
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -278,6 +279,47 @@ def _api_base(explicit: Optional[str]) -> str:
     return base.rstrip("/")
 
 
+def _resolve_ca_bundle_path() -> Optional[str]:
+    for env_name in (
+        "RMBG_LICENSE_CA_BUNDLE",
+        "SSL_CERT_FILE",
+        "REQUESTS_CA_BUNDLE",
+    ):
+        raw = os.environ.get(env_name)
+        if not raw:
+            continue
+
+        path = Path(raw).expanduser().resolve()
+        if not path.exists():
+            raise RuntimeError(f"{env_name} points to missing CA bundle: {path}")
+
+        return str(path)
+
+    return None
+
+
+def _license_ssl_context() -> ssl.SSLContext:
+    ca_bundle = _resolve_ca_bundle_path()
+    context = ssl.create_default_context(cafile=ca_bundle)
+
+    if ca_bundle:
+        return context
+
+    try:
+        import certifi
+    except Exception:
+        return context
+
+    try:
+        certifi_bundle = certifi.where()
+        if certifi_bundle and Path(certifi_bundle).exists():
+            context.load_verify_locations(cafile=certifi_bundle)
+    except Exception:
+        return context
+
+    return context
+
+
 def _post_json(url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     body = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
@@ -286,9 +328,10 @@ def _post_json(url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
+    ssl_context = _license_ssl_context()
 
     try:
-        with urllib.request.urlopen(req, timeout=20) as response:
+        with urllib.request.urlopen(req, timeout=20, context=ssl_context) as response:
             text = response.read().decode("utf-8")
     except urllib.error.HTTPError as exc:
         text = exc.read().decode("utf-8", errors="ignore")

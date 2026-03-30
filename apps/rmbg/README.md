@@ -31,6 +31,7 @@ Set these env vars before activating:
 
 - `RMBG_LICENSE_API_BASE_URL`
 - `RMBG_LICENSE_PUBLIC_KEY`
+- `RMBG_LICENSE_CA_BUNDLE` (optional, path to PEM bundle for TLS verification)
 
 Note: desktop app processing uses CLI internally and requires both `desktop` and `cli`
 surface activations.

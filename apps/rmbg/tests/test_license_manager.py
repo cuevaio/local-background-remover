@@ -1,5 +1,6 @@
 import base64
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -219,3 +220,77 @@ def test_machine_fingerprint_is_stable_with_device_file(
 
     assert first == second
     assert device_file.exists()
+
+
+def test_post_json_loads_certifi_bundle_when_no_env(monkeypatch) -> None:
+    monkeypatch.delenv("RMBG_LICENSE_CA_BUNDLE", raising=False)
+    monkeypatch.delenv("SSL_CERT_FILE", raising=False)
+    monkeypatch.delenv("REQUESTS_CA_BUNDLE", raising=False)
+
+    class _Context:
+        def __init__(self) -> None:
+            self.loaded: list[str] = []
+
+        def load_verify_locations(self, cafile=None, _capath=None, _cadata=None):
+            if cafile:
+                self.loaded.append(cafile)
+
+    created: dict[str, object] = {}
+
+    def _fake_context(*args, **kwargs):
+        created["cafile"] = kwargs.get("cafile")
+        context = _Context()
+        created["context"] = context
+        return context
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, _exc_type, _exc, _tb):
+            return False
+
+        def read(self) -> bytes:
+            return b'{"ok": true}'
+
+    seen: dict[str, object] = {}
+
+    def _fake_urlopen(_req, **kwargs):
+        seen["context"] = kwargs.get("context")
+        return _Response()
+
+    class _Certifi:
+        @staticmethod
+        def where() -> str:
+            return __file__
+
+    monkeypatch.setattr(license_manager.ssl, "create_default_context", _fake_context)
+    monkeypatch.setattr(license_manager.urllib.request, "urlopen", _fake_urlopen)
+    monkeypatch.setitem(sys.modules, "certifi", _Certifi)
+
+    result = license_manager._post_json("https://example.com", {"hello": "world"})
+
+    assert result["ok"] is True
+    assert created["cafile"] is None
+    assert seen["context"] is created["context"]
+    assert created["context"].loaded == [__file__]
+
+
+def test_resolve_ca_bundle_path_prefers_explicit_env(
+    tmp_path: Path, monkeypatch
+) -> None:
+    bundle = tmp_path / "ca.pem"
+    bundle.write_text("-----BEGIN CERTIFICATE-----\n", encoding="utf-8")
+
+    monkeypatch.setenv("RMBG_LICENSE_CA_BUNDLE", str(bundle))
+    monkeypatch.delenv("SSL_CERT_FILE", raising=False)
+    monkeypatch.delenv("REQUESTS_CA_BUNDLE", raising=False)
+
+    assert license_manager._resolve_ca_bundle_path() == str(bundle.resolve())
+
+
+def test_resolve_ca_bundle_path_errors_for_missing_file(monkeypatch) -> None:
+    monkeypatch.setenv("RMBG_LICENSE_CA_BUNDLE", "/tmp/does-not-exist-rmbg-ca.pem")
+
+    with pytest.raises(RuntimeError, match="RMBG_LICENSE_CA_BUNDLE"):
+        license_manager._resolve_ca_bundle_path()
