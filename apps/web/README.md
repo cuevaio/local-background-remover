@@ -31,7 +31,8 @@ Use root `.env.example` as reference.
 
 Optional override:
 
-- `RMBG_LATEST_VERSION` (if omitted, `/api/releases/latest` resolves latest from GitHub releases)
+- `RMBG_LATEST_VERSION` (manual latest tag override)
+- `RMBG_GITHUB_TOKEN` (recommended for private repos so `/api/releases/latest` can resolve the latest GitHub release)
 
 ## Product model
 

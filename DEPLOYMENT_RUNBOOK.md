@@ -52,7 +52,8 @@ Set production env vars in Vercel:
 
 Optional:
 
-- `RMBG_LATEST_VERSION` (manual override for `/api/releases/latest`; if unset the endpoint resolves latest from GitHub releases)
+- `RMBG_LATEST_VERSION` (manual override for `/api/releases/latest`)
+- `RMBG_GITHUB_TOKEN` (recommended for private repos so `/api/releases/latest` can resolve latest from GitHub automatically)
 
 Publish public release files at:
 

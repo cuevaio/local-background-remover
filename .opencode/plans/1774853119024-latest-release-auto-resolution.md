@@ -6,12 +6,15 @@
 ## Changes
 1. Update `apps/web/src/app/api/releases/latest/route.ts`:
    - keep `RMBG_LATEST_VERSION` as an optional override
-   - otherwise resolve latest tag from GitHub release redirect (`/releases/latest`)
+   - otherwise resolve latest tag from GitHub releases
+   - support `RMBG_GITHUB_TOKEN` for private-repo release resolution
+   - fall back to GitHub release redirect (`/releases/latest`)
    - fall back to GitHub releases API if needed
 2. Harden `apps/web/src/app/install/route.ts` resolver:
    - preserve manual `RMBG_VERSION` override
    - parse metadata endpoint tag first
    - fall back to GitHub release redirect and then GitHub API
+   - if primary release mirror is unavailable, attempt GitHub release asset fallback
    - improve error message when no tag can be resolved
 3. Update docs to reflect that `RMBG_LATEST_VERSION` is optional:
    - `.env.example`

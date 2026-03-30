@@ -34,6 +34,35 @@ async function resolveLatestTag() {
   }
 
   const repoSlug = process.env.RMBG_GITHUB_REPO || DEFAULT_GITHUB_REPO;
+  const githubToken = process.env.RMBG_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+
+  const githubApiResponse = await fetch(`https://api.github.com/repos/${repoSlug}/releases/latest`, {
+    cache: "no-store",
+    headers: {
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      "User-Agent": "local-background-remover/latest-release",
+      ...(githubToken
+        ? {
+            Authorization: `Bearer ${githubToken}`,
+          }
+        : {}),
+    },
+  });
+
+  if (githubApiResponse.ok) {
+    const payload = (await githubApiResponse.json()) as {
+      tag_name?: string;
+    };
+    const apiTag = normalizeTag(payload.tag_name);
+    if (apiTag) {
+      return {
+        tag: apiTag,
+        source: githubToken ? "github-api-auth" : "github-api",
+      };
+    }
+  }
+
   const latestReleaseUrl = `https://github.com/${repoSlug}/releases/latest`;
 
   const latestReleaseResponse = await fetch(latestReleaseUrl, {
@@ -54,26 +83,10 @@ async function resolveLatestTag() {
     }
   }
 
-  const githubApiResponse = await fetch(`https://api.github.com/repos/${repoSlug}/releases/latest`, {
-    cache: "no-store",
-    headers: {
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-      "User-Agent": "local-background-remover/latest-release",
-    },
-  });
-
-  if (githubApiResponse.ok) {
-    const payload = (await githubApiResponse.json()) as {
-      tag_name?: string;
-    };
-    const apiTag = normalizeTag(payload.tag_name);
-    if (apiTag) {
-      return {
-        tag: apiTag,
-        source: "github-api",
-      };
-    }
+  if (!githubToken) {
+    throw new Error(
+      "Unable to resolve latest release tag. Set RMBG_GITHUB_TOKEN for private repos, or set RMBG_LATEST_VERSION.",
+    );
   }
 
   throw new Error("Unable to resolve latest release tag from GitHub");

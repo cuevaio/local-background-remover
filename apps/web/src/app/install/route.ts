@@ -100,17 +100,43 @@ verify_checksum() {
   [[ "\$expected" == "\$actual" ]] || fail "checksum verification failed"
 }
 
+download_release_assets() {
+  local primary_base fallback_base archive_name archive_path checksums_path
+  primary_base="\$1"
+  fallback_base="\$2"
+  archive_name="\$3"
+  archive_path="\$4"
+  checksums_path="\$5"
+
+  if curl -fsSL "\${primary_base}/\${archive_name}" -o "\$archive_path" && \
+    curl -fsSL "\${primary_base}/checksums.txt" -o "\$checksums_path"; then
+    return
+  fi
+
+  if [[ -n "\$fallback_base" && "\$fallback_base" != "\$primary_base" ]]; then
+    printf "Primary release source unavailable, falling back to GitHub assets\\n" >&2
+    curl -fsSL "\${fallback_base}/\${archive_name}" -o "\$archive_path" ||
+      fail "failed to download archive from fallback release source"
+    curl -fsSL "\${fallback_base}/checksums.txt" -o "\$checksums_path" ||
+      fail "failed to download checksums from fallback release source"
+    return
+  fi
+
+  fail "failed to download release assets"
+}
+
 main() {
   need_cmd curl
   need_cmd tar
   need_cmd shasum
 
-  local target tag archive_name download_base
+  local target tag archive_name download_base github_download_base
   target="\$(detect_target)"
   tag="\$(resolve_tag)"
   archive_name="rmbg-\${tag}-\${target}.tar.gz"
+  github_download_base="https://github.com/\${REPO_SLUG}/releases/download/\${tag}"
   if [[ "\${TAG_SOURCE}" == github-* && -z "\${RMBG_RELEASE_BASE_URL:-}" ]]; then
-    download_base="https://github.com/\${REPO_SLUG}/releases/download/\${tag}"
+    download_base="\$github_download_base"
   else
     download_base="\${RELEASE_BASE_URL}/\${tag}"
   fi
@@ -122,8 +148,7 @@ main() {
   checksums_path="\$tmp_dir/checksums.txt"
 
   printf "Installing rmbg %s for %s\\n" "\$tag" "\$target"
-  curl -fsSL "\${download_base}/\${archive_name}" -o "\$archive_path"
-  curl -fsSL "\${download_base}/checksums.txt" -o "\$checksums_path"
+  download_release_assets "\$download_base" "\$github_download_base" "\$archive_name" "\$archive_path" "\$checksums_path"
 
   verify_checksum "\$archive_path" "\$checksums_path"
 
