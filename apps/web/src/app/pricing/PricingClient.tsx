@@ -2,6 +2,25 @@
 
 import { useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 type PlanKind = "app" | "cli" | "both";
 
 type Plan = {
@@ -14,6 +33,12 @@ type Plan = {
   featured?: boolean;
 };
 
+type CheckoutResponse = {
+  ok?: boolean;
+  url?: string;
+  error?: string;
+};
+
 const PLANS: Plan[] = [
   {
     kind: "app",
@@ -23,7 +48,7 @@ const PLANS: Plan[] = [
     bullets: [
       "Desktop visual workflow",
       "Before/after compare controls",
-      "Activate app key in desktop",
+      "Activate App key in desktop",
     ],
     cta: "Buy App License",
   },
@@ -54,12 +79,6 @@ const PLANS: Plan[] = [
   },
 ];
 
-type CheckoutResponse = {
-  ok?: boolean;
-  url?: string;
-  error?: string;
-};
-
 export default function PricingClient() {
   const [busyKind, setBusyKind] = useState<PlanKind | null>(null);
   const [message, setMessage] = useState("");
@@ -89,32 +108,90 @@ export default function PricingClient() {
   }
 
   return (
-    <>
-      <div className="pricing">
+    <div className="flex flex-col gap-5">
+      <div className="grid gap-4 md:grid-cols-3">
         {PLANS.map((plan) => (
-          <article className={`card ${plan.featured ? "featured" : ""}`} key={plan.kind}>
-            {plan.featured ? <span className="badge">Best value</span> : null}
-            <h3>{plan.title}</h3>
-            <div className="price">{plan.price}</div>
-            <p className="small-note">{plan.keys}</p>
-            <ul>
-              {plan.bullets.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
-              ))}
-            </ul>
-            <button
-              className="btn primary"
-              onClick={() => startCheckout(plan.kind)}
-              disabled={busyKind === plan.kind}
-              type="button"
-            >
-              {busyKind === plan.kind ? "Opening checkout..." : plan.cta}
-            </button>
-          </article>
+          <Card
+            key={plan.kind}
+            className={plan.featured ? "border-primary/35 shadow-lg shadow-primary/10" : ""}
+          >
+            <CardHeader>
+              {plan.featured ? <Badge className="w-fit">Best value</Badge> : null}
+              <CardTitle>{plan.title}</CardTitle>
+              <CardDescription>{plan.keys}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <p className="text-4xl font-semibold tracking-tight">{plan.price}</p>
+              <ul className="ml-5 list-disc text-sm text-muted-foreground">
+                {plan.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter>
+              <Button
+                className="w-full"
+                onClick={() => startCheckout(plan.kind)}
+                disabled={busyKind === plan.kind}
+                type="button"
+              >
+                {busyKind === plan.kind ? "Opening checkout..." : plan.cta}
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
       </div>
 
-      {message ? <p className="note">{message}</p> : null}
-    </>
+      <Card>
+        <CardHeader>
+          <CardTitle>Workflow comparison</CardTitle>
+          <CardDescription>Quick plan matrix for App, CLI, and Bundle.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Feature</TableHead>
+                <TableHead>App</TableHead>
+                <TableHead>CLI</TableHead>
+                <TableHead>App + CLI</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>One-time price</TableCell>
+                <TableCell>$6.99</TableCell>
+                <TableCell>$6.99</TableCell>
+                <TableCell>$9.99</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Included keys</TableCell>
+                <TableCell>1 App</TableCell>
+                <TableCell>1 CLI</TableCell>
+                <TableCell>2 (App + CLI)</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Desktop processing</TableCell>
+                <TableCell>Yes (App workflow)</TableCell>
+                <TableCell>No</TableCell>
+                <TableCell>Yes (both keys active)</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Automation pipeline</TableCell>
+                <TableCell>Limited</TableCell>
+                <TableCell>Strong</TableCell>
+                <TableCell>Strong</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {message ? (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {message}
+        </p>
+      ) : null}
+    </div>
   );
 }

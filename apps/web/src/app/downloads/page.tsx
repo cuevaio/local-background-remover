@@ -2,14 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 
+import StickyCta from "@/components/marketing/StickyCta";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 const CLI_INSTALL_CMD = "curl -fsSL https://local.backgroundrm.com/install | bash";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Downloads and Install Guide for Offline Background Remover",
+  title: "Downloads and Install Guide",
   description:
-    "Download the Local Background Remover app and CLI. Install with public links, then activate keys for runtime use.",
+    "Download the desktop app or CLI, then activate matching keys for runtime usage.",
   path: "/downloads",
 });
 
@@ -39,40 +51,109 @@ export default function DownloadsPage() {
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
 
-      <main className="container section">
-        <h1>Local Background Remover Downloads</h1>
-        <p className="subtitle">
-          Downloads are public. Runtime features require valid activation for each surface.
-        </p>
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-7 px-5 pb-32 pt-12 md:px-8 md:pt-16">
+        <section className="flex flex-col gap-4">
+          <Badge variant="secondary" className="w-fit">
+            Public downloads, gated runtime
+          </Badge>
+          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+            Install first, activate when you are ready.
+          </h1>
+          <p className="max-w-3xl text-base text-muted-foreground md:text-lg">
+            Downloading is open. Running background removal commands or desktop processing requires
+            the matching activated key(s).
+          </p>
+        </section>
 
-        <div className="card">
-          <h2>CLI download and install (macOS)</h2>
-          <p>Install globally with one command:</p>
-          <pre className="code-block">{CLI_INSTALL_CMD}</pre>
-          <p className="note">
-            Activate your CLI key before running model ensure/remove commands.
-          </p>
-        </div>
+        <Tabs defaultValue="cli" className="w-full">
+          <TabsList>
+            <TabsTrigger value="cli">CLI install</TabsTrigger>
+            <TabsTrigger value="desktop">Desktop install</TabsTrigger>
+          </TabsList>
 
-        <div className="card">
-          <h2>Desktop app download</h2>
-          <p>
-            Desktop downloads are public. Once installed, activate your desktop license key
-            in-app before processing images.
-          </p>
-          <p className="note">
-            If you bought App + CLI, desktop processing requires both active keys.
-          </p>
-        </div>
+          <TabsContent value="cli">
+            <Card>
+              <CardHeader>
+                <CardTitle>CLI download and install (macOS)</CardTitle>
+                <CardDescription>Install globally with one command.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <pre className="overflow-x-auto rounded-lg border border-border bg-muted/40 px-3 py-3 text-sm">
+                  {CLI_INSTALL_CMD}
+                </pre>
+                <Alert>
+                  <AlertTitle>Activation required before runtime usage</AlertTitle>
+                  <AlertDescription>
+                    Activate your CLI key before running `model ensure` or `remove` commands.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <div className="card">
-          <h2>What to do next</h2>
-          <p>
-            Compare plans on <Link href="/pricing">Pricing</Link> if you still need a key, or
-            return to the <Link href="/">homepage</Link> for workflow details.
-          </p>
-        </div>
+          <TabsContent value="desktop">
+            <Card>
+              <CardHeader>
+                <CardTitle>Desktop app download</CardTitle>
+                <CardDescription>Install publicly, activate inside the app.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <p className="text-sm text-muted-foreground">
+                  Install the desktop app, open the license screen, and paste your App key. If you
+                  bought App + CLI, desktop processing requires both keys active.
+                </p>
+                <Alert>
+                  <AlertTitle>Bundle reminder</AlertTitle>
+                  <AlertDescription>
+                    App + CLI purchase includes two keys. Activate both to unlock the full desktop
+                    processing path.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <section className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>What to do after install</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <p>1. Retrieve key(s) from your Polar purchase confirmation.</p>
+              <p>2. Activate in the matching surface (desktop app or CLI).</p>
+              <p>3. Run your first image through the flow.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Need a key first?</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <p className="text-sm text-muted-foreground">
+                Compare App, CLI, and Bundle plans before activating.
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button asChild>
+                  <Link href="/pricing">Open pricing</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link href="/">Back to homepage</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
       </main>
+
+      <StickyCta
+        title="Have the installer?"
+        description="Compare plans and activate the right key(s) when ready."
+        primaryLabel="Compare pricing"
+        primaryHref="/pricing"
+        secondaryLabel="Home"
+        secondaryHref="/"
+      />
     </>
   );
 }

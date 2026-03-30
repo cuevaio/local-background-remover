@@ -2,11 +2,30 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 
+import AutomationChats from "@/components/marketing/AutomationChats";
+import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
+import LogoStrip from "@/components/marketing/LogoStrip";
+import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
+import ProofStrip from "@/components/marketing/ProofStrip";
+import StickyCta from "@/components/marketing/StickyCta";
+import WorkflowComparison from "@/components/marketing/WorkflowComparison";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 type Testimonial = {
   quote: string;
   byline: string;
+  role: string;
+  photoUrl: string;
 };
 
 type Faq = {
@@ -17,44 +36,50 @@ type Faq = {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "The CLI replaced a messy script chain for us. We now process 300+ SKU images in one pass.",
-    byline: "Elena M., ecommerce ops",
+      "The CLI replaced a chain of brittle scripts. We now process 300+ SKU images in one pass.",
+    byline: "Elena M., ecommerce operations",
+    role: "Operations lead",
+    photoUrl: "https://i.pravatar.cc/240?img=31",
   },
   {
     quote:
-      "The app is perfect for art direction reviews. No upload, no cloud, no surprises.",
-    byline: "Marco L., product designer",
+      "The app makes review rounds much faster. No uploads, no cloud account switching, no surprises.",
+    byline: "Marco L., product design lead",
+    role: "Product design lead",
+    photoUrl: "https://i.pravatar.cc/240?img=59",
   },
   {
     quote:
-      "Offline after activation is huge when I edit while traveling. Super reliable workflow.",
+      "Offline after activation is exactly what we needed for travel-heavy production weeks.",
     byline: "Priya S., indie founder",
+    role: "Founder",
+    photoUrl: "https://i.pravatar.cc/240?img=47",
   },
 ];
 
 const FAQS: Faq[] = [
   {
-    q: "Why do App+CLI purchases include two keys?",
-    a: "App and CLI are separate entitlements. The app key unlocks desktop usage and the CLI key unlocks terminal usage.",
+    q: "Why does App + CLI include two keys?",
+    a: "App and CLI are separate entitlements. The app key unlocks desktop usage, and the CLI key unlocks terminal usage.",
   },
   {
     q: "Can I share installers?",
-    a: "Installers are public. Runtime features only work after valid license activation on your machine.",
+    a: "Yes. Downloads are public. Runtime features only unlock after valid activation on your machine.",
   },
   {
     q: "Does it work offline?",
-    a: "Yes. After activation, each key is cached locally with an offline validity window and grace period.",
+    a: "Yes. After activation, each key is cached locally and remains usable within active and grace windows.",
   },
   {
     q: "What does desktop processing require?",
-    a: "Desktop processing requires both active keys: App key and CLI key.",
+    a: "Desktop processing requires both active keys: App and CLI.",
   },
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Offline Background Remover for Private Local Processing",
+  title: "Private Background Removal for App and CLI Workflows",
   description:
-    "Remove image backgrounds offline on your machine. Choose desktop app, CLI, or both for private, reliable workflows.",
+    "Remove backgrounds on-device with one-time pricing. Choose desktop app, CLI, or both for private, reliable image processing.",
   path: "/",
 });
 
@@ -72,7 +97,7 @@ export default function HomePage() {
       highPrice: "9.99",
     },
     description:
-      "Offline background remover for private on-device workflows with App and CLI options.",
+      "Local, private background remover with desktop and CLI workflows and one-time purchase plans.",
   };
 
   const faqJsonLd = {
@@ -90,140 +115,151 @@ export default function HomePage() {
 
   return (
     <>
-      <Script
-        id="home-software-application-jsonld"
-        type="application/ld+json"
-      >
+      <Script id="home-software-application-jsonld" type="application/ld+json">
         {serializeJsonLd(softwareApplicationJsonLd)}
       </Script>
-      <Script
-        id="home-faq-jsonld"
-        type="application/ld+json"
-      >
+      <Script id="home-faq-jsonld" type="application/ld+json">
         {serializeJsonLd(faqJsonLd)}
       </Script>
 
-      <main>
-        <section className="hero">
-          <div className="container hero-grid">
-            <div>
-              <p className="eyebrow">Offline background remover</p>
-              <h1>Cut clean transparent PNGs with App, CLI, or both.</h1>
-              <p className="subtitle">
-                Built for creators and teams who need predictable, private processing on-device.
-                Buy once, activate your key(s), and keep working even when offline.
-              </p>
-              <div className="cta-row">
-                <Link className="btn primary" href="/pricing">
-                  View App and CLI pricing
-                </Link>
-                <Link className="btn" href="/downloads">
-                  Open download instructions
-                </Link>
+      <main className="pb-32">
+        <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 pb-14 pt-14 md:px-8 md:pt-20">
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="flex flex-col gap-5">
+              <Badge variant="secondary" className="w-fit">
+                Offline background remover for production teams
+              </Badge>
+              <div className="flex flex-col gap-3">
+                <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-6xl">
+                  Remove backgrounds locally with desktop speed and CLI control.
+                </h1>
+                <p className="max-w-2xl text-pretty text-base text-muted-foreground md:text-lg">
+                  Download publicly, activate the key(s) you need, and keep working even when
+                  you are offline. Choose App, CLI, or both based on your workflow.
+                </p>
               </div>
-              <div className="trust-row">
-                <span>Local processing</span>
-                <span>Offline after activation</span>
-                <span>One-time purchase</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button asChild size="lg">
+                  <Link href="/pricing">View one-time pricing</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/downloads">Start with downloads</Link>
+                </Button>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                <Badge variant="outline">Local processing</Badge>
+                <Badge variant="outline">Offline after activation</Badge>
+                <Badge variant="outline">No subscription required</Badge>
               </div>
             </div>
-            <aside className="hero-card">
-              <h2>How activation works</h2>
-              <ol>
-                <li>Buy App, CLI, or Both.</li>
-                <li>Get key(s) from Polar purchases.</li>
-                <li>Activate in the matching surface.</li>
-              </ol>
-              <p className="small-note">
-                App+CLI includes 2 keys. Desktop processing requires both active.
-              </p>
-            </aside>
+
+            <Card className="border-primary/25 bg-card/90 shadow-sm">
+              <CardHeader>
+                <CardTitle>How activation works</CardTitle>
+                <CardDescription>
+                  Keep this flow simple and predictable across App and CLI.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
+                <p>
+                  1. Pick a one-time plan on the pricing page.<br />
+                  2. Receive your key(s) through Polar purchase confirmation.<br />
+                  3. Activate in the matching surface and start processing.
+                </p>
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-foreground">
+                  Bundle includes <strong>two keys</strong> (App + CLI). Desktop processing
+                  requires both active keys.
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
-        <section className="section section-soft">
-          <div className="container">
-            <h2>Choose your workflow</h2>
-            <div className="comparison-grid">
-              <article className="card">
-                <h3>CLI</h3>
-                <p>Best for automation, scripts, and batch jobs.</p>
-                <ul>
-                  <li>1 CLI key</li>
-                  <li>Terminal workflows</li>
-                  <li>Fast batch processing</li>
-                </ul>
-              </article>
-              <article className="card">
-                <h3>App</h3>
-                <p>Best for visual review and side-by-side previews.</p>
-                <ul>
-                  <li>1 App key</li>
-                  <li>Desktop UI workflow</li>
-                  <li>Before/after comparison</li>
-                </ul>
-              </article>
-              <article className="card featured">
-                <span className="badge">Best value</span>
-                <h3>App + CLI</h3>
-                <p>Full workflow with automation + desktop review.</p>
-                <ul>
-                  <li>2 keys (App + CLI)</li>
-                  <li>Desktop processing enabled when both active</li>
-                  <li>Great for teams shipping assets daily</li>
-                </ul>
-              </article>
-            </div>
-            <p className="note">
-              Compare license options on the <Link href="/pricing">pricing page</Link> or go
-              directly to <Link href="/downloads">download instructions</Link>.
+        <ProofStrip />
+        <LogoStrip />
+
+        <section className="mx-auto mt-14 flex w-full max-w-6xl flex-col gap-6 px-5 md:px-8">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+              Choose the workflow that matches how your team ships
+            </h2>
+            <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+              Start with one surface or use both for automation plus visual QA before delivery.
             </p>
           </div>
+          <WorkflowComparison />
         </section>
 
-        <section className="section" id="reviews">
-          <div className="container">
-            <h2>Used by teams who care about control</h2>
-            <div className="quote-grid">
-              {TESTIMONIALS.map((item) => (
-                <article className="quote" key={item.byline}>
-                  <p>"{item.quote}"</p>
-                  <strong>{item.byline}</strong>
-                </article>
-              ))}
-            </div>
+        <BeforeAfterShowcase />
+
+        <section className="mx-auto mt-14 flex w-full max-w-6xl flex-col gap-5 px-5 md:px-8">
+          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            Used by teams that care about control and reliability
+          </h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {TESTIMONIALS.map((item) => (
+              <Card key={item.byline} className="bg-card/85">
+                <CardContent className="flex flex-col gap-4 pt-4">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item.photoUrl}
+                      alt={`${item.byline} testimonial portrait`}
+                      className="size-12 rounded-full border border-border object-cover"
+                      loading="lazy"
+                    />
+                    <div className="flex flex-col">
+                      <p className="text-sm font-medium">{item.byline}</p>
+                      <p className="text-xs text-muted-foreground">{item.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">&quot;{item.quote}&quot;</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
 
-        <section className="section section-soft">
-          <div className="container">
-            <h2>Frequently asked questions</h2>
-            <div className="faq-grid">
-              {FAQS.map((item) => (
-                <article className="faq-item" key={item.q}>
-                  <h3>{item.q}</h3>
-                  <p>{item.a}</p>
-                </article>
-              ))}
-            </div>
+        <AutomationChats />
 
-            <div className="cta-band">
-              <h3>Ready to ship cleaner assets faster?</h3>
-              <p>Pick the workflow that fits today. Upgrade path is built in by choosing Both.</p>
-              <Link className="btn primary" href="/pricing">
-                Buy App / CLI / Both
-              </Link>
-            </div>
-          </div>
+        <section className="mx-auto mt-14 flex w-full max-w-6xl flex-col gap-6 px-5 md:px-8">
+          <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            Practical purchase questions, answered early
+          </h2>
+          <PricingPolicyFaq />
         </section>
 
-        <footer>
-          <div className="container">
-            Local Background Remover - public installers, license-gated runtime, offline
-            after activation.
-          </div>
+        <section className="mx-auto mt-14 w-full max-w-6xl px-5 pb-6 md:px-8">
+          <Card className="border-primary/25 bg-gradient-to-br from-primary/10 via-background to-background shadow-sm">
+            <CardContent className="flex flex-col gap-5 pt-5 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-xl font-semibold tracking-tight">Ready to process faster?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Buy once, activate your key(s), and ship clean assets from desktop or terminal.
+                </p>
+              </div>
+              <Button asChild size="lg">
+                <Link href="/pricing">Open pricing plans</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+
+        <Separator className="mx-auto mt-6 w-[min(94%,72rem)]" />
+
+        <footer className="mx-auto w-full max-w-6xl px-5 pb-12 pt-8 text-sm text-muted-foreground md:px-8">
+          Local Background Remover: public installers, license-gated runtime, and offline
+          operation after activation.
         </footer>
       </main>
+
+      <StickyCta
+        title="Buy once. Process locally."
+        description="Compare App, CLI, and Bundle plans with clear activation requirements."
+        primaryLabel="View pricing"
+        primaryHref="/pricing"
+        secondaryLabel="Open downloads"
+        secondaryHref="/downloads"
+      />
     </>
   );
 }

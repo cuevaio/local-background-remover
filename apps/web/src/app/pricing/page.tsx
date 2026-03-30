@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 
+import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
+import StickyCta from "@/components/marketing/StickyCta";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 import PricingClient from "./PricingClient";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Pricing for Offline Background Remover App and CLI",
+  title: "One-Time Pricing for Local Background Remover",
   description:
-    "Compare one-time pricing for the Local Background Remover app, CLI, or both. Public downloads with license-gated runtime.",
+    "Compare App, CLI, and Bundle one-time pricing with clear key requirements and activation rules.",
   path: "/pricing",
 });
 
@@ -39,28 +44,76 @@ export default function PricingPage() {
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
 
-      <main className="container section">
-        <h1>Local Background Remover Pricing</h1>
-        <p className="subtitle">
-          One-time purchases. Public downloads. Runtime usage unlocks after activating the
-          matching key(s).
-        </p>
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-7 px-5 pb-32 pt-12 md:px-8 md:pt-16">
+        <section className="flex flex-col gap-4">
+          <Badge variant="secondary" className="w-fit">
+            One-time plans
+          </Badge>
+          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+            Pick the surface you need now and add the rest later.
+          </h1>
+          <p className="max-w-3xl text-base text-muted-foreground md:text-lg">
+            Downloads are public. Runtime features unlock after activation for the matching
+            surface. Bundle includes two keys and enables desktop processing when both are active.
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button asChild variant="outline">
+              <Link href="/downloads">Read install guide</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/">See workflow overview</Link>
+            </Button>
+          </div>
+        </section>
 
-        <h2>Choose a license plan</h2>
         <PricingClient />
 
-        <div className="card" style={{ marginTop: "18px" }}>
-          <h2>Activation checklist</h2>
-          <ul>
-            <li>App purchase: activate App key inside desktop app.</li>
-            <li>CLI purchase: activate CLI key via terminal command.</li>
-            <li>App + CLI purchase: activate both keys in their respective surfaces.</li>
-          </ul>
-          <p className="note">
-            Need install steps first? Go to <Link href="/downloads">Downloads</Link>.
-          </p>
-        </div>
+        <section className="grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>App purchase</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Activate App key inside desktop app before processing.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>CLI purchase</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Activate CLI key with terminal command before model ensure/remove.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>App + CLI purchase</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Activate both keys in their surfaces to unlock full desktop + CLI workflow.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="mt-2">
+          <PricingPolicyFaq />
+        </section>
       </main>
+
+      <StickyCta
+        title="Need a plan decision?"
+        description="Bundle is best for mixed desktop + automation workflows."
+        primaryLabel="Buy now"
+        primaryHref="/pricing"
+        secondaryLabel="Download first"
+        secondaryHref="/downloads"
+      />
     </>
   );
 }
