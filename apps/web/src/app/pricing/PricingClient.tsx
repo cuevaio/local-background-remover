@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { PricingPlanCtaVariant } from "@/lib/experiments/types";
 
 type PlanKind = "app" | "cli" | "both";
 
@@ -31,6 +32,11 @@ type Plan = {
   bullets: string[];
   cta: string;
   featured?: boolean;
+};
+
+type PricingClientProps = {
+  ctaVariant: PricingPlanCtaVariant;
+  exp: string;
 };
 
 type CheckoutResponse = {
@@ -79,9 +85,34 @@ const PLANS: Plan[] = [
   },
 ];
 
-export default function PricingClient() {
+const CTA_VARIANTS: Record<PricingPlanCtaVariant, Record<PlanKind, string>> = {
+  control: {
+    app: "Buy App License",
+    cli: "Buy CLI License",
+    both: "Buy App + CLI Bundle",
+  },
+  get_access: {
+    app: "Get App Access",
+    cli: "Get CLI Access",
+    both: "Get Full Bundle",
+  },
+  unlock: {
+    app: "Unlock App",
+    cli: "Unlock CLI",
+    both: "Unlock Everything",
+  },
+};
+
+export default function PricingClient({ ctaVariant, exp }: PricingClientProps) {
   const [busyKind, setBusyKind] = useState<PlanKind | null>(null);
   const [message, setMessage] = useState("");
+
+  const ctaMap = CTA_VARIANTS[ctaVariant];
+
+  const plans = PLANS.map((plan) => ({
+    ...plan,
+    cta: ctaMap[plan.kind],
+  }));
 
   async function startCheckout(kind: PlanKind) {
     setBusyKind(kind);
@@ -91,7 +122,7 @@ export default function PricingClient() {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind }),
+        body: JSON.stringify({ kind, exp }),
       });
 
       const data = (await response.json()) as CheckoutResponse;
@@ -110,7 +141,7 @@ export default function PricingClient() {
   return (
     <div className="flex flex-col gap-5">
       <div className="grid gap-4 md:grid-cols-3">
-        {PLANS.map((plan) => (
+        {plans.map((plan) => (
           <Card
             key={plan.kind}
             className={plan.featured ? "border-black" : ""}

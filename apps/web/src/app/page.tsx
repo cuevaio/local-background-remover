@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { FlagValues } from "flags/react";
 
+import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
 import HeroExamplePanel from "@/components/marketing/HeroExamplePanel";
@@ -15,6 +17,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD, CLI_REMOVE_CMD } from "@/content/cli-docs";
+import {
+  mergeExperimentToken,
+  readSingleParam,
+  withExpParam,
+} from "@/lib/experiments/attribution";
+import {
+  evaluateHomeAssignments,
+  toFlagValues,
+} from "@/lib/experiments/flags";
+import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 type Faq = {
@@ -48,7 +60,39 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/",
 });
 
-export default function HomePage() {
+type HomePageProps = {
+  searchParams?: {
+    exp?: string | string[];
+  };
+};
+
+const HOME_HERO_TITLE: Record<string, string> = {
+  control: "Clean cutouts in seconds.",
+  outcome: "Launch-ready product images in minutes.",
+  privacy: "Private background removal for builders who move fast.",
+};
+
+const HOME_PRIMARY_CTA_LABEL: Record<string, string> = {
+  control: "Try it now",
+  download_free: "Download free installer",
+  start_downloads: "Start with downloads",
+};
+
+const HOME_STICKY_LABELS: Record<string, { primary: string; secondary: string }> = {
+  control: { primary: "View pricing", secondary: "Open downloads" },
+  compare_install: { primary: "Compare plans", secondary: "Install first" },
+  buy_get: { primary: "Buy once", secondary: "Get installer" },
+};
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const assignments = await evaluateHomeAssignments();
+  const incomingExp = readSingleParam(searchParams?.exp);
+  const exp = mergeExperimentToken(incomingExp, assignments);
+
+  const heroTitle = HOME_HERO_TITLE[assignments.homeHeroHeadline];
+  const primaryCtaLabel = HOME_PRIMARY_CTA_LABEL[assignments.homePrimaryCta];
+  const stickyLabels = HOME_STICKY_LABELS[assignments.stickyCtaCopy];
+
   const softwareApplicationJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -86,6 +130,29 @@ export default function HomePage() {
       <Script id="home-faq-jsonld" type="application/ld+json">
         {serializeJsonLd(faqJsonLd)}
       </Script>
+      <FlagValues values={toFlagValues(assignments)} />
+      <ExperimentExposureTracker
+        exposures={[
+          {
+            experimentKey: "home-hero-headline",
+            variant: assignments.homeHeroHeadline,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.hero.title",
+          },
+          {
+            experimentKey: "home-primary-cta",
+            variant: assignments.homePrimaryCta,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.hero.primary_cta",
+          },
+          {
+            experimentKey: "sticky-cta-copy",
+            variant: assignments.stickyCtaCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.sticky_cta",
+          },
+        ]}
+      />
 
       <main className="site-frame">
         <section className="section-block">
@@ -95,7 +162,7 @@ export default function HomePage() {
                 Local-first cutouts
               </Badge>
               <div className="flex flex-col gap-4">
-                <h1 className="display-title">Clean cutouts in seconds.</h1>
+                <h1 className="display-title">{heroTitle}</h1>
                 <p className="section-copy">
                   Build cleaner product shots, profile photos, and launch assets with local
                   workflows made for independent makers.
@@ -103,13 +170,13 @@ export default function HomePage() {
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Button asChild size="lg">
-                  <Link href="/downloads">Try it now</Link>
+                  <Link href={withExpParam("/downloads", exp)}>{primaryCtaLabel}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="/pricing">See pricing</Link>
+                  <Link href={withExpParam("/pricing", exp)}>See pricing</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="/docs">CLI docs</Link>
+                  <Link href={withExpParam("/docs", exp)}>CLI docs</Link>
                 </Button>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -207,10 +274,11 @@ export default function HomePage() {
       <StickyCta
         title="Ship clean visuals faster."
         description="Buy once. Run local in desktop + CLI."
-        primaryLabel="View pricing"
+        primaryLabel={stickyLabels.primary}
         primaryHref="/pricing"
-        secondaryLabel="Open downloads"
+        secondaryLabel={stickyLabels.secondary}
         secondaryHref="/downloads"
+        exp={exp}
       />
     </>
   );

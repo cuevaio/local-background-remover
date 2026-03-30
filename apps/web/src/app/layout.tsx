@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import SiteFooter from "@/components/marketing/SiteFooter";
@@ -104,6 +105,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <div className="site-frame">
           <SiteFooter />
         </div>
+        <Analytics />
       </body>
     </html>
   );

@@ -11,10 +11,13 @@
     "check": "bun run lint && bun run test"
   },
   "dependencies": {
+    "@flags-sdk/vercel": "^1.2.1",
     "@polar-sh/nextjs": "^0.9.5",
     "@t3-oss/env-nextjs": "^0.13.11",
+    "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "flags": "^4.0.1",
     "lucide-react": "^1.7.0",
     "next": "^16.2.1",
     "radix-ui": "^1.4.3",

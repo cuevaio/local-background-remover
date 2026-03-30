@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import ThankYouTracker from "@/components/analytics/ThankYouTracker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD } from "@/content/cli-docs";
+import { readSingleParam, withExpParam } from "@/lib/experiments/attribution";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -16,9 +18,20 @@ export const metadata: Metadata = buildPageMetadata({
   noindex: true,
 });
 
-export default function ThankYouPage() {
+type ThankYouPageProps = {
+  searchParams?: {
+    kind?: string | string[];
+    exp?: string | string[];
+  };
+};
+
+export default function ThankYouPage({ searchParams }: ThankYouPageProps) {
+  const kind = readSingleParam(searchParams?.kind) || "unknown";
+  const exp = readSingleParam(searchParams?.exp) || "";
+
   return (
     <main className="site-frame flex flex-col gap-0 pb-20">
+      <ThankYouTracker kind={kind} exp={exp} />
       <section className="section-block flex flex-col gap-4">
         <Badge variant="outline" className="w-fit bg-card">
           Purchase confirmed
@@ -63,13 +76,13 @@ export default function ThankYouPage() {
       <section className="section-block section-divider pt-8">
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild>
-            <Link href="/downloads">Open Downloads</Link>
+            <Link href={withExpParam("/downloads", exp)}>Open Downloads</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/pricing">Review pricing plans</Link>
+            <Link href={withExpParam("/pricing", exp)}>Review pricing plans</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/docs">CLI docs</Link>
+            <Link href={withExpParam("/docs", exp)}>CLI docs</Link>
           </Button>
         </div>
       </section>

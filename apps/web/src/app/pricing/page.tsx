@@ -1,12 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { FlagValues } from "flags/react";
 
+import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  mergeExperimentToken,
+  readSingleParam,
+  withExpParam,
+} from "@/lib/experiments/attribution";
+import {
+  evaluatePricingAssignments,
+  toFlagValues,
+} from "@/lib/experiments/flags";
+import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 import PricingClient from "./PricingClient";
@@ -18,7 +30,44 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/pricing",
 });
 
-export default function PricingPage() {
+type PricingPageProps = {
+  searchParams?: {
+    exp?: string | string[];
+  };
+};
+
+const PRICING_HERO_COPY: Record<string, { title: string; description: string }> = {
+  control: {
+    title: "Pick what you need now and add more later.",
+    description:
+      "Choose desktop, command-line, or both. Start simple, then expand when your workflow grows.",
+  },
+  one_payment: {
+    title: "One payment. Lifetime access.",
+    description:
+      "Choose desktop, command-line, or both and keep your workflow local with one-time pricing.",
+  },
+  upgrade_later: {
+    title: "Start with one plan. Upgrade when your workflow grows.",
+    description:
+      "Begin with App or CLI today, then unlock the bundle whenever you need both surfaces.",
+  },
+};
+
+const PRICING_STICKY_LABELS: Record<string, { primary: string; secondary: string }> = {
+  control: { primary: "Buy now", secondary: "Download first" },
+  compare_install: { primary: "Compare plans", secondary: "Install first" },
+  buy_get: { primary: "Buy once", secondary: "Get installer" },
+};
+
+export default async function PricingPage({ searchParams }: PricingPageProps) {
+  const assignments = await evaluatePricingAssignments();
+  const incomingExp = readSingleParam(searchParams?.exp);
+  const exp = mergeExperimentToken(incomingExp, assignments);
+
+  const heroCopy = PRICING_HERO_COPY[assignments.pricingHeroCopy];
+  const stickyLabels = PRICING_STICKY_LABELS[assignments.stickyCtaCopy];
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -43,31 +92,49 @@ export default function PricingPage() {
       <Script id="pricing-breadcrumb-jsonld" type="application/ld+json">
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
+      <FlagValues values={toFlagValues(assignments)} />
+      <ExperimentExposureTracker
+        exposures={[
+          {
+            experimentKey: "pricing-hero-copy",
+            variant: assignments.pricingHeroCopy,
+            page: EXPERIMENT_PAGE.PRICING,
+            slot: "pricing.hero.copy",
+          },
+          {
+            experimentKey: "pricing-plan-cta",
+            variant: assignments.pricingPlanCta,
+            page: EXPERIMENT_PAGE.PRICING,
+            slot: "pricing.plan.cta",
+          },
+          {
+            experimentKey: "sticky-cta-copy",
+            variant: assignments.stickyCtaCopy,
+            page: EXPERIMENT_PAGE.PRICING,
+            slot: "pricing.sticky_cta",
+          },
+        ]}
+      />
 
       <main className="site-frame flex flex-col gap-0 pb-36">
         <section className="section-block flex flex-col gap-4">
           <Badge variant="outline" className="w-fit bg-card">
             One-time plans
           </Badge>
-          <h1 className="display-title md:text-5xl">
-            Pick what you need now and add more later.
-          </h1>
-          <p className="section-copy md:text-lg">
-            Choose desktop, command-line, or both. Start simple, then expand when your workflow
-            grows.
-          </p>
+          <h1 className="display-title md:text-5xl">{heroCopy.title}</h1>
+          <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
-              <Link href="/docs">Read CLI docs</Link>
+              <Link href={withExpParam("/docs", exp)}>Read CLI docs</Link>
             </Button>
             <Button asChild>
-              <Link href="/downloads">Open downloads</Link>
+              <Link href={withExpParam("/downloads", exp)}>Open downloads</Link>
             </Button>
           </div>
         </section>
 
         <section className="section-block section-divider">
-          <PricingClient />
+          <PricingClient ctaVariant={assignments.pricingPlanCta} exp={exp} />
         </section>
 
         <section className="section-block section-divider grid gap-4 md:grid-cols-3">
@@ -111,10 +178,11 @@ export default function PricingPage() {
       <StickyCta
         title="Need a plan decision?"
         description="Start with one plan, upgrade anytime."
-        primaryLabel="Buy now"
+        primaryLabel={stickyLabels.primary}
         primaryHref="/pricing"
-        secondaryLabel="Download first"
+        secondaryLabel={stickyLabels.secondary}
         secondaryHref="/downloads"
+        exp={exp}
       />
     </>
   );

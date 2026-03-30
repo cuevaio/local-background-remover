@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { FlagValues } from "flags/react";
 
+import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +24,16 @@ import {
   CLI_VERSION_CMD,
 } from "@/content/cli-docs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  mergeExperimentToken,
+  readSingleParam,
+  withExpParam,
+} from "@/lib/experiments/attribution";
+import {
+  evaluateDownloadsAssignments,
+  toFlagValues,
+} from "@/lib/experiments/flags";
+import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -31,7 +43,44 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/downloads",
 });
 
-export default function DownloadsPage() {
+type DownloadsPageProps = {
+  searchParams?: {
+    exp?: string | string[];
+  };
+};
+
+const DOWNLOADS_HERO_COPY: Record<string, { title: string; description: string }> = {
+  control: {
+    title: "Install first, unlock when you are ready.",
+    description:
+      "Pick desktop or command line, install, then activate your purchase to start processing.",
+  },
+  install_minutes: {
+    title: "Install in minutes. Activate when ready.",
+    description:
+      "Choose desktop or CLI and get set up quickly, then unlock paid processing with your key.",
+  },
+  download_then_buy: {
+    title: "Download now, purchase only when you need processing.",
+    description:
+      "Get installed first, test your setup, and buy the plan that fits when you are ready to process.",
+  },
+};
+
+const DOWNLOADS_STICKY_LABELS: Record<string, { primary: string; secondary: string }> = {
+  control: { primary: "Compare pricing", secondary: "Home" },
+  compare_install: { primary: "Compare plans", secondary: "Install first" },
+  buy_get: { primary: "Buy once", secondary: "Get installer" },
+};
+
+export default async function DownloadsPage({ searchParams }: DownloadsPageProps) {
+  const assignments = await evaluateDownloadsAssignments();
+  const incomingExp = readSingleParam(searchParams?.exp);
+  const exp = mergeExperimentToken(incomingExp, assignments);
+
+  const heroCopy = DOWNLOADS_HERO_COPY[assignments.downloadsHeroCopy];
+  const stickyLabels = DOWNLOADS_STICKY_LABELS[assignments.stickyCtaCopy];
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -56,24 +105,37 @@ export default function DownloadsPage() {
       <Script id="downloads-breadcrumb-jsonld" type="application/ld+json">
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
+      <FlagValues values={toFlagValues(assignments)} />
+      <ExperimentExposureTracker
+        exposures={[
+          {
+            experimentKey: "downloads-hero-copy",
+            variant: assignments.downloadsHeroCopy,
+            page: EXPERIMENT_PAGE.DOWNLOADS,
+            slot: "downloads.hero.copy",
+          },
+          {
+            experimentKey: "sticky-cta-copy",
+            variant: assignments.stickyCtaCopy,
+            page: EXPERIMENT_PAGE.DOWNLOADS,
+            slot: "downloads.sticky_cta",
+          },
+        ]}
+      />
 
       <main className="site-frame flex flex-col gap-0 pb-36">
         <section className="section-block flex flex-col gap-4">
           <Badge variant="outline" className="w-fit bg-card">
             Download and get started
           </Badge>
-          <h1 className="display-title md:text-5xl">
-            Install first, unlock when you are ready.
-          </h1>
-          <p className="section-copy md:text-lg">
-            Pick desktop or command line, install, then activate your purchase to start processing.
-          </p>
+          <h1 className="display-title md:text-5xl">{heroCopy.title}</h1>
+          <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <Link href="/docs">Open CLI docs</Link>
+              <Link href={withExpParam("/docs", exp)}>Open CLI docs</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/pricing">Need a key?</Link>
+              <Link href={withExpParam("/pricing", exp)}>Need a key?</Link>
             </Button>
           </div>
         </section>
@@ -111,7 +173,7 @@ export default function DownloadsPage() {
                     {CLI_STATUS_CMD}
                   </pre>
                   <Button asChild variant="outline" className="w-fit">
-                    <Link href="/docs">Read full CLI command docs</Link>
+                    <Link href={withExpParam("/docs", exp)}>Read full CLI command docs</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -166,10 +228,10 @@ export default function DownloadsPage() {
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild>
-                  <Link href="/pricing">Open pricing</Link>
+                  <Link href={withExpParam("/pricing", exp)}>Open pricing</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href="/docs">CLI docs</Link>
+                  <Link href={withExpParam("/docs", exp)}>CLI docs</Link>
                 </Button>
               </div>
             </CardContent>
@@ -180,10 +242,11 @@ export default function DownloadsPage() {
       <StickyCta
         title="Have the installer?"
         description="Choose your plan and unlock your workflow when ready."
-        primaryLabel="Compare pricing"
+        primaryLabel={stickyLabels.primary}
         primaryHref="/pricing"
-        secondaryLabel="Home"
+        secondaryLabel={stickyLabels.secondary}
         secondaryHref="/"
+        exp={exp}
       />
     </>
   );
