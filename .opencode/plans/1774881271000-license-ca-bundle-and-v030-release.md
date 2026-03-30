@@ -1,8 +1,8 @@
-# Plan: Harden license TLS and prepare `v0.3.0`
+# Plan: Harden license TLS and prepare `v0.3.1`
 
 ## Goal
 - Ensure CLI license API calls work reliably in packaged binaries by loading trusted CA bundles.
-- Ship the release as `v0.3.0` with aligned package/version metadata.
+- Ship the release as `v0.3.1` with aligned package/version metadata.
 
 ## Actions
 1. Add CA bundle resolution in `apps/rmbg/rmbg_cli/license_manager.py` with env override order:
@@ -13,7 +13,7 @@
 2. Use explicit SSL context for license API `urlopen` requests.
 3. Add tests for CA bundle behavior and missing-path error handling.
 4. Add `certifi` dependency and refresh lock/metadata files.
-5. Bump CLI versioned files from `0.2.0` to `0.3.0`.
+5. Bump CLI versioned files from `0.2.0` to `0.3.1`.
 6. Update docs/env examples for the optional `RMBG_LICENSE_CA_BUNDLE` setting.
 
 ## Verification

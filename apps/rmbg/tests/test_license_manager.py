@@ -53,6 +53,43 @@ def test_status_active_for_cli(tmp_path: Path, monkeypatch) -> None:
     assert result["surface_ok"] is True
 
 
+def test_status_uses_cached_public_key_when_env_missing(
+    tmp_path: Path, monkeypatch
+) -> None:
+    private_key = Ed25519PrivateKey.generate()
+    public_key = private_key.public_key().public_bytes(Encoding.Raw, PublicFormat.Raw)
+    monkeypatch.delenv("RMBG_LICENSE_PUBLIC_KEY", raising=False)
+    monkeypatch.setattr(license_manager, "machine_fingerprint", lambda: "machine-abc")
+
+    now = int(time.time())
+    payload = {
+        "exp": now + 3600,
+        "grace_exp": now + 7200,
+        "machine_hash": "machine-abc",
+        "surfaces": ["cli"],
+    }
+    token = _make_token(private_key, payload)
+
+    license_file = tmp_path / "license.json"
+    license_file.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "activations": {
+                    "cli": {
+                        "token": token,
+                        "public_key": base64.b64encode(public_key).decode("utf-8"),
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = license_manager.status(license_file, "cli")
+    assert result["licensed"] is True
+
+
 def test_status_rejects_surface_mismatch(tmp_path: Path, monkeypatch) -> None:
     private_key = Ed25519PrivateKey.generate()
     public_key = private_key.public_key().public_bytes(Encoding.Raw, PublicFormat.Raw)
@@ -220,6 +257,65 @@ def test_machine_fingerprint_is_stable_with_device_file(
 
     assert first == second
     assert device_file.exists()
+
+
+def test_activate_license_persists_public_key(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(license_manager, "machine_fingerprint", lambda: "machine-abc")
+    monkeypatch.setattr(
+        license_manager,
+        "_post_json",
+        lambda _url, _payload: {
+            "ok": True,
+            "token": "token-1",
+            "activation_id": "activation-1",
+            "public_key": "pubkey-1",
+        },
+    )
+
+    license_file = tmp_path / "license.json"
+    license_manager.activate_license(
+        license_file, "KEY-1", "cli", "https://example.com"
+    )
+    state = license_manager.load_license_state(license_file)
+
+    assert state["activations"]["cli"]["public_key"] == "pubkey-1"
+
+
+def test_refresh_license_updates_cached_public_key(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(license_manager, "machine_fingerprint", lambda: "machine-abc")
+    monkeypatch.setattr(
+        license_manager,
+        "_post_json",
+        lambda _url, _payload: {
+            "ok": True,
+            "token": "token-2",
+            "activation_id": "activation-1",
+            "public_key": "pubkey-2",
+        },
+    )
+
+    license_file = tmp_path / "license.json"
+    license_file.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "activations": {
+                    "cli": {
+                        "license_key": "KEY-1",
+                        "token": "token-1",
+                        "activation_id": "activation-1",
+                        "public_key": "pubkey-1",
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    license_manager.refresh_license(license_file, "cli", "https://example.com")
+    state = license_manager.load_license_state(license_file)
+
+    assert state["activations"]["cli"]["public_key"] == "pubkey-2"
 
 
 def test_post_json_loads_certifi_bundle_when_no_env(monkeypatch) -> None:

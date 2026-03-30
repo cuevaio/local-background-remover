@@ -31,6 +31,7 @@ Use root `.env.example` as reference.
 - `POLAR_BENEFIT_CLI_ID`
 - `POLAR_BENEFIT_DESKTOP_ID`
 - `LICENSE_SIGNING_PRIVATE_KEY`
+- `RMBG_LICENSE_PUBLIC_KEY`
 
 Optional override:
 

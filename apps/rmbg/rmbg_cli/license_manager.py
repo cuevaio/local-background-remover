@@ -39,11 +39,12 @@ def normalize_surface(surface: str) -> str:
     raise RuntimeError(f"Unsupported surface '{surface}'")
 
 
-def _load_public_key() -> Ed25519PublicKey:
-    key = os.environ.get("RMBG_LICENSE_PUBLIC_KEY")
+def _load_public_key(cached_key: Optional[str] = None) -> Ed25519PublicKey:
+    key = os.environ.get("RMBG_LICENSE_PUBLIC_KEY") or cached_key
     if not key:
         raise RuntimeError(
-            "RMBG_LICENSE_PUBLIC_KEY is required for license verification"
+            "RMBG_LICENSE_PUBLIC_KEY is required for license verification. "
+            "Run 'rmbg license activate' to fetch it automatically or set the env var."
         )
 
     try:
@@ -171,7 +172,9 @@ def save_license_state(path: Path, state: Dict[str, Any]) -> None:
     path.write_text(json.dumps(normalized, indent=2), encoding="utf-8")
 
 
-def parse_and_verify_token(token: str) -> Dict[str, Any]:
+def parse_and_verify_token(
+    token: str, cached_key: Optional[str] = None
+) -> Dict[str, Any]:
     try:
         header_b64, payload_b64, sig_b64 = token.split(".")
     except ValueError as exc:
@@ -180,7 +183,7 @@ def parse_and_verify_token(token: str) -> Dict[str, Any]:
     signing_input = f"{header_b64}.{payload_b64}".encode("utf-8")
     signature = _b64url_decode(sig_b64)
 
-    public_key = _load_public_key()
+    public_key = _load_public_key(cached_key)
     try:
         public_key.verify(signature, signing_input)
     except InvalidSignature as exc:
@@ -242,7 +245,7 @@ def status(path: Path, surface: str) -> Dict[str, Any]:
             "message": f"No local license token found for surface '{normalized_surface}'",
         }
 
-    payload = parse_and_verify_token(token)
+    payload = parse_and_verify_token(token, activation.get("public_key"))
     evaluation = evaluate_token(payload, normalized_surface)
     licensed = (
         evaluation["phase"] in {"active", "grace"}
@@ -379,6 +382,7 @@ def activate_license(
     activations[normalized_surface] = {
         "license_key": key,
         "token": response["token"],
+        "public_key": response.get("public_key"),
         "activation_id": response.get("activation_id"),
         "surface": normalized_surface,
         "activated_at": int(time.time()),
@@ -423,6 +427,8 @@ def refresh_license(
         raise RuntimeError(response.get("error", "Refresh failed"))
 
     activation["token"] = response["token"]
+    if response.get("public_key"):
+        activation["public_key"] = response.get("public_key")
     activation["surface"] = normalized_surface
     activation["refreshed_at"] = int(time.time())
     if not activation.get("api_base"):
@@ -442,7 +448,7 @@ def should_refresh(path: Path, surface: str) -> bool:
     if not token:
         return False
 
-    payload = parse_and_verify_token(token)
+    payload = parse_and_verify_token(token, activation.get("public_key"))
     exp = int(payload.get("exp", 0))
     now = int(time.time())
     return (

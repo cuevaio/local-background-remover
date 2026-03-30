@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { env } from "@/env";
 import {
   normalizeSurface,
-  requireEnv,
   requiredBenefitForSurface,
   validateLicenseKey,
 } from "@/lib/polar";
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "surface must be 'cli' or 'desktop'" }, { status: 400 });
     }
 
-    const organizationId = requireEnv("POLAR_ORGANIZATION_ID");
+    const organizationId = env.POLAR_ORGANIZATION_ID;
     const requiredBenefitId = requiredBenefitForSurface(surface);
     const license = await validateLicenseKey({
       key,

@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+import { env } from "@/env";
+
 const THIRTY_DAYS_SECONDS = 30 * 24 * 60 * 60;
 const THREE_DAYS_SECONDS = 3 * 24 * 60 * 60;
 
@@ -49,10 +51,7 @@ function normalizePrivateKey(raw: string) {
 }
 
 function getPrivateKey() {
-  const key = process.env.LICENSE_SIGNING_PRIVATE_KEY;
-  if (!key) {
-    throw new Error("Missing environment variable: LICENSE_SIGNING_PRIVATE_KEY");
-  }
+  const key = env.LICENSE_SIGNING_PRIVATE_KEY;
   return crypto.createPrivateKey(normalizePrivateKey(key));
 }
 

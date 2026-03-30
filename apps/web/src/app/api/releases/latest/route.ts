@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const DEFAULT_GITHUB_REPO = "cuevaio/local-background-remover";
+import { env } from "@/env";
 
 function normalizeTag(value: string | null | undefined) {
   if (!value || typeof value !== "string") {
@@ -25,7 +25,7 @@ function parseTagFromReleaseUrl(url: string) {
 }
 
 async function resolveLatestTag() {
-  const configuredTag = normalizeTag(process.env.RMBG_LATEST_VERSION);
+  const configuredTag = normalizeTag(env.RMBG_LATEST_VERSION);
   if (configuredTag) {
     return {
       tag: configuredTag,
@@ -33,8 +33,8 @@ async function resolveLatestTag() {
     };
   }
 
-  const repoSlug = process.env.RMBG_GITHUB_REPO || DEFAULT_GITHUB_REPO;
-  const githubToken = process.env.RMBG_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  const repoSlug = env.RMBG_GITHUB_REPO;
+  const githubToken = env.RMBG_GITHUB_TOKEN || env.GITHUB_TOKEN;
 
   const githubApiResponse = await fetch(`https://api.github.com/repos/${repoSlug}/releases/latest`, {
     cache: "no-store",

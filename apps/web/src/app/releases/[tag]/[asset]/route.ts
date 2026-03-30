@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const DEFAULT_GITHUB_REPO = "cuevaio/local-background-remover";
+import { env } from "@/env";
 
 type RouteContext = {
   params: Promise<{
@@ -112,8 +112,8 @@ export async function GET(_request: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: "Unsupported release asset" }, { status: 400 });
   }
 
-  const repoSlug = process.env.RMBG_GITHUB_REPO || DEFAULT_GITHUB_REPO;
-  const githubToken = process.env.RMBG_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  const repoSlug = env.RMBG_GITHUB_REPO;
+  const githubToken = env.RMBG_GITHUB_TOKEN || env.GITHUB_TOKEN;
 
   const upstream = githubToken
     ? await downloadPrivateAssetWithToken(repoSlug, tag, asset, githubToken)

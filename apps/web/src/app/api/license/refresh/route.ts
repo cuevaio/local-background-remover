@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { env } from "@/env";
 import { issueOfflineToken } from "@/lib/license-token";
 import {
   normalizeSurface,
-  requireEnv,
   requiredBenefitForSurface,
   validateLicenseKey,
 } from "@/lib/polar";
@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     const surface = normalizeSurface(String(body?.surface || "cli").trim());
     const machineHash = String(body?.machine_hash || "").trim();
     const activationId = String(body?.activation_id || "").trim();
+    const publicKey = env.RMBG_LICENSE_PUBLIC_KEY;
 
     if (!key || !machineHash || !activationId) {
       return NextResponse.json(
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "surface must be 'cli' or 'desktop'" }, { status: 400 });
     }
 
-    const organizationId = requireEnv("POLAR_ORGANIZATION_ID");
+    const organizationId = env.POLAR_ORGANIZATION_ID;
     const requiredBenefitId = requiredBenefitForSurface(surface);
     const license = await validateLicenseKey({
       key,
@@ -71,6 +72,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       activation_id: activationId,
+      public_key: publicKey,
       token: token.token,
       expires_at: token.expires_at,
       grace_expires_at: token.grace_expires_at,

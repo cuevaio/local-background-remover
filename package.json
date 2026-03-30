@@ -9,6 +9,7 @@
     "apps/rmbg"
   ],
   "devDependencies": {
+    "@t3-oss/env-nextjs": "^0.13.11",
     "turbo": "^2.8.21"
   },
   "scripts": {

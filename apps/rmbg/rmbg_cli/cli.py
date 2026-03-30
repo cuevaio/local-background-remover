@@ -22,7 +22,7 @@ from .model_manager import ensure_local_model, validate_local_model_dir
 try:
     RMBG_VERSION = version("rmbg")
 except PackageNotFoundError:
-    RMBG_VERSION = "0.3.0"
+    RMBG_VERSION = "0.3.1"
 
 
 def _print(data: Dict[str, Any], as_json: bool) -> None:
