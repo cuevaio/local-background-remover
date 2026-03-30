@@ -1,9 +1,25 @@
 import type { MetadataRoute } from "next";
 
+import { COMPARE_SLUGS } from "@/content/compare-pages";
 import { SITE_URL } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
+
+  const compareEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/compare`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...COMPARE_SLUGS.map((slug) => ({
+      url: `${SITE_URL}/compare/${slug}`,
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.72,
+    })),
+  ];
 
   return [
     {
@@ -24,5 +40,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    ...compareEntries,
   ];
 }
