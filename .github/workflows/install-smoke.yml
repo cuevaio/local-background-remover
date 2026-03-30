@@ -1,0 +1,19 @@
+name: Installer Smoke Test
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  smoke:
+    runs-on: macos-latest
+    steps:
+      - name: Install CLI from public installer URL
+        run: curl -fsSL "https://localremovebg.com/install" | bash
+
+      - name: Verify global command
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          command -v rmbg
+          rmbg --version

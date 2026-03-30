@@ -1,0 +1,15 @@
+{
+  "name": "rmbg",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "uv run rmbg model status --json",
+    "build": "uv run python -m py_compile rmbg_cli/cli.py rmbg_cli/model_manager.py rmbg_cli/inference.py",
+    "lint": "uv run --group dev ruff check rmbg_cli tests",
+    "test": "uv run --group dev pytest -q",
+    "check": "uv run --group dev ruff check rmbg_cli tests && uv run --group dev pytest -q",
+    "package:mac": "bash scripts/build-binary.sh",
+    "py:sync": "uv sync --group dev",
+    "py:lock": "uv lock"
+  }
+}

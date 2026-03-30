@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Background Remover</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>Local Background Remover</h1>
+          <p class="subtitle">Minimal background removal with local-first model runtime</p>
+        </div>
+        <div class="actions">
+          <button id="ensure-model-btn" class="btn secondary">Ensure Model</button>
+          <button id="add-images-btn" class="btn primary">Add Images</button>
+        </div>
+      </header>
+
+      <section class="status-row">
+        <span id="model-status" class="pill">Checking model...</span>
+        <span id="worker-status" class="pill">Worker: checking...</span>
+        <span id="app-license-status" class="pill">App key: checking...</span>
+        <span id="cli-license-status" class="pill">CLI key: checking...</span>
+        <span id="global-status" class="pill muted">Ready</span>
+      </section>
+
+      <section class="license-grid">
+        <article class="license-panel">
+          <h2>App key</h2>
+          <label for="app-license-key-input">Activate desktop app</label>
+          <input
+            id="app-license-key-input"
+            type="text"
+            placeholder="Paste Polar app key"
+          />
+          <div class="license-actions">
+            <button id="app-license-activate-btn" class="btn primary">Activate app</button>
+            <button id="app-license-refresh-btn" class="btn secondary">Refresh</button>
+          </div>
+        </article>
+
+        <article class="license-panel">
+          <h2>CLI key</h2>
+          <label for="cli-license-key-input">Activate command-line runtime</label>
+          <input
+            id="cli-license-key-input"
+            type="text"
+            placeholder="Paste Polar CLI key"
+          />
+          <div class="license-actions">
+            <button id="cli-license-activate-btn" class="btn primary">Activate CLI</button>
+            <button id="cli-license-refresh-btn" class="btn secondary">Refresh</button>
+          </div>
+        </article>
+        <div class="license-note">
+          Desktop processing requires both keys to be active.
+        </div>
+      </section>
+
+      <main>
+        <section id="gallery" class="gallery"></section>
+        <section id="empty-state" class="empty-state">
+          <h2>No images yet</h2>
+          <p>Add one or more images to preview and remove backgrounds.</p>
+        </section>
+      </main>
+    </div>
+
+    <template id="card-template">
+      <article class="card">
+        <header class="card-head">
+          <h3 class="filename"></h3>
+          <span class="state">Idle</span>
+        </header>
+
+        <div class="compare-wrap">
+          <img class="img-before" alt="Original" />
+          <div class="overlay">
+            <img class="img-after" alt="Processed" />
+          </div>
+        </div>
+
+        <input class="slider" type="range" min="0" max="100" value="50" />
+
+        <footer class="card-actions">
+          <button class="btn process-btn">Remove BG</button>
+          <button class="btn secondary save-btn" disabled>Save Result</button>
+        </footer>
+      </article>
+    </template>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

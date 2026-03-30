@@ -1,0 +1,56 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "BIREFNET_MODEL_DIR",
+    "HF_HUB_OFFLINE",
+    "TRANSFORMERS_OFFLINE",
+    "POLAR_ACCESS_TOKEN",
+    "POLAR_ORGANIZATION_ID",
+    "POLAR_WEBHOOK_SECRET",
+    "POLAR_SERVER",
+    "POLAR_PRODUCT_APP_ID",
+    "POLAR_PRODUCT_CLI_ID",
+    "POLAR_PRODUCT_BOTH_ID",
+    "POLAR_BENEFIT_CLI_ID",
+    "POLAR_BENEFIT_DESKTOP_ID",
+    "LICENSE_SIGNING_PRIVATE_KEY",
+    "RMBG_LICENSE_PUBLIC_KEY",
+    "RMBG_LICENSE_API_BASE_URL",
+    "RMBG_WORKER_IDLE_SECONDS"
+  ],
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ]
+    },
+    "check": {
+      "dependsOn": [
+        "lint",
+        "test"
+      ]
+    },
+    "py:sync": {
+      "cache": false
+    },
+    "py:lock": {
+      "outputs": [
+        "uv.lock"
+      ]
+    }
+  }
+}

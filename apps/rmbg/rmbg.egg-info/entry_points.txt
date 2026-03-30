@@ -1,0 +1,2 @@
+[console_scripts]
+rmbg = rmbg_cli.cli:main

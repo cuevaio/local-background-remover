@@ -1,0 +1,72 @@
+name: Release CLI
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-14
+            target: darwin-arm64
+          - os: macos-13
+            target: darwin-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Sync Python dependencies
+        working-directory: apps/rmbg
+        run: uv sync --group build
+
+      - name: Validate version matches git tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PROJECT_VERSION="$(cd apps/rmbg && uv run python -c "import importlib.metadata as m; print(m.version('rmbg'))")"
+          if [[ "v${PROJECT_VERSION}" != "${TAG}" ]]; then
+            echo "Tag ${TAG} does not match pyproject version v${PROJECT_VERSION}" >&2
+            exit 1
+          fi
+
+      - name: Build packaged CLI
+        working-directory: apps/rmbg
+        run: bash scripts/build-binary.sh
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rmbg-${{ matrix.target }}
+          path: apps/rmbg/dist/release/*.tar.gz
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: release-assets
+
+      - name: Generate checksums
+        run: |
+          cd release-assets
+          sha256sum *.tar.gz > checksums.txt
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release-assets/*.tar.gz
+            release-assets/checksums.txt

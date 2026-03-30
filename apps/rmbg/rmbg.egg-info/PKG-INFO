@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: rmbg
+Version: 0.1.0
+Summary: CLI background removal tool
+License: Proprietary
+Requires-Python: >=3.10
+Requires-Dist: cryptography>=45.0.0
+Requires-Dist: einops>=0.8.2
+Requires-Dist: huggingface-hub>=1.8.0
+Requires-Dist: kornia>=0.8.2
+Requires-Dist: numpy>=2.2.6
+Requires-Dist: pillow>=12.1.1
+Requires-Dist: timm>=1.0.26
+Requires-Dist: torch>=2.11.0
+Requires-Dist: torchvision>=0.26.0
+Requires-Dist: transformers>=4.39.1

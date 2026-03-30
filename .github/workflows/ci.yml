@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install JS dependencies
+        run: bun install
+
+      - name: Sync Python dependencies
+        working-directory: apps/rmbg
+        run: uv sync --group dev
+
+      - name: Lint monorepo
+        run: bun run lint
+
+      - name: Test monorepo
+        run: bun run test
+
+      - name: Validate CLI syntax
+        working-directory: apps/rmbg
+        run: uv run python -m py_compile rmbg_cli/cli.py
