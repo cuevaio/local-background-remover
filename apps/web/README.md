@@ -28,7 +28,10 @@ Use root `.env.example` as reference.
 - `POLAR_BENEFIT_CLI_ID`
 - `POLAR_BENEFIT_DESKTOP_ID`
 - `LICENSE_SIGNING_PRIVATE_KEY`
-- `RMBG_LATEST_VERSION`
+
+Optional override:
+
+- `RMBG_LATEST_VERSION` (if omitted, `/api/releases/latest` resolves latest from GitHub releases)
 
 ## Product model
 

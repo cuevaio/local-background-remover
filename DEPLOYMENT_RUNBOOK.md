@@ -49,7 +49,10 @@ Set production env vars in Vercel:
 - `POLAR_BENEFIT_CLI_ID`
 - `POLAR_BENEFIT_DESKTOP_ID`
 - `LICENSE_SIGNING_PRIVATE_KEY`
-- `RMBG_LATEST_VERSION` (for `/api/releases/latest`, example: `v0.1.0`)
+
+Optional:
+
+- `RMBG_LATEST_VERSION` (manual override for `/api/releases/latest`; if unset the endpoint resolves latest from GitHub releases)
 
 Publish public release files at:
 

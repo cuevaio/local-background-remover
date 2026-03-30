@@ -35,45 +35,56 @@ detect_target() {
   esac
 }
 
+ensure_v_tag() {
+  local value
+  value="\$1"
+  if [[ "\$value" == v* ]]; then
+    echo "\$value"
+  else
+    echo "v\${value}"
+  fi
+}
+
 resolve_tag() {
-  local requested tag
+  local requested tag metadata_json latest_url
 
   if [[ -n "\${RMBG_VERSION:-}" ]]; then
     TAG_SOURCE="manual"
     requested="\${RMBG_VERSION}"
-    if [[ "\$requested" == v* ]]; then
-      echo "\$requested"
-    else
-      echo "v\${requested}"
-    fi
+    ensure_v_tag "\$requested"
     return
   fi
 
   if [[ -n "\${RELEASE_METADATA_URL:-}" ]]; then
-    tag="\$({ curl -fsSL "\$RELEASE_METADATA_URL" 2>/dev/null || true; } | sed -nE 's/.*"tag"[[:space:]]*:[[:space:]]*"([^"]+)".*/\\1/p' | head -n1)"
+    metadata_json="\$(curl -fsSL "\$RELEASE_METADATA_URL" 2>/dev/null || true)"
+    tag="\$(printf "%s" "\$metadata_json" | sed -nE 's/.*"tag"[[:space:]]*:[[:space:]]*"([^"]+)".*/\\1/p')"
     if [[ -n "\$tag" ]]; then
       TAG_SOURCE="metadata"
-      if [[ "\$tag" == v* ]]; then
-        echo "\$tag"
-      else
-        echo "v\${tag}"
-      fi
+      ensure_v_tag "\$tag"
       return
     fi
   fi
 
   if [[ -n "\${REPO_SLUG:-}" ]]; then
+    latest_url="\$(curl -fsSL -o /dev/null -w '%{url_effective}' "https://github.com/\${REPO_SLUG}/releases/latest" 2>/dev/null || true)"
+    tag="\$(printf "%s" "\$latest_url" | sed -nE 's#^.*/releases/tag/([^/?#]+).*$#\\1#p')"
+    if [[ -n "\$tag" ]]; then
+      TAG_SOURCE="github-redirect"
+      ensure_v_tag "\$tag"
+      return
+    fi
+
     local api_url
     api_url="https://api.github.com/repos/\${REPO_SLUG}/releases/latest"
-    tag="\$({ curl -fsSL "\$api_url" 2>/dev/null || true; } | grep '"tag_name"' | head -n1 | sed -E 's/.*"tag_name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\\1/')"
+    tag="\$({ curl -fsSL "\$api_url" 2>/dev/null || true; } | sed -nE 's/.*"tag_name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\\1/p')"
     if [[ -n "\$tag" ]]; then
-      TAG_SOURCE="github"
-      echo "\$tag"
+      TAG_SOURCE="github-api"
+      ensure_v_tag "\$tag"
       return
     fi
   fi
 
-  fail "failed to resolve release version; set RMBG_VERSION=vX.Y.Z"
+  fail "failed to resolve release version from metadata or GitHub; set RMBG_VERSION=vX.Y.Z"
 }
 
 verify_checksum() {
@@ -98,7 +109,7 @@ main() {
   target="\$(detect_target)"
   tag="\$(resolve_tag)"
   archive_name="rmbg-\${tag}-\${target}.tar.gz"
-  if [[ "\${TAG_SOURCE}" == "github" && -z "\${RMBG_RELEASE_BASE_URL:-}" ]]; then
+  if [[ "\${TAG_SOURCE}" == github-* && -z "\${RMBG_RELEASE_BASE_URL:-}" ]]; then
     download_base="https://github.com/\${REPO_SLUG}/releases/download/\${tag}"
   else
     download_base="\${RELEASE_BASE_URL}/\${tag}"
