@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: rmbg
-Version: 0.3.1
+Version: 0.3.2
 Summary: CLI background removal tool
 License: Proprietary
 Requires-Python: >=3.10

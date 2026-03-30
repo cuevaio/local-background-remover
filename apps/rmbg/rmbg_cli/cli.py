@@ -1,5 +1,6 @@
 import argparse
 import json
+import re
 import sys
 import time
 from importlib.metadata import PackageNotFoundError, version
@@ -22,7 +23,12 @@ from .model_manager import ensure_local_model, validate_local_model_dir
 try:
     RMBG_VERSION = version("rmbg")
 except PackageNotFoundError:
-    RMBG_VERSION = "0.3.1"
+    RMBG_VERSION = "0.3.2"
+
+
+RESOURCE_TRACKER_COMMAND_RE = re.compile(
+    r"^from multiprocessing\.resource_tracker import main;main\((\d+)\)$"
+)
 
 
 def _print(data: Dict[str, Any], as_json: bool) -> None:
@@ -297,6 +303,25 @@ def _add_output_flags(cmd: argparse.ArgumentParser) -> None:
     )
 
 
+def _resource_tracker_fd_from_argv(argv: list[str]) -> int | None:
+    for arg in argv[1:]:
+        match = RESOURCE_TRACKER_COMMAND_RE.match(arg.strip())
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def _run_internal_multiprocessing_entrypoint(argv: list[str]) -> bool:
+    fd = _resource_tracker_fd_from_argv(argv)
+    if fd is None:
+        return False
+
+    from multiprocessing.resource_tracker import main as resource_tracker_main
+
+    resource_tracker_main(fd)
+    return True
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="rmbg",
@@ -453,9 +478,16 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    from multiprocessing import spawn
+
+    argv = argv or sys.argv
+    spawn.freeze_support()
+    if _run_internal_multiprocessing_entrypoint(argv):
+        raise SystemExit(0)
+
     parser = build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv[1:])
     code = args.func(args)
     raise SystemExit(code)
 

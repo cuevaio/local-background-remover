@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from huggingface_hub import snapshot_download
+from huggingface_hub.utils import disable_progress_bars
+from huggingface_hub.utils.logging import set_verbosity_error
 
 from .config import MODEL_REPO_ID
 
@@ -13,6 +15,13 @@ ProgressCallback = Optional[Callable[[str, str], None]]
 def _emit(progress: ProgressCallback, stage: str, message: str) -> None:
     if progress:
         progress(stage, message)
+
+
+def _snapshot_token() -> str | bool:
+    token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
+    if token:
+        return token
+    return False
 
 
 def validate_local_model_dir(model_dir: Path) -> None:
@@ -88,8 +97,15 @@ def ensure_local_model(
     model_dir.mkdir(parents=True, exist_ok=True)
 
     _emit(progress, "download", f"Downloading {MODEL_REPO_ID}")
+    os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+    disable_progress_bars()
+    set_verbosity_error()
     try:
-        snapshot_download(repo_id=MODEL_REPO_ID, local_dir=str(model_dir))
+        snapshot_download(
+            repo_id=MODEL_REPO_ID,
+            local_dir=str(model_dir),
+            token=_snapshot_token(),
+        )
     except Exception as exc:
         raise RuntimeError(
             f"Failed to download model '{MODEL_REPO_ID}' to {model_dir}."

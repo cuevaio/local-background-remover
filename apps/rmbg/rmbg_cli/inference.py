@@ -4,6 +4,7 @@ from typing import Tuple
 import torch
 from PIL import Image
 from torchvision import transforms
+from transformers import logging as transformers_logging
 from transformers import AutoModelForImageSegmentation
 
 from .config import set_runtime_offline_env
@@ -34,6 +35,8 @@ def load_model(
     model_dir: Path,
 ) -> Tuple[AutoModelForImageSegmentation, torch.device, torch.dtype]:
     set_runtime_offline_env()
+    transformers_logging.set_verbosity_error()
+    transformers_logging.disable_progress_bar()
     device, dtype = get_runtime()
     model = AutoModelForImageSegmentation.from_pretrained(
         str(model_dir),

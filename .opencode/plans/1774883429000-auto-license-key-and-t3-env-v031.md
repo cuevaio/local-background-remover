@@ -1,9 +1,9 @@
-# Plan: Auto-cache license public key and adopt T3 env for web (`v0.3.1`)
+# Plan: Auto-cache license public key and adopt T3 env for web (`v0.3.2`)
 
 ## Goal
 - Remove the requirement for end users to manually set `RMBG_LICENSE_PUBLIC_KEY` after install/activation.
 - Centralize and validate web server environment variables using `@t3-oss/env-nextjs`.
-- Prepare release metadata for `v0.3.1`.
+- Prepare release metadata for `v0.3.2`.
 
 ## Actions
 1. Update web license endpoints to include `public_key` in activate/refresh API responses.
@@ -11,7 +11,7 @@
 3. Add/extend CLI tests for cached-key verification and activation/refresh persistence.
 4. Add typed env schema in `apps/web/src/env.ts` and migrate API/lib usage from raw `process.env` reads.
 5. Add `@t3-oss/env-nextjs` dependency and update docs for required env variables.
-6. Bump CLI versioned files to `0.3.1` and refresh lock metadata.
+6. Bump CLI versioned files to `0.3.2` and refresh lock metadata.
 
 ## Verification
 1. `cd apps/rmbg && uv run python -m py_compile rmbg_cli/cli.py`
