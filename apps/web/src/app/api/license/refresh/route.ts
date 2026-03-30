@@ -2,41 +2,32 @@ import { NextResponse } from "next/server";
 
 import { issueOfflineToken } from "@/lib/license-token";
 import {
-  activateLicenseKey,
   normalizeSurface,
   requireEnv,
   requiredBenefitForSurface,
   validateLicenseKey,
 } from "@/lib/polar";
 
-function activationErrorMessage(error) {
-  const raw = String(error?.message || "Activation failed");
-  const normalized = raw.toLowerCase();
-  const isActivationLimit =
-    (error?.status === 409 || error?.status === 422 || error?.status === 400) &&
-    normalized.includes("activation") &&
-    (normalized.includes("limit") ||
-      normalized.includes("already") ||
-      normalized.includes("maximum") ||
-      normalized.includes("reached"));
+type LicenseBody = {
+  key?: string;
+  surface?: string;
+  machine_hash?: string;
+  activation_id?: string;
+};
 
-  if (isActivationLimit) {
-    return "This license key is already bound to another machine. It cannot be reused. Please use a different key.";
-  }
+type ApiError = Error & { status?: number };
 
-  return raw;
-}
-
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as LicenseBody;
     const key = String(body?.key || "").trim();
     const surface = normalizeSurface(String(body?.surface || "cli").trim());
     const machineHash = String(body?.machine_hash || "").trim();
+    const activationId = String(body?.activation_id || "").trim();
 
-    if (!key || !machineHash) {
+    if (!key || !machineHash || !activationId) {
       return NextResponse.json(
-        { ok: false, error: "key and machine_hash are required" },
+        { ok: false, error: "key, machine_hash, and activation_id are required" },
         { status: 400 },
       );
     }
@@ -47,21 +38,6 @@ export async function POST(request) {
 
     const organizationId = requireEnv("POLAR_ORGANIZATION_ID");
     const requiredBenefitId = requiredBenefitForSurface(surface);
-    const activation = await activateLicenseKey({
-      key,
-      organizationId,
-      surface,
-      machineHash,
-    });
-
-    const activationId = activation?.id;
-    if (!activationId) {
-      return NextResponse.json(
-        { ok: false, error: "Polar did not return an activation ID" },
-        { status: 502 },
-      );
-    }
-
     const license = await validateLicenseKey({
       key,
       organizationId,
@@ -95,17 +71,16 @@ export async function POST(request) {
     return NextResponse.json({
       ok: true,
       activation_id: activationId,
-      license_id: license.id,
-      benefit_id: license.benefit_id,
       token: token.token,
       expires_at: token.expires_at,
       grace_expires_at: token.grace_expires_at,
       surfaces: token.payload.surfaces,
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const wrappedError = error as ApiError;
     return NextResponse.json(
-      { ok: false, error: activationErrorMessage(error) },
-      { status: error.status || 500 },
+      { ok: false, error: wrappedError.message || "Refresh failed" },
+      { status: wrappedError.status || 500 },
     );
   }
 }

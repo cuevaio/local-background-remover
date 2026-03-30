@@ -54,8 +54,9 @@ Set production env vars in Vercel:
 Publish public release files at:
 
 - `https://local.backgroundrm.com/releases/<tag>/rmbg-<tag>-darwin-arm64.tar.gz`
-- `https://local.backgroundrm.com/releases/<tag>/rmbg-<tag>-darwin-x86_64.tar.gz`
 - `https://local.backgroundrm.com/releases/<tag>/checksums.txt`
+
+Note: current automated release workflow publishes arm64 artifacts only.
 
 Then push to `main` (or trigger a deploy from the Vercel dashboard).
 

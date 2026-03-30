@@ -7,9 +7,18 @@ import {
   validateLicenseKey,
 } from "@/lib/polar";
 
-export async function POST(request) {
+type LicenseBody = {
+  key?: string;
+  surface?: string;
+  machine_hash?: string;
+  activation_id?: string;
+};
+
+type ApiError = Error & { status?: number };
+
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as LicenseBody;
     const key = String(body?.key || "").trim();
     const surface = normalizeSurface(String(body?.surface || "cli").trim());
     const machineHash = String(body?.machine_hash || "").trim();
@@ -49,10 +58,11 @@ export async function POST(request) {
       usage: license?.usage ?? null,
       limit_usage: license?.limit_usage ?? null,
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const wrappedError = error as ApiError;
     return NextResponse.json(
-      { ok: false, error: error.message || "Validation failed" },
-      { status: error.status || 500 },
+      { ok: false, error: wrappedError.message || "Validation failed" },
+      { status: wrappedError.status || 500 },
     );
   }
 }

@@ -3,11 +3,14 @@ const { spawn } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
+type JsonMap = Record<string, unknown>;
+type PendingAction = "remove" | "shutdown" | "ensure_model" | string;
+
 const repoRoot = path.resolve(__dirname, "../../../../");
 const rmbgProjectDir = path.join(repoRoot, "apps", "rmbg");
 const rmbgBin = path.join(rmbgProjectDir, ".venv", "bin", "rmbg");
 
-function normalizeUserPath(filePath) {
+function normalizeUserPath(filePath: unknown) {
   if (typeof filePath !== "string" || !filePath.trim()) {
     throw new Error("Path is required");
   }
@@ -32,7 +35,7 @@ function createWindow() {
   win.loadFile(path.join(__dirname, "../renderer/index.html"));
 }
 
-function commandForRmbg(args) {
+function commandForRmbg(args: string[]) {
   if (fs.existsSync(rmbgBin)) {
     return { command: rmbgBin, commandArgs: args };
   }
@@ -43,7 +46,7 @@ function commandForRmbg(args) {
   };
 }
 
-function runRmbg(args) {
+function runRmbg(args: string[]): Promise<JsonMap> {
   const { command, commandArgs } = commandForRmbg(args);
 
   return new Promise((resolve, reject) => {
@@ -56,25 +59,25 @@ function runRmbg(args) {
     let stdout = "";
     let stderr = "";
 
-    child.stdout.on("data", (chunk) => {
+    child.stdout.on("data", (chunk: Buffer) => {
       stdout += chunk.toString();
     });
 
-    child.stderr.on("data", (chunk) => {
+    child.stderr.on("data", (chunk: Buffer) => {
       stderr += chunk.toString();
     });
 
-    child.on("error", (error) => {
+    child.on("error", (error: Error) => {
       reject(error);
     });
 
-    child.on("close", (code) => {
+    child.on("close", (code: number) => {
       const rawOut = stdout.trim();
       const rawErr = stderr.trim();
 
       if (code === 0) {
         try {
-          resolve(rawOut ? JSON.parse(rawOut) : { ok: true });
+          resolve(rawOut ? (JSON.parse(rawOut) as JsonMap) : { ok: true });
         } catch {
           resolve({ ok: true, message: rawOut });
         }
@@ -87,31 +90,34 @@ function runRmbg(args) {
 }
 
 function createRmbgWorkerClient() {
-  let child = null;
+  let child: ReturnType<typeof spawn> | null = null;
   let buffer = "";
   let nextId = 1;
-  let lastClose = null;
+  let lastClose: { code: number | null; at_ms: number } | null = null;
   let modelLoaded = false;
-  let runtimeDevice = null;
-  let runtimeDtype = null;
-  const pending = new Map();
+  let runtimeDevice: string | null = null;
+  let runtimeDtype: string | null = null;
+  const pending = new Map<
+    string,
+    { resolve: (value: JsonMap) => void; reject: (reason?: unknown) => void; action: PendingAction }
+  >();
   const idleSeconds = Number.parseInt(process.env.RMBG_WORKER_IDLE_SECONDS || "300", 10);
 
-  const rejectAllPending = (error) => {
+  const rejectAllPending = (error: Error) => {
     for (const { reject } of pending.values()) {
       reject(error);
     }
     pending.clear();
   };
 
-  const handleLine = (line) => {
+  const handleLine = (line: string) => {
     if (!line.trim()) {
       return;
     }
 
-    let message;
+    let message: JsonMap;
     try {
-      message = JSON.parse(line);
+      message = JSON.parse(line) as JsonMap;
     } catch {
       return;
     }
@@ -124,14 +130,14 @@ function createRmbgWorkerClient() {
 
     pending.delete(id);
     if (message.ok) {
-      const result = message.result || { ok: true };
+      const result = (message.result as JsonMap | undefined) || { ok: true };
       if (typeof result.model_loaded === "boolean") {
         modelLoaded = result.model_loaded;
       }
-      if (result.runtime_device) {
+      if (typeof result.runtime_device === "string") {
         runtimeDevice = result.runtime_device;
       }
-      if (result.runtime_dtype) {
+      if (typeof result.runtime_dtype === "string") {
         runtimeDtype = result.runtime_dtype;
       }
       if (promiseHandlers.action === "remove") {
@@ -142,7 +148,7 @@ function createRmbgWorkerClient() {
       }
       promiseHandlers.resolve(result);
     } else {
-      promiseHandlers.reject(new Error(message.error || "rmbg worker request failed"));
+      promiseHandlers.reject(new Error(String(message.error || "rmbg worker request failed")));
     }
   };
 
@@ -168,7 +174,7 @@ function createRmbgWorkerClient() {
     runtimeDevice = null;
     runtimeDtype = null;
 
-    child.stdout.on("data", (chunk) => {
+    child.stdout.on("data", (chunk: Buffer) => {
       buffer += chunk.toString();
       let newlineIndex = buffer.indexOf("\n");
       while (newlineIndex >= 0) {
@@ -179,12 +185,12 @@ function createRmbgWorkerClient() {
       }
     });
 
-    child.on("error", (error) => {
+    child.on("error", (error: Error) => {
       rejectAllPending(error);
       child = null;
     });
 
-    child.on("close", (code) => {
+    child.on("close", (code: number | null) => {
       if (pending.size > 0) {
         rejectAllPending(new Error(`rmbg worker exited with code ${code}`));
       }
@@ -199,13 +205,13 @@ function createRmbgWorkerClient() {
     });
   };
 
-  const request = (action, payload = {}, options = {}) => {
+  const request = (action: PendingAction, payload: JsonMap = {}, options: { ensureWorker?: boolean } = {}) => {
     const ensureWorker = options.ensureWorker !== false;
     if (ensureWorker) {
       startWorker();
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<JsonMap>((resolve, reject) => {
       if (!child || child.killed || !child.stdin.writable) {
         reject(new Error("rmbg worker is not available"));
         return;
@@ -216,7 +222,7 @@ function createRmbgWorkerClient() {
 
       const message = JSON.stringify({ id, action, payload }) + "\n";
       try {
-        child.stdin.write(message, (error) => {
+        child.stdin.write(message, (error?: Error | null) => {
           if (!error) {
             return;
           }
@@ -231,26 +237,25 @@ function createRmbgWorkerClient() {
   };
 
   const status = async () => {
-    if (!child || child.killed) {
-      return {
-        running: false,
-        model_loaded: modelLoaded,
-        pending_requests: pending.size,
-        idle_seconds: Number.isFinite(idleSeconds) ? idleSeconds : 300,
-        last_close: lastClose,
-        runtime_device: runtimeDevice,
-        runtime_dtype: runtimeDtype,
-      };
-    }
-
-    return {
-      running: true,
+    const base = {
       model_loaded: modelLoaded,
       pending_requests: pending.size,
       idle_seconds: Number.isFinite(idleSeconds) ? idleSeconds : 300,
       last_close: lastClose,
       runtime_device: runtimeDevice,
       runtime_dtype: runtimeDtype,
+    };
+
+    if (!child || child.killed) {
+      return {
+        running: false,
+        ...base,
+      };
+    }
+
+    return {
+      running: true,
+      ...base,
     };
   };
 
@@ -259,7 +264,7 @@ function createRmbgWorkerClient() {
 
 const workerClient = createRmbgWorkerClient();
 
-function defaultOutputPath(inputPath) {
+function defaultOutputPath(inputPath: string) {
   const parsed = path.parse(inputPath);
   return path.join(parsed.dir, `${parsed.name}_rmbg.png`);
 }
@@ -271,11 +276,11 @@ async function requireDesktopLicense() {
   ]);
 
   if (!desktop?.ok || !desktop?.licensed) {
-    throw new Error(desktop?.message || "App key activation is required");
+    throw new Error(String(desktop?.message || "App key activation is required"));
   }
 
   if (!cli?.ok || !cli?.licensed) {
-    throw new Error(cli?.message || "CLI key activation is required");
+    throw new Error(String(cli?.message || "CLI key activation is required"));
   }
 }
 
@@ -330,7 +335,7 @@ ipcMain.handle("ensure-model", async () => {
 
 ipcMain.handle("license-status", async () => combinedLicenseStatus());
 
-ipcMain.handle("license-activate", async (_event, payload) => {
+ipcMain.handle("license-activate", async (_event: unknown, payload: { key?: string; surface?: string }) => {
   const key = String(payload?.key || "").trim();
   const surface = String(payload?.surface || "").trim();
   if (!key) {
@@ -351,7 +356,7 @@ ipcMain.handle("license-activate", async (_event, payload) => {
   ]);
 });
 
-ipcMain.handle("license-refresh", async (_event, payload) => {
+ipcMain.handle("license-refresh", async (_event: unknown, payload: { surface?: string }) => {
   const surface = String(payload?.surface || "").trim();
   if (surface !== "desktop" && surface !== "cli") {
     throw new Error("surface must be 'desktop' or 'cli'");
@@ -359,29 +364,32 @@ ipcMain.handle("license-refresh", async (_event, payload) => {
   return runRmbg(["license", "refresh", "--surface", surface, "--json"]);
 });
 
-ipcMain.handle("remove-background", async (_event, payload) => {
-  await requireDesktopLicense();
+ipcMain.handle(
+  "remove-background",
+  async (_event: unknown, payload: { inputPath?: string; outputPath?: string }) => {
+    await requireDesktopLicense();
 
-  const inputPath = payload?.inputPath;
-  if (!inputPath) {
-    throw new Error("inputPath is required");
-  }
+    const inputPath = payload?.inputPath;
+    if (!inputPath) {
+      throw new Error("inputPath is required");
+    }
 
-  const normalizedInput = normalizeUserPath(inputPath);
-  const outputPath = payload?.outputPath
-    ? normalizeUserPath(payload.outputPath)
-    : defaultOutputPath(normalizedInput);
+    const normalizedInput = normalizeUserPath(inputPath);
+    const outputPath = payload?.outputPath
+      ? normalizeUserPath(payload.outputPath)
+      : defaultOutputPath(normalizedInput);
 
-  const result = await workerClient.request("remove", {
-    input_path: normalizedInput,
-    output_path: outputPath,
-  });
+    const result = await workerClient.request("remove", {
+      input_path: normalizedInput,
+      output_path: outputPath,
+    });
 
-  return {
-    ok: true,
-    ...result,
-  };
-});
+    return {
+      ok: true,
+      ...result,
+    };
+  },
+);
 
 app.whenReady().then(() => {
   createWindow();

@@ -2,7 +2,19 @@
 
 import { useState } from "react";
 
-const PLANS = [
+type PlanKind = "app" | "cli" | "both";
+
+type Plan = {
+  kind: PlanKind;
+  title: string;
+  price: string;
+  keys: string;
+  bullets: string[];
+  cta: string;
+  featured?: boolean;
+};
+
+const PLANS: Plan[] = [
   {
     kind: "app",
     title: "App",
@@ -13,6 +25,7 @@ const PLANS = [
       "Before/after compare controls",
       "Activate app key in desktop",
     ],
+    cta: "Buy App License",
   },
   {
     kind: "cli",
@@ -24,6 +37,7 @@ const PLANS = [
       "Script and automation friendly",
       "Activate CLI key in terminal",
     ],
+    cta: "Buy CLI License",
   },
   {
     kind: "both",
@@ -36,14 +50,21 @@ const PLANS = [
       "Best value for production teams",
       "Desktop processing requires both keys active",
     ],
+    cta: "Buy App + CLI Bundle",
   },
 ];
 
-export default function PricingPage() {
-  const [busyKind, setBusyKind] = useState(null);
+type CheckoutResponse = {
+  ok?: boolean;
+  url?: string;
+  error?: string;
+};
+
+export default function PricingClient() {
+  const [busyKind, setBusyKind] = useState<PlanKind | null>(null);
   const [message, setMessage] = useState("");
 
-  async function startCheckout(kind) {
+  async function startCheckout(kind: PlanKind) {
     setBusyKind(kind);
     setMessage("");
 
@@ -54,26 +75,21 @@ export default function PricingPage() {
         body: JSON.stringify({ kind }),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as CheckoutResponse;
       if (!response.ok || !data?.ok || !data?.url) {
         throw new Error(data?.error || "Failed to start checkout");
       }
 
       window.location.href = data.url;
-    } catch (error) {
-      setMessage(error.message || "Checkout failed");
+    } catch (error: unknown) {
+      const messageText = error instanceof Error ? error.message : "Checkout failed";
+      setMessage(messageText);
       setBusyKind(null);
     }
   }
 
   return (
-    <main className="container section">
-      <h1>Local Background Remover Pricing</h1>
-      <p className="subtitle">
-        One-time purchases. Public downloads. Runtime usage unlocks after activating the
-        matching key(s).
-      </p>
-
+    <>
       <div className="pricing">
         {PLANS.map((plan) => (
           <article className={`card ${plan.featured ? "featured" : ""}`} key={plan.kind}>
@@ -92,22 +108,13 @@ export default function PricingPage() {
               disabled={busyKind === plan.kind}
               type="button"
             >
-              {busyKind === plan.kind ? "Opening checkout..." : "Buy now"}
+              {busyKind === plan.kind ? "Opening checkout..." : plan.cta}
             </button>
           </article>
         ))}
       </div>
 
       {message ? <p className="note">{message}</p> : null}
-
-      <div className="card" style={{ marginTop: "18px" }}>
-        <h3>Activation checklist</h3>
-        <ul>
-          <li>App purchase: activate App key inside desktop app.</li>
-          <li>CLI purchase: activate CLI key via terminal command.</li>
-          <li>App + CLI purchase: activate both keys in their respective surfaces.</li>
-        </ul>
-      </div>
-    </main>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-function normalizeTag(value) {
+function normalizeTag(value: string | undefined) {
   if (!value || typeof value !== "string") {
     return null;
   }
@@ -26,7 +26,7 @@ export async function GET() {
         headers: {
           "Cache-Control": "no-store",
         },
-      }
+      },
     );
   }
 
@@ -39,6 +39,6 @@ export async function GET() {
       headers: {
         "Cache-Control": "public, max-age=120",
       },
-    }
+    },
   );
 }

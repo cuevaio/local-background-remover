@@ -1,11 +1,44 @@
 const SANDBOX_API = "https://sandbox-api.polar.sh";
 const PROD_API = "https://api.polar.sh";
 
+type ProductKind = "app" | "cli" | "both";
+type Surface = "app" | "desktop" | "cli";
+
+type PolarFetchOptions = Omit<RequestInit, "headers"> & {
+  headers?: HeadersInit;
+};
+
+type LicenseRequestPayload = {
+  key: string;
+  organization_id: string;
+  activation_id?: string;
+  label?: string;
+  conditions?: {
+    surface: string;
+    machine_hash: string;
+  };
+  meta?: {
+    machine_hash: string;
+    surface: string;
+  };
+};
+
+export type PolarLicense = {
+  id: string;
+  status: string;
+  benefit_id: string;
+  expires_at?: string | null;
+  usage?: unknown;
+  limit_usage?: unknown;
+};
+
+type PolarError = Error & { status?: number };
+
 export function getPolarApiBase() {
   return process.env.POLAR_SERVER === "production" ? PROD_API : SANDBOX_API;
 }
 
-export function requireEnv(name) {
+export function requireEnv(name: string) {
   const value = process.env[name];
   if (!value) {
     throw new Error(`Missing environment variable: ${name}`);
@@ -13,8 +46,8 @@ export function requireEnv(name) {
   return value;
 }
 
-export function productIdFromKind(kind) {
-  const map = {
+export function productIdFromKind(kind: ProductKind) {
+  const map: Record<ProductKind, string | undefined> = {
     app: process.env.POLAR_PRODUCT_APP_ID,
     cli: process.env.POLAR_PRODUCT_CLI_ID,
     both: process.env.POLAR_PRODUCT_BOTH_ID,
@@ -26,14 +59,17 @@ export function productIdFromKind(kind) {
   return productId;
 }
 
-export function normalizeSurface(surface) {
+export function normalizeSurface(surface: string): Surface {
   if (surface === "app") {
     return "desktop";
   }
-  return surface;
+  if (surface === "desktop" || surface === "cli") {
+    return surface;
+  }
+  return "cli";
 }
 
-export function requiredBenefitForSurface(surface) {
+export function requiredBenefitForSurface(surface: Surface) {
   const normalized = normalizeSurface(surface);
   if (normalized === "cli") {
     return requireEnv("POLAR_BENEFIT_CLI_ID");
@@ -44,7 +80,7 @@ export function requiredBenefitForSurface(surface) {
   throw new Error(`Unsupported surface '${normalized}'`);
 }
 
-export async function polarFetch(path, options = {}) {
+export async function polarFetch(path: string, options: PolarFetchOptions = {}) {
   const accessToken = requireEnv("POLAR_ACCESS_TOKEN");
   const base = getPolarApiBase();
 
@@ -58,7 +94,7 @@ export async function polarFetch(path, options = {}) {
   });
 
   const body = await response.text();
-  let parsed = null;
+  let parsed: unknown = null;
   try {
     parsed = body ? JSON.parse(body) : null;
   } catch {
@@ -66,8 +102,9 @@ export async function polarFetch(path, options = {}) {
   }
 
   if (!response.ok) {
-    const message = parsed?.detail || parsed?.error || body || "Polar request failed";
-    const error = new Error(message);
+    const parsedRecord = typeof parsed === "object" && parsed ? (parsed as Record<string, string>) : null;
+    const message = parsedRecord?.detail || parsedRecord?.error || body || "Polar request failed";
+    const error: PolarError = new Error(message);
     error.status = response.status;
     throw error;
   }
@@ -75,7 +112,11 @@ export async function polarFetch(path, options = {}) {
   return parsed;
 }
 
-async function customerPortalLicenseRequest(path, payload, fallbackError) {
+async function customerPortalLicenseRequest(
+  path: string,
+  payload: LicenseRequestPayload,
+  fallbackError: string,
+) {
   const base = getPolarApiBase();
   const response = await fetch(`${base}/v1/customer-portal/license-keys/${path}`, {
     method: "POST",
@@ -84,7 +125,7 @@ async function customerPortalLicenseRequest(path, payload, fallbackError) {
   });
 
   const body = await response.text();
-  let parsed = null;
+  let parsed: unknown = null;
   try {
     parsed = body ? JSON.parse(body) : null;
   } catch {
@@ -92,16 +133,27 @@ async function customerPortalLicenseRequest(path, payload, fallbackError) {
   }
 
   if (!response.ok) {
-    const message = parsed?.detail || parsed?.error || body || fallbackError;
-    const error = new Error(message);
+    const parsedRecord = typeof parsed === "object" && parsed ? (parsed as Record<string, string>) : null;
+    const message = parsedRecord?.detail || parsedRecord?.error || body || fallbackError;
+    const error: PolarError = new Error(message);
     error.status = response.status;
     throw error;
   }
 
-  return parsed;
+  return parsed as PolarLicense & { id?: string };
 }
 
-export async function activateLicenseKey({ key, organizationId, surface, machineHash }) {
+export async function activateLicenseKey({
+  key,
+  organizationId,
+  surface,
+  machineHash,
+}: {
+  key: string;
+  organizationId: string;
+  surface: string;
+  machineHash: string;
+}) {
   const label = `${surface}-${machineHash.slice(0, 12)}`;
   const conditions = {
     surface,
@@ -130,8 +182,14 @@ export async function validateLicenseKey({
   activationId,
   surface,
   machineHash,
+}: {
+  key: string;
+  organizationId: string;
+  activationId?: string;
+  surface?: string;
+  machineHash?: string;
 }) {
-  const payload = {
+  const payload: LicenseRequestPayload = {
     key,
     organization_id: organizationId,
   };

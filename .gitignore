@@ -11,5 +11,6 @@ build/
 .DS_Store
 
 .next
+*.tsbuildinfo
 
 .env

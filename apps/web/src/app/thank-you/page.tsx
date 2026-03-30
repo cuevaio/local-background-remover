@@ -1,3 +1,16 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { buildPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Purchase Complete and Activation Steps",
+  description:
+    "Thanks for your purchase. Follow activation steps for App and CLI keys before processing.",
+  path: "/thank-you",
+  noindex: true,
+});
+
 export default function ThankYouPage() {
   return (
     <main className="container section">
@@ -7,7 +20,7 @@ export default function ThankYouPage() {
         activating the matching key(s).
       </p>
       <div className="card">
-        <h3>Next steps</h3>
+        <h2>Next steps</h2>
         <ul>
           <li>Install CLI: <code>curl -fsSL https://local.backgroundrm.com/install | bash</code>.</li>
           <li>Copy your Polar key(s) from purchases.</li>
@@ -15,6 +28,10 @@ export default function ThankYouPage() {
           <li>Activate app key in desktop from the License panel.</li>
           <li>If you bought App + CLI, activate both keys before desktop processing.</li>
         </ul>
+        <p className="note">
+          Need download instructions? Open <Link href="/downloads">Downloads</Link>. Want to
+          review plans again? Visit <Link href="/pricing">Pricing</Link>.
+        </p>
       </div>
     </main>
   );

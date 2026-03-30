@@ -1,84 +1,99 @@
 const gallery = document.getElementById("gallery");
 const emptyState = document.getElementById("empty-state");
-const addImagesBtn = document.getElementById("add-images-btn");
-const ensureModelBtn = document.getElementById("ensure-model-btn");
+const addImagesBtn = document.getElementById("add-images-btn") as HTMLButtonElement | null;
+const ensureModelBtn = document.getElementById("ensure-model-btn") as HTMLButtonElement | null;
 const modelStatusEl = document.getElementById("model-status");
 const workerStatusEl = document.getElementById("worker-status");
 const appLicenseStatusEl = document.getElementById("app-license-status");
 const cliLicenseStatusEl = document.getElementById("cli-license-status");
 const globalStatusEl = document.getElementById("global-status");
-const cardTemplate = document.getElementById("card-template");
+const cardTemplate = document.getElementById("card-template") as HTMLTemplateElement | null;
 
-const appLicenseInput = document.getElementById("app-license-key-input");
-const appActivateBtn = document.getElementById("app-license-activate-btn");
-const appRefreshBtn = document.getElementById("app-license-refresh-btn");
+const appLicenseInput = document.getElementById("app-license-key-input") as HTMLInputElement | null;
+const appActivateBtn = document.getElementById("app-license-activate-btn") as HTMLButtonElement | null;
+const appRefreshBtn = document.getElementById("app-license-refresh-btn") as HTMLButtonElement | null;
 
-const cliLicenseInput = document.getElementById("cli-license-key-input");
-const cliActivateBtn = document.getElementById("cli-license-activate-btn");
-const cliRefreshBtn = document.getElementById("cli-license-refresh-btn");
+const cliLicenseInput = document.getElementById("cli-license-key-input") as HTMLInputElement | null;
+const cliActivateBtn = document.getElementById("cli-license-activate-btn") as HTMLButtonElement | null;
+const cliRefreshBtn = document.getElementById("cli-license-refresh-btn") as HTMLButtonElement | null;
 
-function setGlobalStatus(message) {
-  globalStatusEl.textContent = message;
+function required<T>(value: T | null, label: string): T {
+  if (!value) {
+    throw new Error(`Missing required DOM element: ${label}`);
+  }
+  return value;
 }
 
-function setModelStatus(message) {
-  modelStatusEl.textContent = message;
+function setGlobalStatus(message: string) {
+  required(globalStatusEl, "global-status").textContent = message;
 }
 
-function setWorkerStatus(message) {
-  workerStatusEl.textContent = message;
+function setModelStatus(message: string) {
+  required(modelStatusEl, "model-status").textContent = message;
 }
 
-function setSurfaceStatus(el, label, status) {
+function setWorkerStatus(message: string) {
+  required(workerStatusEl, "worker-status").textContent = message;
+}
+
+function setSurfaceStatus(el: HTMLElement | null, label: string, status: LicenseResponse | null | undefined) {
+  const target = required(el, `${label} status`);
   if (!status || !status.ok) {
-    el.textContent = `${label}: unknown`;
+    target.textContent = `${label}: unknown`;
     return;
   }
 
   if (status.licensed) {
-    el.textContent =
-      status.phase === "grace" ? `${label}: grace window` : `${label}: active`;
+    target.textContent = status.phase === "grace" ? `${label}: grace window` : `${label}: active`;
     return;
   }
 
   if (status.phase === "missing") {
-    el.textContent = `${label}: not activated`;
+    target.textContent = `${label}: not activated`;
     return;
   }
 
-  el.textContent = `${label}: invalid`;
+  target.textContent = `${label}: invalid`;
 }
 
 function updateEmptyState() {
-  emptyState.classList.toggle("hidden", gallery.children.length > 0);
+  const target = required(emptyState, "empty-state");
+  target.classList.toggle("hidden", required(gallery, "gallery").children.length > 0);
 }
 
-function toFileUrl(filePath) {
+function toFileUrl(filePath: string) {
   return `file://${encodeURI(filePath)}`;
 }
 
-function setCardState(card, state) {
+function setCardState(card: Element, state: string) {
   const stateEl = card.querySelector(".state");
-  stateEl.textContent = state;
+  if (stateEl) {
+    stateEl.textContent = state;
+  }
 }
 
-function createCard(filePath) {
-  const fragment = cardTemplate.content.cloneNode(true);
-  const card = fragment.querySelector(".card");
-  const filename = card.querySelector(".filename");
-  const before = card.querySelector(".img-before");
-  const after = card.querySelector(".img-after");
-  const slider = card.querySelector(".slider");
-  const overlay = card.querySelector(".overlay");
-  const processBtn = card.querySelector(".process-btn");
-  const saveBtn = card.querySelector(".save-btn");
+function createCard(filePath: string) {
+  const template = required(cardTemplate, "card-template");
+  const fragment = template.content.cloneNode(true);
+  const card = (fragment as DocumentFragment).querySelector(".card");
+  if (!card) {
+    return;
+  }
+
+  const filename = required(card.querySelector(".filename"), "card filename");
+  const before = required(card.querySelector(".img-before"), "before image") as HTMLImageElement;
+  const after = required(card.querySelector(".img-after"), "after image") as HTMLImageElement;
+  const slider = required(card.querySelector(".slider"), "compare slider") as HTMLInputElement;
+  const overlay = required(card.querySelector(".overlay"), "compare overlay") as HTMLElement;
+  const processBtn = required(card.querySelector(".process-btn"), "process button") as HTMLButtonElement;
+  const saveBtn = required(card.querySelector(".save-btn"), "save button") as HTMLButtonElement;
 
   const name = filePath.split("/").pop() || filePath;
   filename.textContent = name;
   before.src = toFileUrl(filePath);
   after.src = toFileUrl(filePath);
 
-  let outputPath = null;
+  let outputPath: string | null = null;
 
   slider.addEventListener("input", () => {
     overlay.style.width = `${slider.value}%`;
@@ -95,14 +110,18 @@ function createCard(filePath) {
         throw new Error(result?.error || "Unknown processing error");
       }
 
-      outputPath = result.output_path;
+      outputPath = result.output_path || null;
+      if (!outputPath) {
+        throw new Error("Missing output path from processing response");
+      }
       after.src = `${toFileUrl(outputPath)}?v=${Date.now()}`;
       setCardState(card, "Done");
       saveBtn.disabled = false;
       setGlobalStatus("Ready");
-    } catch (error) {
+    } catch (error: unknown) {
       setCardState(card, "Failed");
-      setGlobalStatus(error.message || "Processing failed");
+      const message = error instanceof Error ? error.message : "Processing failed";
+      setGlobalStatus(message);
     } finally {
       processBtn.disabled = false;
       await refreshLicenseStatus();
@@ -117,7 +136,7 @@ function createCard(filePath) {
     setGlobalStatus(`Saved: ${outputPath}`);
   });
 
-  gallery.appendChild(card);
+  required(gallery, "gallery").appendChild(card);
   updateEmptyState();
 }
 
@@ -172,6 +191,12 @@ function wireLicenseControls({
   input,
   activateButton,
   refreshButton,
+}: {
+  surface: LicenseSurface;
+  label: string;
+  input: HTMLInputElement;
+  activateButton: HTMLButtonElement;
+  refreshButton: HTMLButtonElement;
 }) {
   activateButton.addEventListener("click", async () => {
     const key = input.value.trim();
@@ -189,8 +214,9 @@ function wireLicenseControls({
       }
       input.value = "";
       setGlobalStatus(`${label} activated`);
-    } catch (error) {
-      setGlobalStatus(error.message || `Activation failed for ${label}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : `Activation failed for ${label}`;
+      setGlobalStatus(message);
     } finally {
       activateButton.disabled = false;
       await refreshLicenseStatus();
@@ -207,8 +233,9 @@ function wireLicenseControls({
         throw new Error(result?.error || `Refresh failed for ${label}`);
       }
       setGlobalStatus(`${label} refreshed`);
-    } catch (error) {
-      setGlobalStatus(error.message || `Refresh failed for ${label}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : `Refresh failed for ${label}`;
+      setGlobalStatus(message);
     } finally {
       refreshButton.disabled = false;
       await refreshLicenseStatus();
@@ -217,13 +244,14 @@ function wireLicenseControls({
   });
 }
 
-addImagesBtn.addEventListener("click", async () => {
+required(addImagesBtn, "add-images-btn").addEventListener("click", async () => {
   const files = await window.rmbg.pickImages();
   files.forEach((filePath) => createCard(filePath));
 });
 
-ensureModelBtn.addEventListener("click", async () => {
-  ensureModelBtn.disabled = true;
+required(ensureModelBtn, "ensure-model-btn").addEventListener("click", async () => {
+  const button = required(ensureModelBtn, "ensure-model-btn");
+  button.disabled = true;
   setGlobalStatus("Ensuring model files...");
 
   try {
@@ -232,10 +260,11 @@ ensureModelBtn.addEventListener("click", async () => {
       throw new Error(result?.error || "Model ensure failed");
     }
     setGlobalStatus(result.bootstrapped ? "Model downloaded and ready" : "Model already ready");
-  } catch (error) {
-    setGlobalStatus(error.message || "Model ensure failed");
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Model ensure failed";
+    setGlobalStatus(message);
   } finally {
-    ensureModelBtn.disabled = false;
+    button.disabled = false;
     await refreshModelStatus();
     await refreshLicenseStatus();
     await refreshWorkerStatus();
@@ -245,17 +274,17 @@ ensureModelBtn.addEventListener("click", async () => {
 wireLicenseControls({
   surface: "desktop",
   label: "App key",
-  input: appLicenseInput,
-  activateButton: appActivateBtn,
-  refreshButton: appRefreshBtn,
+  input: required(appLicenseInput, "app-license-key-input"),
+  activateButton: required(appActivateBtn, "app-license-activate-btn"),
+  refreshButton: required(appRefreshBtn, "app-license-refresh-btn"),
 });
 
 wireLicenseControls({
   surface: "cli",
   label: "CLI key",
-  input: cliLicenseInput,
-  activateButton: cliActivateBtn,
-  refreshButton: cliRefreshBtn,
+  input: required(cliLicenseInput, "cli-license-key-input"),
+  activateButton: required(cliActivateBtn, "cli-license-activate-btn"),
+  refreshButton: required(cliRefreshBtn, "cli-license-refresh-btn"),
 });
 
 refreshModelStatus();
@@ -264,5 +293,5 @@ refreshWorkerStatus();
 updateEmptyState();
 
 setInterval(() => {
-  refreshWorkerStatus();
+  void refreshWorkerStatus();
 }, 5000);

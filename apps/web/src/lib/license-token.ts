@@ -3,7 +3,21 @@ import crypto from "node:crypto";
 const THIRTY_DAYS_SECONDS = 30 * 24 * 60 * 60;
 const THREE_DAYS_SECONDS = 3 * 24 * 60 * 60;
 
-function toBase64Url(buffer) {
+type LicenseLike = {
+  id: string;
+  benefit_id: string;
+  status: string;
+};
+
+type IssueOfflineTokenInput = {
+  license: LicenseLike;
+  key: string;
+  surface: string;
+  machineHash: string;
+  activationId?: string;
+};
+
+function toBase64Url(buffer: Buffer | string) {
   return Buffer.from(buffer)
     .toString("base64")
     .replace(/=/g, "")
@@ -11,7 +25,7 @@ function toBase64Url(buffer) {
     .replace(/\//g, "_");
 }
 
-function normalizePrivateKey(raw) {
+function normalizePrivateKey(raw: string) {
   const trimmed = raw.trim();
   if (trimmed.includes("BEGIN PRIVATE KEY")) {
     return trimmed;
@@ -26,7 +40,11 @@ function normalizePrivateKey(raw) {
 
   const prefix = Buffer.from("302e020100300506032b657004220420", "hex");
   const der = Buffer.concat([prefix, bytes]);
-  const b64 = der.toString("base64").match(/.{1,64}/g).join("\n");
+  const b64 = der.toString("base64").match(/.{1,64}/g)?.join("\n");
+  if (!b64) {
+    throw new Error("Failed to normalize LICENSE_SIGNING_PRIVATE_KEY");
+  }
+
   return `-----BEGIN PRIVATE KEY-----\n${b64}\n-----END PRIVATE KEY-----`;
 }
 
@@ -38,11 +56,17 @@ function getPrivateKey() {
   return crypto.createPrivateKey(normalizePrivateKey(key));
 }
 
-function fingerprintLicenseKey(key) {
+function fingerprintLicenseKey(key: string) {
   return crypto.createHash("sha256").update(key).digest("hex").slice(0, 20);
 }
 
-export function issueOfflineToken({ license, key, surface, machineHash, activationId }) {
+export function issueOfflineToken({
+  license,
+  key,
+  surface,
+  machineHash,
+  activationId,
+}: IssueOfflineTokenInput) {
   const now = Math.floor(Date.now() / 1000);
   const exp = now + THIRTY_DAYS_SECONDS;
   const graceExp = exp + THREE_DAYS_SECONDS;
