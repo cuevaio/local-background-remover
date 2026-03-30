@@ -13,10 +13,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  CLI_ACTIVATE_CMD,
+  CLI_INSTALL_CMD,
+  CLI_MODEL_ENSURE_CMD,
+  CLI_REMOVE_CMD,
+  CLI_STATUS_CMD,
+  CLI_VERSION_CMD,
+} from "@/content/cli-docs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
-
-const CLI_INSTALL_CMD = "curl -fsSL https://local.backgroundrm.com/install | bash";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Downloads and Install Guide",
@@ -63,24 +69,35 @@ export default function DownloadsPage() {
             Downloading is open. Running background removal commands or desktop processing requires
             the matching activated key(s).
           </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button asChild>
+              <Link href="/docs">Open CLI docs</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/pricing">Need a key?</Link>
+            </Button>
+          </div>
         </section>
 
         <section className="section-block section-divider">
           <Tabs defaultValue="cli" className="w-full">
             <TabsList>
-            <TabsTrigger value="cli">CLI install</TabsTrigger>
-            <TabsTrigger value="desktop">Desktop install</TabsTrigger>
+              <TabsTrigger value="cli">CLI install</TabsTrigger>
+              <TabsTrigger value="desktop">Desktop install</TabsTrigger>
             </TabsList>
 
             <TabsContent value="cli">
               <Card>
                 <CardHeader>
                   <CardTitle>CLI download and install (macOS)</CardTitle>
-                  <CardDescription>Install globally with one command.</CardDescription>
+                  <CardDescription>Install globally, then verify the binary.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
                     {CLI_INSTALL_CMD}
+                  </pre>
+                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
+                    {CLI_VERSION_CMD}
                   </pre>
                   <Alert>
                     <AlertTitle>Activation required before runtime usage</AlertTitle>
@@ -88,6 +105,15 @@ export default function DownloadsPage() {
                       Activate your CLI key before running `model ensure` or `remove` commands.
                     </AlertDescription>
                   </Alert>
+                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
+                    {CLI_ACTIVATE_CMD}
+                  </pre>
+                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
+                    {CLI_STATUS_CMD}
+                  </pre>
+                  <Button asChild variant="outline" className="w-fit">
+                    <Link href="/docs">Read full CLI command docs</Link>
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -125,6 +151,12 @@ export default function DownloadsPage() {
               <p>1. Retrieve key(s) from your Polar purchase confirmation.</p>
               <p>2. Activate in the matching surface (desktop app or CLI).</p>
               <p>3. Run your first image through the flow.</p>
+              <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
+                {CLI_MODEL_ENSURE_CMD}
+              </pre>
+              <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
+                {CLI_REMOVE_CMD}
+              </pre>
             </CardContent>
           </Card>
           <Card className="bg-card/95">
@@ -140,7 +172,7 @@ export default function DownloadsPage() {
                   <Link href="/pricing">Open pricing</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href="/">Back to homepage</Link>
+                  <Link href="/docs">CLI docs</Link>
                 </Button>
               </div>
             </CardContent>

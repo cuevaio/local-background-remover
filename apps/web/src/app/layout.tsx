@@ -74,6 +74,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </Link>
             <nav className="flex items-center gap-2 md:gap-3">
               <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
+                <Link href="/docs">Docs</Link>
+              </Button>
+              <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
                 <Link href="/compare">Compare</Link>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">

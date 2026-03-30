@@ -17,7 +17,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     title: "Product",
     links: [
       { label: "Desktop App", href: "/downloads" },
-      { label: "CLI", href: "/downloads" },
+      { label: "CLI", href: "/docs" },
       { label: "Pricing", href: "/pricing" },
       { label: "Install Guide", href: "/downloads" },
     ],
@@ -25,10 +25,11 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Resources",
     links: [
+      { label: "CLI Docs", href: "/docs" },
       { label: "Activation Steps", href: "/thank-you" },
       { label: "FAQ", href: "/pricing" },
-      { label: "System Status", href: "#" },
-      { label: "Support", href: "#" },
+      { label: "Install URL", href: "/install" },
+      { label: "Downloads", href: "/downloads" },
     ],
   },
   {

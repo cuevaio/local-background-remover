@@ -5,9 +5,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD } from "@/content/cli-docs";
 import { buildPageMetadata } from "@/lib/seo";
-
-const CLI_ACTIVATE_CMD = "rmbg license activate --key YOUR_KEY --surface cli";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Purchase Complete: Activation Steps",
@@ -48,9 +47,10 @@ export default function ThankYouPage() {
             <CardTitle>Next steps checklist</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
-            <p>
-              1. Install CLI: <code>curl -fsSL https://local.backgroundrm.com/install | bash</code>
-            </p>
+            <p>1. Install CLI:</p>
+            <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
+              {CLI_INSTALL_CMD}
+            </pre>
             <p>2. Copy key(s) from your Polar purchase email.</p>
             <p>3. Activate CLI key in terminal:</p>
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
@@ -68,6 +68,9 @@ export default function ThankYouPage() {
           </Button>
           <Button asChild variant="outline">
             <Link href="/pricing">Review pricing plans</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/docs">CLI docs</Link>
           </Button>
         </div>
       </section>

@@ -14,6 +14,8 @@ import TestimonialMosaic from "@/components/marketing/TestimonialMosaic";
 import WorkflowComparison from "@/components/marketing/WorkflowComparison";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD, CLI_REMOVE_CMD } from "@/content/cli-docs";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 type Faq = {
@@ -107,6 +109,9 @@ export default function HomePage() {
                 <Button asChild size="lg" variant="outline">
                   <Link href="/pricing">See pricing</Link>
                 </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/docs">CLI docs</Link>
+                </Button>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <Badge variant="outline" className="bg-card">
@@ -135,6 +140,55 @@ export default function HomePage() {
             </p>
           </div>
           <WorkflowComparison />
+        </section>
+
+        <section className="section-block section-divider flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="section-title">CLI quickstart in three commands</h2>
+            <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
+              Install publicly, activate your key, and process your first image locally.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card className="bg-card/95">
+              <CardHeader>
+                <CardTitle>Install</CardTitle>
+                <CardDescription>macOS one-liner installer.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
+                  {CLI_INSTALL_CMD}
+                </pre>
+              </CardContent>
+            </Card>
+            <Card className="bg-card/95">
+              <CardHeader>
+                <CardTitle>Activate</CardTitle>
+                <CardDescription>Unlock runtime commands.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
+                  {CLI_ACTIVATE_CMD}
+                </pre>
+              </CardContent>
+            </Card>
+            <Card className="bg-card/95">
+              <CardHeader>
+                <CardTitle>Use</CardTitle>
+                <CardDescription>Remove one background to verify setup.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
+                  {CLI_REMOVE_CMD}
+                </pre>
+              </CardContent>
+            </Card>
+          </div>
+          <div>
+            <Button asChild variant="outline">
+              <Link href="/docs">Open full command docs</Link>
+            </Button>
+          </div>
         </section>
 
         <BeforeAfterShowcase />

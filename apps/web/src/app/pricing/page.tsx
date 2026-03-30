@@ -58,10 +58,10 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
-              <Link href="/downloads">Read install guide</Link>
+              <Link href="/docs">Read CLI docs</Link>
             </Button>
             <Button asChild>
-              <Link href="/">See workflow overview</Link>
+              <Link href="/downloads">Open downloads</Link>
             </Button>
           </div>
         </section>
