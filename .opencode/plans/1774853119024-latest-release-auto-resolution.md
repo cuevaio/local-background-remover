@@ -16,7 +16,11 @@
    - fall back to GitHub release redirect and then GitHub API
    - if primary release mirror is unavailable, attempt GitHub release asset fallback
    - improve error message when no tag can be resolved
-3. Update docs to reflect that `RMBG_LATEST_VERSION` is optional:
+3. Add GitHub-backed release proxy route for installer assets:
+   - add `apps/web/src/app/releases/[tag]/[asset]/route.ts`
+   - proxy `checksums.txt` and macOS tarballs through `local.backgroundrm.com/releases/*`
+   - use `RMBG_GITHUB_TOKEN` for private repo access
+4. Update docs to reflect optional/required release env behavior:
    - `.env.example`
    - `apps/web/README.md`
    - `DEPLOYMENT_RUNBOOK.md`

@@ -8,6 +8,9 @@ Public installer URL:
 
 Downloads are public, but runtime use is license-gated through `/api/license/*`.
 
+Release files are served from `/releases/<tag>/...` through a GitHub-backed proxy route.
+For private repositories, set `RMBG_GITHUB_TOKEN` so release downloads can be fetched.
+
 ## Run
 
 From repository root:

@@ -55,6 +55,9 @@ Optional:
 - `RMBG_LATEST_VERSION` (manual override for `/api/releases/latest`)
 - `RMBG_GITHUB_TOKEN` (recommended for private repos so `/api/releases/latest` can resolve latest from GitHub automatically)
 
+If the GitHub repo is private, `RMBG_GITHUB_TOKEN` is required for the `/releases/<tag>/...`
+proxy route used by `https://local.backgroundrm.com/install`.
+
 Publish public release files at:
 
 - `https://local.backgroundrm.com/releases/<tag>/rmbg-<tag>-darwin-arm64.tar.gz`
