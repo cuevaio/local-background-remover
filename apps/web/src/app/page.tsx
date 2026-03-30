@@ -5,7 +5,6 @@ import Script from "next/script";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
 import HeroExamplePanel from "@/components/marketing/HeroExamplePanel";
-import LogoStrip from "@/components/marketing/LogoStrip";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import ProofStrip from "@/components/marketing/ProofStrip";
 import QuoteSection from "@/components/marketing/QuoteSection";
@@ -127,7 +126,6 @@ export default function HomePage() {
         </section>
 
         <ProofStrip />
-        <LogoStrip />
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
