@@ -39,32 +39,32 @@ const CHAT_EXAMPLES: ChatExample[] = [
 
 export default function AutomationChats() {
   return (
-    <section className="mx-auto mt-14 flex w-full max-w-6xl flex-col gap-5 px-5 md:px-8">
+    <section className="section-block section-divider flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <Badge variant="secondary" className="w-fit">
+        <Badge variant="outline" className="w-fit bg-card">
           CLI + coding agents
         </Badge>
-        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+        <h2 className="section-title">
           Automate background removal in Claude Code, OpenCode, Cursor, and similar tools
         </h2>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         {CHAT_EXAMPLES.map((example) => (
-          <Card key={example.tool} className="border-primary/20">
+          <Card key={example.tool} className="bg-card/95">
             <CardHeader>
               <CardTitle>{example.tool}</CardTitle>
               <CardDescription>Example prompt + automation output</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <div className="rounded-lg border border-border bg-muted/35 p-3 text-sm">
+              <div className="rounded-lg border border-border bg-secondary/45 p-3 text-sm">
                 <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Prompt
                 </p>
                 <p className="text-foreground">{example.prompt}</p>
               </div>
-              <div className="rounded-lg border border-primary/25 bg-primary/10 p-3 text-sm">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-primary">
+              <div className="rounded-lg border border-success/25 bg-success-soft p-3 text-sm">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-success">
                   Result
                 </p>
                 <p>{example.result}</p>

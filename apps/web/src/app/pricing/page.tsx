@@ -44,15 +44,15 @@ export default function PricingPage() {
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-7 px-5 pb-32 pt-12 md:px-8 md:pt-16">
-        <section className="flex flex-col gap-4">
-          <Badge variant="secondary" className="w-fit">
+      <main className="site-frame flex flex-col gap-0 pb-36">
+        <section className="section-block flex flex-col gap-4">
+          <Badge variant="outline" className="w-fit bg-card">
             One-time plans
           </Badge>
-          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="display-title md:text-5xl">
             Pick the surface you need now and add the rest later.
           </h1>
-          <p className="max-w-3xl text-base text-muted-foreground md:text-lg">
+          <p className="section-copy md:text-lg">
             Downloads are public. Runtime features unlock after activation for the matching
             surface. Bundle includes two keys and enables desktop processing when both are active.
           </p>
@@ -66,10 +66,12 @@ export default function PricingPage() {
           </div>
         </section>
 
-        <PricingClient />
+        <section className="section-block section-divider">
+          <PricingClient />
+        </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <Card>
+        <section className="section-block section-divider grid gap-4 md:grid-cols-3">
+          <Card className="bg-card/95">
             <CardHeader>
               <CardTitle>App purchase</CardTitle>
             </CardHeader>
@@ -79,7 +81,7 @@ export default function PricingPage() {
               </p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card/95">
             <CardHeader>
               <CardTitle>CLI purchase</CardTitle>
             </CardHeader>
@@ -89,7 +91,7 @@ export default function PricingPage() {
               </p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card/95">
             <CardHeader>
               <CardTitle>App + CLI purchase</CardTitle>
             </CardHeader>
@@ -101,7 +103,7 @@ export default function PricingPage() {
           </Card>
         </section>
 
-        <section className="mt-2">
+        <section className="section-block section-divider pt-8">
           <PricingPolicyFaq />
         </section>
       </main>

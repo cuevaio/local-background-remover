@@ -71,21 +71,21 @@ export default function WorkflowComparison() {
 
       {WORKFLOWS.map((workflow) => (
         <TabsContent key={workflow.key} value={workflow.key}>
-          <Card className="border-primary/20 bg-card/90 shadow-sm">
+          <Card className="bg-card/95">
             <CardHeader>
               {workflow.badge ? <Badge className="w-fit">{workflow.badge}</Badge> : null}
               <CardTitle>{workflow.name}</CardTitle>
               <CardDescription>{workflow.summary}</CardDescription>
             </CardHeader>
             <CardContent>
-              <ul className="ml-5 list-disc text-sm text-muted-foreground">
+              <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
                 {workflow.bullets.map((bullet) => (
                   <li key={bullet}>{bullet}</li>
                 ))}
               </ul>
             </CardContent>
-            <CardFooter>
-              <Button asChild>
+            <CardFooter className="justify-end bg-secondary/45">
+              <Button asChild size="sm">
                 <Link href="/pricing">{workflow.cta}</Link>
               </Button>
             </CardFooter>

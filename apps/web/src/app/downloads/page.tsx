@@ -51,71 +51,73 @@ export default function DownloadsPage() {
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-7 px-5 pb-32 pt-12 md:px-8 md:pt-16">
-        <section className="flex flex-col gap-4">
-          <Badge variant="secondary" className="w-fit">
+      <main className="site-frame flex flex-col gap-0 pb-36">
+        <section className="section-block flex flex-col gap-4">
+          <Badge variant="outline" className="w-fit bg-card">
             Public downloads, gated runtime
           </Badge>
-          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="display-title md:text-5xl">
             Install first, activate when you are ready.
           </h1>
-          <p className="max-w-3xl text-base text-muted-foreground md:text-lg">
+          <p className="section-copy md:text-lg">
             Downloading is open. Running background removal commands or desktop processing requires
             the matching activated key(s).
           </p>
         </section>
 
-        <Tabs defaultValue="cli" className="w-full">
-          <TabsList>
+        <section className="section-block section-divider">
+          <Tabs defaultValue="cli" className="w-full">
+            <TabsList>
             <TabsTrigger value="cli">CLI install</TabsTrigger>
             <TabsTrigger value="desktop">Desktop install</TabsTrigger>
-          </TabsList>
+            </TabsList>
 
-          <TabsContent value="cli">
-            <Card>
-              <CardHeader>
-                <CardTitle>CLI download and install (macOS)</CardTitle>
-                <CardDescription>Install globally with one command.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                <pre className="overflow-x-auto rounded-lg border border-border bg-muted/40 px-3 py-3 text-sm">
-                  {CLI_INSTALL_CMD}
-                </pre>
-                <Alert>
-                  <AlertTitle>Activation required before runtime usage</AlertTitle>
-                  <AlertDescription>
-                    Activate your CLI key before running `model ensure` or `remove` commands.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <TabsContent value="cli">
+              <Card>
+                <CardHeader>
+                  <CardTitle>CLI download and install (macOS)</CardTitle>
+                  <CardDescription>Install globally with one command.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
+                    {CLI_INSTALL_CMD}
+                  </pre>
+                  <Alert>
+                    <AlertTitle>Activation required before runtime usage</AlertTitle>
+                    <AlertDescription>
+                      Activate your CLI key before running `model ensure` or `remove` commands.
+                    </AlertDescription>
+                  </Alert>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          <TabsContent value="desktop">
-            <Card>
-              <CardHeader>
-                <CardTitle>Desktop app download</CardTitle>
-                <CardDescription>Install publicly, activate inside the app.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                <p className="text-sm text-muted-foreground">
-                  Install the desktop app, open the license screen, and paste your App key. If you
-                  bought App + CLI, desktop processing requires both keys active.
-                </p>
-                <Alert>
-                  <AlertTitle>Bundle reminder</AlertTitle>
-                  <AlertDescription>
-                    App + CLI purchase includes two keys. Activate both to unlock the full desktop
-                    processing path.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="desktop">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Desktop app download</CardTitle>
+                  <CardDescription>Install publicly, activate inside the app.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  <p className="text-sm text-muted-foreground">
+                    Install the desktop app, open the license screen, and paste your App key. If
+                    you bought App + CLI, desktop processing requires both keys active.
+                  </p>
+                  <Alert>
+                    <AlertTitle>Bundle reminder</AlertTitle>
+                    <AlertDescription>
+                      App + CLI purchase includes two keys. Activate both to unlock the full
+                      desktop processing path.
+                    </AlertDescription>
+                  </Alert>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </section>
 
-        <section className="grid gap-4 md:grid-cols-2">
-          <Card>
+        <section className="section-block section-divider grid gap-4 md:grid-cols-2">
+          <Card className="bg-card/95">
             <CardHeader>
               <CardTitle>What to do after install</CardTitle>
             </CardHeader>
@@ -125,7 +127,7 @@ export default function DownloadsPage() {
               <p>3. Run your first image through the flow.</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card/95">
             <CardHeader>
               <CardTitle>Need a key first?</CardTitle>
             </CardHeader>

@@ -17,21 +17,45 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background:
-            "linear-gradient(145deg, rgb(244, 252, 247) 0%, rgb(226, 242, 234) 55%, rgb(214, 235, 224) 100%)",
+          backgroundColor: "#fafafa",
+          backgroundImage:
+            "linear-gradient(to right, rgba(229,229,229,0.7) 1px, transparent 1px), linear-gradient(to bottom, rgba(229,229,229,0.7) 1px, transparent 1px)",
+          backgroundSize: "96px 96px",
           padding: "56px",
-          color: "rgb(24, 36, 32)",
-          fontFamily: "Arial",
+          color: "#171717",
+          fontFamily: "Inter, sans-serif",
         }}
       >
-        <div style={{ display: "flex", fontSize: 28, fontWeight: 700, letterSpacing: "0.02em" }}>
-          Local Background Remover
+        <div style={{
+          display: "flex",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-between",
+          border: "1px solid #e5e5e5",
+          borderRadius: 16,
+          background: "rgba(255,255,255,0.92)",
+          padding: "14px 20px",
+          fontSize: 24,
+          fontWeight: 600,
+          letterSpacing: "0.02em",
+        }}>
+          <span>local.backgroundrm</span>
+          <span style={{ color: "#525252", fontSize: 20 }}>App + CLI</span>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 960 }}>
-          <div style={{ display: "flex", fontSize: 72, lineHeight: 1.05, fontWeight: 800 }}>
-            Offline background remover for private, on-device workflows.
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 22,
+          maxWidth: 980,
+          border: "1px solid #e5e5e5",
+          background: "rgba(255,255,255,0.92)",
+          borderRadius: 22,
+          padding: "34px",
+        }}>
+          <div style={{ display: "flex", fontSize: 68, lineHeight: 1.02, fontWeight: 600 }}>
+            Turn local background removal into a reliable system.
           </div>
-          <div style={{ display: "flex", fontSize: 34, lineHeight: 1.25, color: "rgb(44, 83, 68)" }}>
+          <div style={{ display: "flex", fontSize: 31, lineHeight: 1.25, color: "#525252" }}>
             App and CLI. Public downloads. License-gated runtime. Works offline after activation.
           </div>
         </div>

@@ -34,9 +34,9 @@ const FAQS: FaqItem[] = [
 export default function PricingPolicyFaq() {
   return (
     <div className="grid gap-5 lg:grid-cols-[1.05fr_1fr]">
-      <Card>
+      <Card className="bg-card/95">
         <CardHeader>
-          <Badge variant="secondary" className="w-fit">
+          <Badge variant="outline" className="w-fit bg-card">
             Purchase confidence
           </Badge>
           <CardTitle>Clear policy and activation expectations</CardTitle>
@@ -57,7 +57,7 @@ export default function PricingPolicyFaq() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-card/95">
         <CardHeader>
           <CardTitle>Frequently asked questions</CardTitle>
         </CardHeader>

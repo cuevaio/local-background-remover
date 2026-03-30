@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Geist } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,12 @@ import { BRAND_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -56,21 +62,30 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      className={cn("font-sans", geist.variable, geistMono.variable, display.variable)}
+    >
       <body>
-        <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-          <div className="mx-auto flex min-h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 md:px-8">
-            <Link href="/" className="text-sm font-semibold tracking-tight md:text-base">
-              Local Background Remover
+        <header className="sticky top-0 z-50 border-b border-border bg-background/88 backdrop-blur-md supports-[backdrop-filter]:bg-background/74">
+          <div className="site-frame flex min-h-16 items-center justify-between gap-4 px-5 md:px-10">
+            <Link href="/" className="font-display text-sm font-semibold tracking-tight md:text-base">
+              local.backgroundrm
             </Link>
             <nav className="flex items-center gap-2 md:gap-3">
-              <Button asChild size="sm" variant="ghost">
+              <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
+                <Link href="/compare">Compare</Link>
+              </Button>
+              <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
                 <Link href="/pricing">Pricing</Link>
               </Button>
-              <Button asChild size="sm" variant="ghost">
+              <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
                 <Link href="/downloads">Downloads</Link>
               </Button>
-              <Button asChild size="sm" className="hidden md:inline-flex">
+              <Button asChild size="sm" variant="outline" className="sm:hidden">
+                <Link href="/pricing">Plans</Link>
+              </Button>
+              <Button asChild size="sm" className="inline-flex">
                 <Link href="/pricing">Buy once</Link>
               </Button>
             </nav>

@@ -17,19 +17,32 @@ export default function TwitterImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          background:
-            "linear-gradient(160deg, rgb(246, 252, 248) 0%, rgb(232, 245, 238) 60%, rgb(218, 237, 227) 100%)",
+          backgroundColor: "#fafafa",
+          backgroundImage:
+            "linear-gradient(to right, rgba(229,229,229,0.7) 1px, transparent 1px), linear-gradient(to bottom, rgba(229,229,229,0.7) 1px, transparent 1px)",
+          backgroundSize: "96px 96px",
           padding: "48px",
-          color: "rgb(24, 36, 32)",
-          fontFamily: "Arial",
+          color: "#171717",
+          fontFamily: "Inter, sans-serif",
           gap: "18px",
         }}
       >
-        <div style={{ display: "flex", fontSize: 56, lineHeight: 1.1, fontWeight: 800 }}>
-          Offline background remover
-        </div>
-        <div style={{ display: "flex", fontSize: 30, lineHeight: 1.25, color: "rgb(44, 83, 68)" }}>
-          Private local processing with App and CLI workflows.
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          maxWidth: 960,
+          border: "1px solid #e5e5e5",
+          background: "rgba(255,255,255,0.92)",
+          borderRadius: 20,
+          padding: "30px",
+        }}>
+          <div style={{ display: "flex", fontSize: 54, lineHeight: 1.08, fontWeight: 600 }}>
+            Offline background remover
+          </div>
+          <div style={{ display: "flex", fontSize: 30, lineHeight: 1.25, color: "#525252" }}>
+            Private local processing with App and CLI workflows.
+          </div>
         </div>
       </div>
     ),

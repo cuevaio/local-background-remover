@@ -113,7 +113,7 @@ export default function PricingClient() {
         {PLANS.map((plan) => (
           <Card
             key={plan.kind}
-            className={plan.featured ? "border-primary/35 shadow-lg shadow-primary/10" : ""}
+            className={plan.featured ? "border-black" : ""}
           >
             <CardHeader>
               {plan.featured ? <Badge className="w-fit">Best value</Badge> : null}
@@ -121,14 +121,14 @@ export default function PricingClient() {
               <CardDescription>{plan.keys}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <p className="text-4xl font-semibold tracking-tight">{plan.price}</p>
-              <ul className="ml-5 list-disc text-sm text-muted-foreground">
+              <p className="font-display text-4xl font-medium tracking-tight">{plan.price}</p>
+              <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
                 {plan.bullets.map((bullet) => (
                   <li key={bullet}>{bullet}</li>
                 ))}
               </ul>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="bg-secondary/45">
               <Button
                 className="w-full"
                 onClick={() => startCheckout(plan.kind)}
@@ -142,7 +142,7 @@ export default function PricingClient() {
         ))}
       </div>
 
-      <Card>
+      <Card className="bg-card/95">
         <CardHeader>
           <CardTitle>Workflow comparison</CardTitle>
           <CardDescription>Quick plan matrix for App, CLI, and Bundle.</CardDescription>

@@ -23,16 +23,16 @@ const TRUST_ITEMS = [
 
 export default function ProofStrip() {
   return (
-    <section className="mx-auto w-full max-w-6xl px-5 md:px-8">
+    <section className="section-block section-divider">
       <div className="grid gap-3 md:grid-cols-3">
         {TRUST_ITEMS.map(({ label, detail, Icon }) => (
-          <Card key={label} className="bg-card/85 backdrop-blur-sm">
+          <Card key={label} className="bg-card/95">
             <CardContent className="flex items-start gap-3 pt-4">
-              <div className="mt-0.5 rounded-lg bg-primary/10 p-2 text-primary">
+              <div className="mt-0.5 rounded-lg border border-border bg-secondary p-2 text-foreground">
                 <Icon className="size-4" />
               </div>
               <div className="flex flex-col gap-1">
-                <Badge variant="secondary" className="w-fit">
+                <Badge variant="outline" className="w-fit bg-card">
                   {label}
                 </Badge>
                 <p className="text-sm text-muted-foreground">{detail}</p>

@@ -12,17 +12,17 @@ const LOGOS = [
 
 export default function LogoStrip() {
   return (
-    <section className="mx-auto mt-12 w-full max-w-6xl px-5 md:px-8">
-      <Card className="border-border/80 bg-card/75">
+    <section className="section-block section-divider">
+      <Card className="bg-card/90">
         <CardContent className="flex flex-col gap-4 pt-4">
-          <Badge variant="outline" className="w-fit">
+          <Badge variant="outline" className="w-fit bg-card">
             Teams using local workflows
           </Badge>
           <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
             {LOGOS.map((name) => (
               <div
                 key={name}
-                className="rounded-lg border border-border/80 bg-background/70 px-3 py-2 text-sm font-medium text-muted-foreground"
+                className="rounded-lg border border-border bg-secondary/55 px-3 py-2 text-sm font-medium text-secondary-foreground"
               >
                 {name}
               </div>

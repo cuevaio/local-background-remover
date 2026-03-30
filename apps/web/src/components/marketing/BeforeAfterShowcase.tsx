@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
 
 type Example = {
   id: string;
@@ -38,6 +37,10 @@ const EXAMPLES: Example[] = [
   },
 ];
 
+function clamp(value: number): number {
+  return Math.min(100, Math.max(0, value));
+}
+
 export default function BeforeAfterShowcase() {
   const initial = useMemo(
     () =>
@@ -49,13 +52,27 @@ export default function BeforeAfterShowcase() {
   );
   const [positions, setPositions] = useState<Record<string, number>>(initial);
 
+  function setPosition(exampleId: string, value: number) {
+    const nextValue = clamp(value);
+    setPositions((prev) => ({
+      ...prev,
+      [exampleId]: nextValue,
+    }));
+  }
+
+  function setPositionFromPointer(exampleId: string, clientX: number, element: HTMLDivElement) {
+    const rect = element.getBoundingClientRect();
+    const percent = ((clientX - rect.left) / rect.width) * 100;
+    setPosition(exampleId, percent);
+  }
+
   return (
-    <section className="mx-auto mt-14 flex w-full max-w-6xl flex-col gap-5 px-5 md:px-8">
+    <section className="section-block section-divider flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <Badge variant="secondary" className="w-fit">
+        <Badge variant="outline" className="w-fit bg-card">
           Before / after examples
         </Badge>
-        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+        <h2 className="section-title">
           See how quickly messy backgrounds become production-ready assets
         </h2>
       </div>
@@ -65,20 +82,20 @@ export default function BeforeAfterShowcase() {
           const position = positions[example.id] ?? 50;
 
           return (
-            <Card key={example.id}>
+            <Card key={example.id} className="bg-card/95">
               <CardHeader>
                 <CardTitle>{example.title}</CardTitle>
                 <CardDescription>{example.context}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
-                <div className="relative h-56 overflow-hidden rounded-lg border border-border bg-muted">
+                <div className="relative h-56 overflow-hidden rounded-xl border border-border bg-secondary/60">
                   <div
                     className="absolute inset-0"
                     style={{
                       backgroundImage:
-                        "linear-gradient(45deg, rgba(255,255,255,0.9) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.9) 75%), linear-gradient(45deg, rgba(255,255,255,0.9) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.9) 75%)",
-                      backgroundSize: "22px 22px",
-                      backgroundPosition: "0 0, 11px 11px",
+                        "linear-gradient(45deg, rgba(255,255,255,0.8) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.8) 75%), linear-gradient(45deg, rgba(255,255,255,0.8) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.8) 75%)",
+                      backgroundSize: "18px 18px",
+                      backgroundPosition: "0 0, 9px 9px",
                     }}
                   />
                   <img
@@ -96,31 +113,69 @@ export default function BeforeAfterShowcase() {
                   />
 
                   <div
-                    className="absolute inset-y-0 w-0.5 bg-background"
+                    role="slider"
+                    tabIndex={0}
+                    aria-label={`${example.title} comparison slider`}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(position)}
+                    className="absolute inset-0 z-20 cursor-col-resize touch-none outline-none focus-visible:ring-2 focus-visible:ring-ring/25"
+                    onPointerDown={(event) => {
+                      event.preventDefault();
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                      setPositionFromPointer(example.id, event.clientX, event.currentTarget);
+                    }}
+                    onPointerMove={(event) => {
+                      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+                        return;
+                      }
+                      setPositionFromPointer(example.id, event.clientX, event.currentTarget);
+                    }}
+                    onPointerUp={(event) => {
+                      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                        event.currentTarget.releasePointerCapture(event.pointerId);
+                      }
+                    }}
+                    onPointerCancel={(event) => {
+                      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                        event.currentTarget.releasePointerCapture(event.pointerId);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "ArrowLeft") {
+                        event.preventDefault();
+                        setPosition(example.id, position - 2);
+                        return;
+                      }
+                      if (event.key === "ArrowRight") {
+                        event.preventDefault();
+                        setPosition(example.id, position + 2);
+                        return;
+                      }
+                      if (event.key === "Home") {
+                        event.preventDefault();
+                        setPosition(example.id, 0);
+                        return;
+                      }
+                      if (event.key === "End") {
+                        event.preventDefault();
+                        setPosition(example.id, 100);
+                      }
+                    }}
+                  />
+
+                  <div
+                    className="pointer-events-none absolute inset-y-0 z-30 w-0.5 bg-card"
                     style={{ left: `${position}%` }}
                   >
-                    <div className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border bg-background shadow-sm" />
+                    <div className="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border bg-card shadow-sm" />
                   </div>
 
-                  <Badge className="absolute left-2 top-2">Before</Badge>
-                  <Badge variant="secondary" className="absolute right-2 top-2">
+                  <Badge className="absolute left-2 top-2 z-30">Before</Badge>
+                  <Badge variant="secondary" className="absolute right-2 top-2 z-30">
                     After
                   </Badge>
                 </div>
-
-                <Slider
-                  value={[position]}
-                  min={0}
-                  max={100}
-                  step={1}
-                  onValueChange={(value) => {
-                    setPositions((prev) => ({
-                      ...prev,
-                      [example.id]: value[0] ?? 50,
-                    }));
-                  }}
-                  aria-label={`${example.title} comparison slider`}
-                />
               </CardContent>
             </Card>
           );
