@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from .config import DEFAULT_WORKER_IDLE_SECONDS, resolve_model_dir
-from .io import default_output_path, load_image, save_png
+from .io import default_output_path, is_http_url, load_image, save_png
 from .license_manager import (
     activate_license,
     ensure_required_surfaces,
@@ -23,7 +23,7 @@ from .model_manager import ensure_local_model, validate_local_model_dir
 try:
     RMBG_VERSION = version("rmbg")
 except PackageNotFoundError:
-    RMBG_VERSION = "0.3.2"
+    RMBG_VERSION = "0.3.3"
 
 
 RESOURCE_TRACKER_COMMAND_RE = re.compile(
@@ -210,7 +210,11 @@ def cmd_remove(args: argparse.Namespace) -> int:
     _print(
         {
             "ok": True,
-            "input_path": str(Path(args.input).resolve()),
+            "input_path": (
+                args.input
+                if is_http_url(args.input)
+                else str(Path(args.input).resolve())
+            ),
             "output_path": saved,
             "model_dir": str(model_dir),
             "bootstrapped": bootstrapped,

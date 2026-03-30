@@ -15,7 +15,9 @@ rmbg_cli/license_manager.py
 rmbg_cli/model_manager.py
 rmbg_cli/worker_server.py
 tests/test_cli_license.py
+tests/test_cli_remove.py
 tests/test_inference_runtime.py
 tests/test_io.py
 tests/test_license_manager.py
 tests/test_model_manager.py
+tests/test_worker_server.py
