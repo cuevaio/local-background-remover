@@ -17,7 +17,7 @@ const EXAMPLES: HeroExample[] = [
   {
     id: "person",
     title: "People portraits",
-    context: "Clean profile and team photos for websites and social posts.",
+    context: "Clean profile and personal-brand photos for websites and social posts.",
     segment: "People",
     beforeUrl: "/images/examples/before/person.jpg",
     afterUrl: "/images/examples/after/person.png",
@@ -33,7 +33,7 @@ const EXAMPLES: HeroExample[] = [
   {
     id: "fruit",
     title: "Product shots",
-    context: "Prepare ecommerce assets with a consistent visual style.",
+    context: "Prepare shop assets with a consistent visual style.",
     segment: "Commerce",
     beforeUrl: "/images/examples/before/fruit.jpg",
     afterUrl: "/images/examples/after/fruit.png",
@@ -49,7 +49,7 @@ const EXAMPLES: HeroExample[] = [
   {
     id: "object",
     title: "Marketing visuals",
-    context: "Turn busy scenes into crisp assets for ads and docs.",
+    context: "Turn busy scenes into crisp assets for launches, ads, and docs.",
     segment: "Marketing",
     beforeUrl: "/images/examples/before/object.jpg",
     afterUrl: "/images/examples/after/object.png",

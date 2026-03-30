@@ -8,7 +8,6 @@ import HeroExamplePanel from "@/components/marketing/HeroExamplePanel";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import ProofStrip from "@/components/marketing/ProofStrip";
 import QuoteSection from "@/components/marketing/QuoteSection";
-import SiteFooter from "@/components/marketing/SiteFooter";
 import StickyCta from "@/components/marketing/StickyCta";
 import TestimonialMosaic from "@/components/marketing/TestimonialMosaic";
 import WorkflowComparison from "@/components/marketing/WorkflowComparison";
@@ -43,9 +42,9 @@ const FAQS: Faq[] = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Private Background Removal for App and CLI Workflows",
+  title: "Local Background Removal for Indie Builders",
   description:
-    "Remove backgrounds on-device with one-time pricing. Choose desktop app, CLI, or both for private, reliable image processing.",
+    "Clean image cutouts on-device with one-time pricing. Use desktop app, CLI, or both for private, reliable shipping.",
   path: "/",
 });
 
@@ -63,7 +62,7 @@ export default function HomePage() {
       highPrice: "9.99",
     },
     description:
-      "Local, private background remover with desktop and CLI workflows and one-time purchase plans.",
+      "Local, private background remover for independent builders using desktop and CLI workflows with one-time pricing.",
   };
 
   const faqJsonLd = {
@@ -93,13 +92,13 @@ export default function HomePage() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="flex flex-col gap-5">
               <Badge variant="outline" className="w-fit bg-card">
-                Fast local background remover
+                Local-first cutouts
               </Badge>
               <div className="flex flex-col gap-4">
-                <h1 className="display-title">Remove image backgrounds in seconds.</h1>
+                <h1 className="display-title">Clean cutouts in seconds.</h1>
                 <p className="section-copy">
-                  Create clean product photos, profile images, and marketing assets with desktop
-                  and CLI workflows that feel simple from day one.
+                  Build cleaner product shots, profile photos, and launch assets with local
+                  workflows made for independent makers.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -134,9 +133,9 @@ export default function HomePage() {
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2 className="section-title">Choose the workflow that matches how your team ships</h2>
+            <h2 className="section-title">Pick the workflow that matches your pace</h2>
             <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-              Start with one surface or use both for automation plus visual QA before delivery.
+              Go app-only, CLI-only, or both for scriptable output plus quick visual QA.
             </p>
           </div>
           <WorkflowComparison />
@@ -200,16 +199,14 @@ export default function HomePage() {
         <AutomationChats />
 
         <section className="section-block section-divider flex flex-col gap-6">
-          <h2 className="section-title">Practical purchase questions, answered early</h2>
+          <h2 className="section-title">Questions before checkout</h2>
           <PricingPolicyFaq />
         </section>
-
-        <SiteFooter />
       </main>
 
       <StickyCta
-        title="Create clean images faster."
-        description="Desktop + CLI for simple background removal."
+        title="Ship clean visuals faster."
+        description="Buy once. Run local in desktop + CLI."
         primaryLabel="View pricing"
         primaryHref="/pricing"
         secondaryLabel="Open downloads"

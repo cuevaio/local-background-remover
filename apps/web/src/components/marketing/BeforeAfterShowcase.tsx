@@ -17,14 +17,14 @@ const EXAMPLES: Example[] = [
   {
     id: "person-portrait",
     title: "People: portrait cutout",
-    context: "For bios, profile cards, and team pages",
+    context: "For bios, profile cards, and creator pages",
     beforeUrl: "/images/examples/before/person.jpg",
     afterUrl: "/images/examples/after/person.png",
   },
   {
     id: "fruit-shot",
     title: "Fruits: catalog cleanup",
-    context: "For ecommerce listings and ad creatives",
+    context: "For shop listings and ad creatives",
     beforeUrl: "/images/examples/before/fruit.jpg",
     afterUrl: "/images/examples/after/fruit.png",
   },
@@ -73,7 +73,7 @@ export default function BeforeAfterShowcase() {
           Before / after examples
         </Badge>
         <h2 className="section-title">
-          See how quickly messy backgrounds become production-ready assets
+          See how quickly messy backgrounds become ship-ready assets
         </h2>
       </div>
 

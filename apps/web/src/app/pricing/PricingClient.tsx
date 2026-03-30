@@ -72,7 +72,7 @@ const PLANS: Plan[] = [
     featured: true,
     bullets: [
       "Desktop + terminal workflows",
-      "Best value for production teams",
+      "Best value for frequent shippers",
       "Desktop processing requires both keys active",
     ],
     cta: "Buy App + CLI Bundle",

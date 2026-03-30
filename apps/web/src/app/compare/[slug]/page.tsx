@@ -168,29 +168,27 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <SparklesIcon className="size-4 text-foreground" />
-                  Decision snapshot
+                  Quick decision snapshot
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <div className="flex items-start gap-2">
                   <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
                   <p>
-                    Local usually fits better when privacy and offline-after-activation reliability
-                    are key requirements.
+                    Local usually wins when privacy and offline-after-activation reliability are
+                    non-negotiable.
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <TerminalIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
                   <p>
-                    Local also gives a clear app + CLI path for teams that run repeated production
-                    batches.
+                    You get a clear app + CLI path for repeatable weekly shipping.
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <ArrowRightIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                   <p>
-                    If you prefer browser-first editing and hosted collaboration, {" "}
-                    {comparePage.competitorName} can remain a practical option.
+                    Prefer browser-first editing and hosted collaboration? {comparePage.competitorName} can remain a practical option.
                   </p>
                 </div>
               </CardContent>
@@ -242,14 +240,14 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
 
             <div className="relative mx-auto flex w-full max-w-4xl flex-col gap-5">
               <Badge variant="outline" className="w-fit bg-card">
-                Why teams switch
+                Why makers switch
               </Badge>
 
               <blockquote className="space-y-6 text-balance font-display text-[clamp(1.9rem,4.2vw,3.35rem)] leading-[1.13] tracking-tight">
                 <p>“{comparePage.switchQuote.quote}”</p>
 
                 <p className="text-[0.78em] text-foreground">
-                  Local is stronger when your team values <span className="text-warning">private execution</span>,{" "}
+                  Local is stronger when you value <span className="text-warning">private execution</span>,{" "}
                   <span className="text-success">predictable CLI batches</span>, and{" "}
                   <span className="text-info">one-time ownership</span>.
                 </p>
@@ -263,12 +261,11 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <Badge variant="outline" className="w-fit bg-card">
-              Same testimonials as landing
+              Indie proof
             </Badge>
-            <h2 className="section-title md:text-4xl">Real operators, real workflows</h2>
+            <h2 className="section-title md:text-4xl">Makers shipping real work</h2>
             <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-              These are the same customer stories shown on our landing page, reused here for
-              consistency.
+              The same indie customer stories from the landing page, reused here for consistency.
             </p>
           </div>
 
@@ -308,10 +305,10 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
         </section>
 
         <section className="section-block section-divider flex flex-col gap-4">
-          <h2 className="section-title md:text-4xl">At-a-glance comparison</h2>
+          <h2 className="section-title md:text-4xl">Quick side-by-side</h2>
           <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
             Practical product-fit view, not a universal ranking. Local is highlighted where privacy,
-            repeatability, and one-time licensing are common priorities.
+            repeatability, and one-time licensing matter most.
           </p>
           <Table>
             <TableHeader>
@@ -371,7 +368,7 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
       </main>
 
       <StickyCta
-        title="Ready for local background removal?"
+        title="Ready to ship local?"
         description="Install now and run private app + CLI workflows."
         primaryLabel="Open downloads"
         primaryHref="/downloads"

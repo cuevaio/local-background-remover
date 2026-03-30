@@ -12,7 +12,7 @@ import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Background Removal Alternatives and Compare Pages",
   description:
-    "Browse side-by-side compare pages for remove.bg alternatives and other background removal tools.",
+    "Browse side-by-side compare pages for remove.bg alternatives and other tools, focused on private local workflows and one-time pricing.",
   path: "/compare",
 });
 
@@ -59,12 +59,12 @@ export default function CompareIndexPage() {
       <main className="site-frame">
         <section className="section-block flex flex-col gap-5">
           <Badge variant="outline" className="w-fit bg-card">
-            Compare pages
+            Compare tools
           </Badge>
-          <h1 className="display-title md:text-5xl">Find the right background removal alternative.</h1>
+          <h1 className="display-title md:text-5xl">Pick your background removal stack</h1>
           <p className="section-copy md:text-lg">
-            Explore side-by-side comparisons between Local Background Remover and the most searched
-            background removal tools.
+            Side-by-side comparisons for builders who want private local workflows and one-time
+            pricing.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild>
@@ -97,8 +97,8 @@ export default function CompareIndexPage() {
       </main>
 
       <StickyCta
-        title="Need private background removal?"
-        description="Choose local app + CLI workflows with one-time pricing."
+        title="Want private cutouts?"
+        description="Install Local and ship with app + CLI."
         primaryLabel="Open downloads"
         primaryHref="/downloads"
         secondaryLabel="See pricing"

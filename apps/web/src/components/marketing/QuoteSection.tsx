@@ -34,19 +34,19 @@ export default function QuoteSection() {
 
           <blockquote className="space-y-6 text-balance font-display text-[clamp(1.9rem,4.2vw,3.35rem)] leading-[1.13] tracking-tight">
             <p>
-              “Background removal is not just about clean edges.
+              “Clean edges are easy.
               <br className="hidden md:block" />
-              It is about clean handoffs.”
+              Clean handoffs win.”
             </p>
 
             <p className="text-[0.78em] text-foreground">
               Local Background Remover combines <span className="text-warning">desktop review</span>,{" "}
               <span className="text-success">CLI automation</span>, and{" "}
-              <span className="text-info">offline reliability</span> in one place.
+              <span className="text-info">offline reliability</span> in one lean stack.
             </p>
 
             <p className="text-[0.75em] text-muted-foreground">
-              Fast. Private. Predictable. Built to scale with your team.
+              Fast. Private. Repeatable. Built for people who care about craft.
             </p>
           </blockquote>
         </div>

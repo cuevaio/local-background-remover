@@ -8,10 +8,10 @@ export default function TestimonialMosaic() {
         <Badge variant="outline" className="w-fit bg-card">
           Customer stories
         </Badge>
-        <h2 className="section-title">Trusted by people who ship every day</h2>
+        <h2 className="section-title">Trusted by makers who ship every week</h2>
         <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-          Real operators using local background removal in design, ecommerce, and production
-          workflows.
+          Independent designers, founders, and builders using local background removal for daily
+          creative output.
         </p>
       </div>
 
