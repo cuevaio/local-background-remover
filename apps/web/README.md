@@ -4,7 +4,7 @@ Marketing site + checkout + license validation service.
 
 Public installer URL:
 
-- `https://localremovebg.com/install`
+- `https://local.backgroundrm.com/install`
 
 Downloads are public, but runtime use is license-gated through `/api/license/*`.
 
@@ -28,6 +28,7 @@ Use root `.env.example` as reference.
 - `POLAR_BENEFIT_CLI_ID`
 - `POLAR_BENEFIT_DESKTOP_ID`
 - `LICENSE_SIGNING_PRIVATE_KEY`
+- `RMBG_LATEST_VERSION`
 
 ## Product model
 

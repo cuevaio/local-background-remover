@@ -20,8 +20,8 @@
 - Task orchestrator: `turbo` (`turbo.json`).
 - Python manager/runtime for CLI: `uv` (`apps/rmbg`).
 - Python version for CLI work: `3.12` (`apps/rmbg/.python-version`).
-- Next.js version in web app: `15.1.0`.
-- Electron version in desktop app: `^37.5.0`.
+- Next.js version in web app: `^16.2.1`.
+- Electron version in desktop app: `^41.1.0`.
 
 ## Install and Setup
 - Install JS dependencies at repo root: `bun install`.
@@ -88,7 +88,7 @@
   - Run `bun run dev`, activate keys, ensure model, process one image end-to-end.
 
 ## Product Invariants (Do Not Break)
-- Public installer URL remains `https://localremovebg.com/install`.
+- Public installer URL remains `https://local.backgroundrm.com/install`.
 - Downloads are public; runtime commands are license-gated.
 - Desktop processing requires both surfaces licensed: `desktop` and `cli`.
 - CLI and desktop must enforce license checks before `model ensure` and `remove`.

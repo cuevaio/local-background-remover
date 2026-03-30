@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Install CLI from public installer URL
-        run: curl -fsSL "https://localremovebg.com/install" | bash
+        run: curl -fsSL "https://local.backgroundrm.com/install" | bash
 
       - name: Verify global command
         run: |

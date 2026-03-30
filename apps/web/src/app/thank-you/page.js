@@ -9,7 +9,7 @@ export default function ThankYouPage() {
       <div className="card">
         <h3>Next steps</h3>
         <ul>
-          <li>Install CLI: <code>curl -fsSL https://localremovebg.com/install | bash</code>.</li>
+          <li>Install CLI: <code>curl -fsSL https://local.backgroundrm.com/install | bash</code>.</li>
           <li>Copy your Polar key(s) from purchases.</li>
           <li>Activate in CLI: <code>rmbg license activate --key YOUR_KEY --surface cli</code>.</li>
           <li>Activate app key in desktop from the License panel.</li>

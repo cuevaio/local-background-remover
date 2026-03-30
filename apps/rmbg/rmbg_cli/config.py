@@ -12,7 +12,7 @@ DEFAULT_LICENSE_CACHE_PATH = (
 DEFAULT_LICENSE_DEVICE_ID_PATH = (
     Path.home() / ".cache" / "background-removal" / "license" / "device-id"
 )
-DEFAULT_LICENSE_API_BASE_URL = "https://localremovebg.com"
+DEFAULT_LICENSE_API_BASE_URL = "https://local.backgroundrm.com"
 DEFAULT_WORKER_IDLE_SECONDS = int(os.environ.get("RMBG_WORKER_IDLE_SECONDS", "300"))
 LICENSE_GRACE_SECONDS = 3 * 24 * 60 * 60
 LICENSE_REFRESH_THRESHOLD_SECONDS = 7 * 24 * 60 * 60

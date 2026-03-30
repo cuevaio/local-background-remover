@@ -2,10 +2,12 @@
 
 set -euo pipefail
 
-REPO_SLUG="cuevaio/background-removal"
-RELEASE_BASE_URL="${RMBG_RELEASE_BASE_URL:-https://github.com/${REPO_SLUG}/releases}"
+REPO_SLUG="${RMBG_GITHUB_REPO:-cuevaio/local-background-remover}"
+RELEASE_BASE_URL="${RMBG_RELEASE_BASE_URL:-https://local.backgroundrm.com/releases}"
+RELEASE_METADATA_URL="${RMBG_RELEASE_METADATA_URL:-https://local.backgroundrm.com/api/releases/latest}"
 INSTALL_BIN_DIR="${RMBG_INSTALL_BIN_DIR:-$HOME/.local/bin}"
 INSTALL_BASE_DIR="${RMBG_INSTALL_BASE_DIR:-$HOME/.local/share/rmbg}"
+TAG_SOURCE=""
 
 fail() {
   printf "rmbg install error: %s\n" "$1" >&2
@@ -33,8 +35,11 @@ detect_target() {
 }
 
 resolve_tag() {
+  local requested tag
+
   if [[ -n "${RMBG_VERSION:-}" ]]; then
-    local requested="${RMBG_VERSION}"
+    TAG_SOURCE="manual"
+    requested="${RMBG_VERSION}"
     if [[ "$requested" == v* ]]; then
       echo "$requested"
     else
@@ -43,11 +48,31 @@ resolve_tag() {
     return
   fi
 
-  local api_url="https://api.github.com/repos/${REPO_SLUG}/releases/latest"
-  local tag
-  tag="$(curl -fsSL "$api_url" | grep '"tag_name"' | head -n1 | sed -E 's/.*"tag_name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')"
-  [[ -n "$tag" ]] || fail "failed to resolve latest release tag"
-  echo "$tag"
+  if [[ -n "${RELEASE_METADATA_URL:-}" ]]; then
+    tag="$({ curl -fsSL "$RELEASE_METADATA_URL" 2>/dev/null || true; } | sed -nE 's/.*"tag"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' | head -n1)"
+    if [[ -n "$tag" ]]; then
+      TAG_SOURCE="metadata"
+      if [[ "$tag" == v* ]]; then
+        echo "$tag"
+      else
+        echo "v${tag}"
+      fi
+      return
+    fi
+  fi
+
+  if [[ -n "${REPO_SLUG:-}" ]]; then
+    local api_url
+    api_url="https://api.github.com/repos/${REPO_SLUG}/releases/latest"
+    tag="$({ curl -fsSL "$api_url" 2>/dev/null || true; } | grep '"tag_name"' | head -n1 | sed -E 's/.*"tag_name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')"
+    if [[ -n "$tag" ]]; then
+      TAG_SOURCE="github"
+      echo "$tag"
+      return
+    fi
+  fi
+
+  fail "failed to resolve release version; set RMBG_VERSION=vX.Y.Z"
 }
 
 verify_checksum() {
@@ -72,7 +97,11 @@ main() {
   target="$(detect_target)"
   tag="$(resolve_tag)"
   archive_name="rmbg-${tag}-${target}.tar.gz"
-  download_base="${RELEASE_BASE_URL}/download/${tag}"
+  if [[ "${TAG_SOURCE}" == "github" && -z "${RMBG_RELEASE_BASE_URL:-}" ]]; then
+    download_base="https://github.com/${REPO_SLUG}/releases/download/${tag}"
+  else
+    download_base="${RELEASE_BASE_URL}/${tag}"
+  fi
 
   local tmp_dir archive_path checksums_path
   tmp_dir="$(mktemp -d)"

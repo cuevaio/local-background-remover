@@ -23,12 +23,12 @@ cd apps/rmbg && uv sync --group dev
 
 Downloads are public at:
 
-- `https://localremovebg.com/install`
+- `https://local.backgroundrm.com/install`
 
 CLI install command:
 
 ```bash
-curl -fsSL https://localremovebg.com/install | bash
+curl -fsSL https://local.backgroundrm.com/install | bash
 ```
 
 Important: install is public, but CLI/Desktop runtime commands require license activation.

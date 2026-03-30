@@ -4,7 +4,7 @@ This runbook covers the full CLI production flow:
 
 1. Deploy web API (`apps/web`) to Vercel
 2. Publish CLI binaries to GitHub Releases
-3. Install from `https://localremovebg.com/install`
+3. Install from `https://local.backgroundrm.com/install`
 4. Activate license and process an image
 
 ## Binary size and hosting decisions
@@ -49,13 +49,21 @@ Set production env vars in Vercel:
 - `POLAR_BENEFIT_CLI_ID`
 - `POLAR_BENEFIT_DESKTOP_ID`
 - `LICENSE_SIGNING_PRIVATE_KEY`
+- `RMBG_LATEST_VERSION` (for `/api/releases/latest`, example: `v0.1.0`)
+
+Publish public release files at:
+
+- `https://local.backgroundrm.com/releases/<tag>/rmbg-<tag>-darwin-arm64.tar.gz`
+- `https://local.backgroundrm.com/releases/<tag>/rmbg-<tag>-darwin-x86_64.tar.gz`
+- `https://local.backgroundrm.com/releases/<tag>/checksums.txt`
 
 Then push to `main` (or trigger a deploy from the Vercel dashboard).
 
 Verify:
 
 ```bash
-curl -i https://localremovebg.com/install
+curl -i https://local.backgroundrm.com/install
+curl -i https://local.backgroundrm.com/api/releases/latest
 ```
 
 Expected:
@@ -83,7 +91,7 @@ git push origin vX.Y.Z
 5. Verify checksums:
 
 ```bash
-gh release download vX.Y.Z --repo cuevaio/background-removal -D /tmp/rmbg-release
+gh release download vX.Y.Z --repo cuevaio/local-background-remover -D /tmp/rmbg-release
 cd /tmp/rmbg-release
 shasum -a 256 -c checksums.txt
 ```
@@ -93,7 +101,7 @@ shasum -a 256 -c checksums.txt
 On a clean macOS machine:
 
 ```bash
-curl -fsSL https://localremovebg.com/install | bash
+curl -fsSL https://local.backgroundrm.com/install | bash
 export PATH="$HOME/.local/bin:$PATH"
 rmbg --version
 ```
@@ -101,7 +109,7 @@ rmbg --version
 Set runtime env (if not already configured globally):
 
 ```bash
-export RMBG_LICENSE_API_BASE_URL="https://localremovebg.com"
+export RMBG_LICENSE_API_BASE_URL="https://local.backgroundrm.com"
 export RMBG_LICENSE_PUBLIC_KEY="<base64-ed25519-public-key>"
 ```
 
@@ -136,7 +144,7 @@ Expected:
 - CLI: instruct users to pin prior version:
 
 ```bash
-curl -fsSL https://localremovebg.com/install | RMBG_VERSION=vPREVIOUS bash
+curl -fsSL https://local.backgroundrm.com/install | RMBG_VERSION=vPREVIOUS bash
 ```
 
 - Publish a fixed patch release ASAP.

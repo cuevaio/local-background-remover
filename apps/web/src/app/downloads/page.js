@@ -1,4 +1,4 @@
-const CLI_INSTALL_CMD = "curl -fsSL https://localremovebg.com/install | bash";
+const CLI_INSTALL_CMD = "curl -fsSL https://local.backgroundrm.com/install | bash";
 
 export default function DownloadsPage() {
   return (

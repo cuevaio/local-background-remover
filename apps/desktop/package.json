@@ -11,6 +11,6 @@
     "check": "bun run lint && bun run test"
   },
   "devDependencies": {
-    "electron": "^37.5.0"
+    "electron": "^41.1.0"
   }
 }
