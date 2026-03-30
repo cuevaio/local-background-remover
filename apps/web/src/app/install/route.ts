@@ -116,13 +116,13 @@ download_release_assets() {
   if [[ -n "\$fallback_base" && "\$fallback_base" != "\$primary_base" ]]; then
     printf "Primary release source unavailable, falling back to GitHub assets\\n" >&2
     curl -fsSL "\${fallback_base}/\${archive_name}" -o "\$archive_path" ||
-      fail "failed to download archive from fallback release source"
+      fail "failed to download archive from fallback release source. For private repos, set RMBG_GITHUB_TOKEN in web env or set RMBG_RELEASE_BASE_URL to a public mirror"
     curl -fsSL "\${fallback_base}/checksums.txt" -o "\$checksums_path" ||
-      fail "failed to download checksums from fallback release source"
+      fail "failed to download checksums from fallback release source. For private repos, set RMBG_GITHUB_TOKEN in web env or set RMBG_RELEASE_BASE_URL to a public mirror"
     return
   fi
 
-  fail "failed to download release assets"
+  fail "failed to download release assets. Set RMBG_RELEASE_BASE_URL to a working mirror, or configure RMBG_GITHUB_TOKEN in web env for private GitHub releases"
 }
 
 main() {
