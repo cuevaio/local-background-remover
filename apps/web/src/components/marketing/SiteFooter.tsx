@@ -27,9 +27,9 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     title: "Resources",
     links: [
       { label: "CLI Docs", href: "/docs" },
-      { label: "Activation Steps", href: "/thank-you" },
+      { label: "Getting started", href: "/thank-you" },
       { label: "FAQ", href: "/faq" },
-      { label: "Install URL", href: "/install" },
+      { label: "Direct install link", href: "/install" },
       { label: "Downloads", href: "/downloads" },
     ],
   },
@@ -143,7 +143,7 @@ export default function SiteFooter() {
                 />
               </Link>
               <p className="max-w-xs text-sm text-muted-foreground">
-                Public installers. License-gated runtime. Private, repeatable asset production.
+                Download in minutes. Process images privately. Keep your workflow simple.
               </p>
               <div className="flex items-center gap-2">
                 {SOCIAL_LINKS.map((item) => (

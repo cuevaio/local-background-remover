@@ -14,7 +14,7 @@ import PricingClient from "./PricingClient";
 export const metadata: Metadata = buildPageMetadata({
   title: "One-Time Pricing for Local Background Remover",
   description:
-    "Compare App, CLI, and Bundle one-time pricing with clear key requirements and activation rules.",
+    "Compare one-time plans for desktop, command-line, or both.",
   path: "/pricing",
 });
 
@@ -50,11 +50,11 @@ export default function PricingPage() {
             One-time plans
           </Badge>
           <h1 className="display-title md:text-5xl">
-            Pick the surface you need now and add the rest later.
+            Pick what you need now and add more later.
           </h1>
           <p className="section-copy md:text-lg">
-            Downloads are public. Runtime features unlock after activation for the matching
-            surface. Bundle includes two keys and enables desktop processing when both are active.
+            Choose desktop, command-line, or both. Start simple, then expand when your workflow
+            grows.
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
@@ -77,7 +77,7 @@ export default function PricingPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Activate App key inside desktop app before processing.
+                Best for visual editing and quick export checks.
               </p>
             </CardContent>
           </Card>
@@ -87,7 +87,7 @@ export default function PricingPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Activate CLI key with terminal command before model ensure/remove.
+                Best for repeat batches and script-driven image processing.
               </p>
             </CardContent>
           </Card>
@@ -97,7 +97,7 @@ export default function PricingPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Activate both keys in their surfaces to unlock full desktop + CLI workflow.
+                Best when you want both visual review and command-line speed.
               </p>
             </CardContent>
           </Card>
@@ -110,7 +110,7 @@ export default function PricingPage() {
 
       <StickyCta
         title="Need a plan decision?"
-        description="Bundle is best for mixed desktop + automation workflows."
+        description="Start with one plan, upgrade anytime."
         primaryLabel="Buy now"
         primaryHref="/pricing"
         secondaryLabel="Download first"

@@ -9,7 +9,7 @@ import { buildPageMetadata } from "@/lib/seo";
 const PRIVACY_BLOCKS = [
   {
     title: "What this product needs",
-    body: "Purchase and license metadata is used to issue and validate keys for desktop and CLI usage.",
+    body: "Purchase details are used to confirm your plan and unlock access.",
   },
   {
     title: "What this product does not need",
@@ -17,7 +17,7 @@ const PRIVACY_BLOCKS = [
   },
   {
     title: "How processing works",
-    body: "Inference runs from local model files on your machine after activation, so day-to-day processing can stay offline.",
+    body: "Processing runs from local files on your machine, so day-to-day work can stay offline.",
   },
   {
     title: "Support and policy updates",
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
 
       <section className="section-block section-divider flex flex-col gap-4 md:max-w-3xl">
         <p className="text-sm text-muted-foreground md:text-base">
-          This page is an operational summary and does not replace legal advice for your specific
+          This page is a practical summary and does not replace legal advice for your specific
           business needs.
         </p>
         <p className="text-sm text-muted-foreground md:text-base">

@@ -9,19 +9,19 @@ import { buildPageMetadata } from "@/lib/seo";
 const FAQ_ITEMS = [
   {
     q: "Do I need to pay before downloading?",
-    a: "No. Downloads are public. Payment is required when you want to activate runtime features in desktop or CLI.",
+    a: "No. You can download first. Payment is required before processing images.",
   },
   {
     q: "Why do App + CLI purchases include two keys?",
-    a: "Desktop and CLI are separate entitlements. App key unlocks desktop, CLI key unlocks terminal commands.",
+    a: "The bundle includes desktop access and command-line access so you can use both workflows.",
   },
   {
     q: "Can I process images offline?",
-    a: "Yes. After activation, processing uses local model files so normal usage can continue offline.",
+    a: "Yes. After activation, processing runs locally so you can keep working if your internet is unstable.",
   },
   {
     q: "Where is the model stored?",
-    a: "By default it is stored at ~/.cache/background-removal/models/birefnet unless you override BIREFNET_MODEL_DIR.",
+    a: "The app manages this automatically. Advanced path settings are available in the CLI docs if you need them.",
   },
   {
     q: "Who is behind this product?",
@@ -36,7 +36,7 @@ const FAQ_ITEMS = [
 export const metadata: Metadata = buildPageMetadata({
   title: "FAQ",
   description:
-    "Frequently asked questions about downloads, activation, offline usage, and support for Local Background Remover.",
+    "Frequently asked questions about downloads, pricing, offline usage, and support for Local Background Remover.",
   path: "/faq",
 });
 

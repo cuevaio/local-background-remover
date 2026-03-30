@@ -38,10 +38,10 @@ export default function TwitterImage() {
           padding: "30px",
         }}>
           <div style={{ display: "flex", fontSize: 54, lineHeight: 1.08, fontWeight: 600 }}>
-            Offline background remover
+            Background removal for indie creators
           </div>
           <div style={{ display: "flex", fontSize: 30, lineHeight: 1.25, color: "#525252" }}>
-            Private local processing with App and CLI workflows.
+            Private processing with one-time pricing.
           </div>
         </div>
       </div>

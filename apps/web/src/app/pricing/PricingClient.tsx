@@ -27,7 +27,7 @@ type Plan = {
   kind: PlanKind;
   title: string;
   price: string;
-  keys: string;
+  access: string;
   bullets: string[];
   cta: string;
   featured?: boolean;
@@ -44,11 +44,11 @@ const PLANS: Plan[] = [
     kind: "app",
     title: "App",
     price: "$6.99",
-    keys: "Includes 1 App key",
+    access: "Desktop access",
     bullets: [
       "Desktop visual workflow",
       "Before/after compare controls",
-      "Activate App key in desktop",
+      "Quick setup in the app",
     ],
     cta: "Buy App License",
   },
@@ -56,11 +56,11 @@ const PLANS: Plan[] = [
     kind: "cli",
     title: "CLI",
     price: "$6.99",
-    keys: "Includes 1 CLI key",
+    access: "Command-line access",
     bullets: [
       "Batch processing in terminal",
-      "Script and automation friendly",
-      "Activate CLI key in terminal",
+      "Great for repeat workflows",
+      "Quick setup in command line",
     ],
     cta: "Buy CLI License",
   },
@@ -68,12 +68,12 @@ const PLANS: Plan[] = [
     kind: "both",
     title: "App + CLI",
     price: "$9.99",
-    keys: "Includes 2 keys (App + CLI)",
+    access: "Desktop + command-line access",
     featured: true,
     bullets: [
       "Desktop + terminal workflows",
       "Best value for frequent shippers",
-      "Desktop processing requires both keys active",
+      "Best for mixed visual + batch workflows",
     ],
     cta: "Buy App + CLI Bundle",
   },
@@ -118,7 +118,7 @@ export default function PricingClient() {
             <CardHeader>
               {plan.featured ? <Badge className="w-fit">Best value</Badge> : null}
               <CardTitle>{plan.title}</CardTitle>
-              <CardDescription>{plan.keys}</CardDescription>
+              <CardDescription>{plan.access}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <p className="font-display text-4xl font-medium tracking-tight">{plan.price}</p>
@@ -165,16 +165,16 @@ export default function PricingClient() {
                 <TableCell>$9.99</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Included keys</TableCell>
-                <TableCell>1 App</TableCell>
-                <TableCell>1 CLI</TableCell>
-                <TableCell>2 (App + CLI)</TableCell>
+                <TableCell>Access included</TableCell>
+                <TableCell>Desktop</TableCell>
+                <TableCell>Command line</TableCell>
+                <TableCell>Desktop + command line</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Desktop processing</TableCell>
                 <TableCell>Yes (App workflow)</TableCell>
                 <TableCell>No</TableCell>
-                <TableCell>Yes (both keys active)</TableCell>
+                <TableCell>Yes (bundle workflow)</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Automation pipeline</TableCell>

@@ -44,7 +44,7 @@ export function buildPageMetadata({
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: "Offline background remover for private, on-device workflows",
+          alt: "Private background remover for creators",
         },
       ],
     },

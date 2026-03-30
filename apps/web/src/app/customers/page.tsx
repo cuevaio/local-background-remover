@@ -25,7 +25,7 @@ const CUSTOMER_SEGMENTS = [
   {
     title: "Small creative studios",
     detail:
-      "Combine desktop review and CLI automation in one stack for faster weekly shipping.",
+      "Combine desktop review and command-line automation for faster weekly shipping.",
   },
 ];
 
@@ -66,7 +66,7 @@ export default function CustomersPage() {
       <section className="section-block section-divider flex flex-col gap-4 md:max-w-3xl">
         <h2 className="section-title text-3xl md:text-4xl">Still deciding?</h2>
         <p className="text-sm text-muted-foreground md:text-base">
-          If you handle sensitive images and ship often, this stack keeps costs predictable and
+          If you handle sensitive images and ship often, this approach keeps costs predictable and
           workflows private.
         </p>
         <div className="flex flex-wrap items-center gap-2">

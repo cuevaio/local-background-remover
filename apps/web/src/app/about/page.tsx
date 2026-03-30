@@ -42,8 +42,8 @@ export default function AboutPage() {
         <p className="section-copy md:text-lg">
           Hi, I am Anthony. I build Local Background Remover as an independent product for people
           who want fast background cleanup without giving up privacy. Every part of this product is
-          shaped to stay practical: public installs, license-gated runtime, and local processing you
-          can trust.
+          shaped to stay practical: simple setup, one-time pricing, and local processing you can
+          trust.
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild>

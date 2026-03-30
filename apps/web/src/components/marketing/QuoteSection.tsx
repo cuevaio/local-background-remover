@@ -41,7 +41,7 @@ export default function QuoteSection() {
 
             <p className="text-[0.78em] text-foreground">
               Local Background Remover combines <span className="text-warning">desktop review</span>,{" "}
-              <span className="text-success">CLI automation</span>, and{" "}
+              <span className="text-success">command-line speed</span>, and{" "}
               <span className="text-info">offline reliability</span> in one lean stack.
             </p>
 

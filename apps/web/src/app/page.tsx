@@ -25,19 +25,19 @@ type Faq = {
 const FAQS: Faq[] = [
   {
     q: "Why does App + CLI include two keys?",
-    a: "App and CLI are separate entitlements. The app key unlocks desktop usage, and the CLI key unlocks terminal usage.",
+    a: "The bundle includes desktop access and command-line access, so you can use both workflows together.",
   },
   {
     q: "Can I share installers?",
-    a: "Yes. Downloads are public. Runtime features only unlock after valid activation on your machine.",
+    a: "Yes. Anyone can download, and paid features start after activation on your machine.",
   },
   {
     q: "Does it work offline?",
-    a: "Yes. After activation, each key is cached locally and remains usable within active and grace windows.",
+    a: "Yes. After activation, you can keep working even when your internet is unstable.",
   },
   {
     q: "What does desktop processing require?",
-    a: "Desktop processing requires both active keys: App and CLI.",
+    a: "For the full desktop + command-line bundle workflow, both parts need to be activated.",
   },
 ];
 
@@ -143,9 +143,9 @@ export default function HomePage() {
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2 className="section-title">CLI quickstart in three commands</h2>
+            <h2 className="section-title">Command-line quickstart in three commands</h2>
             <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-              Install publicly, activate your key, and process your first image locally.
+              Download, activate, and process your first image locally.
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
@@ -163,7 +163,7 @@ export default function HomePage() {
             <Card className="bg-card/95">
               <CardHeader>
                 <CardTitle>Activate</CardTitle>
-                <CardDescription>Unlock runtime commands.</CardDescription>
+                <CardDescription>Enable command access.</CardDescription>
               </CardHeader>
               <CardContent>
                 <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">

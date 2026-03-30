@@ -11,7 +11,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Purchase Complete: Activation Steps",
   description:
-    "Your purchase is complete. Activate App and/or CLI keys to unlock runtime usage.",
+    "Your purchase is complete. Activate your app or command-line access and start processing.",
   path: "/thank-you",
   noindex: true,
 });
@@ -27,8 +27,7 @@ export default function ThankYouPage() {
           Thanks for your Local Background Remover purchase.
         </h1>
         <p className="section-copy md:text-lg">
-          Downloads are public, and runtime usage unlocks after activation in each matching
-          surface.
+          Install your preferred workflow, activate your purchase, and start processing.
         </p>
       </section>
 
@@ -36,7 +35,7 @@ export default function ThankYouPage() {
         <Alert>
           <AlertTitle>Bundle reminder</AlertTitle>
           <AlertDescription>
-            If you purchased App + CLI, activate both keys before desktop processing.
+            If you purchased App + CLI, activate both parts to use the full bundle workflow.
           </AlertDescription>
         </Alert>
       </section>
@@ -51,12 +50,12 @@ export default function ThankYouPage() {
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
               {CLI_INSTALL_CMD}
             </pre>
-            <p>2. Copy key(s) from your Polar purchase email.</p>
-            <p>3. Activate CLI key in terminal:</p>
+            <p>2. Copy your key from your purchase email.</p>
+            <p>3. Activate command-line access:</p>
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
               {CLI_ACTIVATE_CMD}
             </pre>
-            <p>4. Activate App key in desktop from the License panel.</p>
+            <p>4. Activate desktop access in the app license screen.</p>
           </CardContent>
         </Card>
       </section>

@@ -27,7 +27,7 @@ import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Downloads and Install Guide",
   description:
-    "Download the desktop app or CLI, then activate matching keys for runtime usage.",
+    "Download the desktop app or command-line tool and start processing in minutes.",
   path: "/downloads",
 });
 
@@ -60,14 +60,13 @@ export default function DownloadsPage() {
       <main className="site-frame flex flex-col gap-0 pb-36">
         <section className="section-block flex flex-col gap-4">
           <Badge variant="outline" className="w-fit bg-card">
-            Public downloads, gated runtime
+            Download and get started
           </Badge>
           <h1 className="display-title md:text-5xl">
-            Install first, activate when you are ready.
+            Install first, unlock when you are ready.
           </h1>
           <p className="section-copy md:text-lg">
-            Downloading is open. Running background removal commands or desktop processing requires
-            the matching activated key(s).
+            Pick desktop or command line, install, then activate your purchase to start processing.
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
@@ -100,9 +99,9 @@ export default function DownloadsPage() {
                     {CLI_VERSION_CMD}
                   </pre>
                   <Alert>
-                    <AlertTitle>Activation required before runtime usage</AlertTitle>
+                    <AlertTitle>Unlock before processing</AlertTitle>
                     <AlertDescription>
-                      Activate your CLI key before running `model ensure` or `remove` commands.
+                      Activate your CLI purchase before running `model ensure` or `remove`.
                     </AlertDescription>
                   </Alert>
                   <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
@@ -122,18 +121,16 @@ export default function DownloadsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Desktop app download</CardTitle>
-                  <CardDescription>Install publicly, activate inside the app.</CardDescription>
+                  <CardDescription>Install, then unlock inside the app.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <p className="text-sm text-muted-foreground">
-                    Install the desktop app, open the license screen, and paste your App key. If
-                    you bought App + CLI, desktop processing requires both keys active.
+                    Install the desktop app, open the license screen, and paste your App key.
                   </p>
                   <Alert>
                     <AlertTitle>Bundle reminder</AlertTitle>
                     <AlertDescription>
-                      App + CLI purchase includes two keys. Activate both to unlock the full
-                      desktop processing path.
+                      If you bought App + CLI, activate both parts to use the full bundle workflow.
                     </AlertDescription>
                   </Alert>
                 </CardContent>
@@ -148,9 +145,9 @@ export default function DownloadsPage() {
               <CardTitle>What to do after install</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
-              <p>1. Retrieve key(s) from your Polar purchase confirmation.</p>
-              <p>2. Activate in the matching surface (desktop app or CLI).</p>
-              <p>3. Run your first image through the flow.</p>
+              <p>1. Get your key from your purchase email.</p>
+              <p>2. Activate in desktop or command line.</p>
+              <p>3. Run your first image.</p>
               <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
                 {CLI_MODEL_ENSURE_CMD}
               </pre>
@@ -165,7 +162,7 @@ export default function DownloadsPage() {
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <p className="text-sm text-muted-foreground">
-                Compare App, CLI, and Bundle plans before activating.
+                Compare App, CLI, and Bundle plans before activation.
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild>
@@ -182,7 +179,7 @@ export default function DownloadsPage() {
 
       <StickyCta
         title="Have the installer?"
-        description="Compare plans and activate the right key(s) when ready."
+        description="Choose your plan and unlock your workflow when ready."
         primaryLabel="Compare pricing"
         primaryHref="/pricing"
         secondaryLabel="Home"

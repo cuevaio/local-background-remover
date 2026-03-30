@@ -10,8 +10,8 @@ const TRUST_ITEMS = [
     Icon: LockIcon,
   },
   {
-    label: "Offline after activation",
-    detail: "Continue working without a network after keys are validated.",
+    label: "Works with spotty internet",
+    detail: "Keep processing even if your connection drops.",
     Icon: WifiOffIcon,
   },
   {

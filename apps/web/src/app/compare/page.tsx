@@ -61,10 +61,9 @@ export default function CompareIndexPage() {
           <Badge variant="outline" className="w-fit bg-card">
             Compare tools
           </Badge>
-          <h1 className="display-title md:text-5xl">Pick your background removal stack</h1>
+          <h1 className="display-title md:text-5xl">Pick your background removal option</h1>
           <p className="section-copy md:text-lg">
-            Side-by-side comparisons for builders who want private local workflows and one-time
-            pricing.
+            Side-by-side comparisons for builders who want private processing and one-time pricing.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild>
@@ -98,7 +97,7 @@ export default function CompareIndexPage() {
 
       <StickyCta
         title="Want private cutouts?"
-        description="Install Local and ship with app + CLI."
+        description="Install Local and process images privately."
         primaryLabel="Open downloads"
         primaryHref="/downloads"
         secondaryLabel="See pricing"

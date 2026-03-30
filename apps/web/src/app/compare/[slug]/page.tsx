@@ -175,14 +175,14 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
                 <div className="flex items-start gap-2">
                   <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
                   <p>
-                    Local usually wins when privacy and offline-after-activation reliability are
+                    Local usually wins when privacy and reliable on-device processing are
                     non-negotiable.
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <TerminalIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
                   <p>
-                    You get a clear app + CLI path for repeatable weekly shipping.
+                    You get clear desktop and command-line options for repeatable weekly shipping.
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
@@ -248,7 +248,7 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
 
                 <p className="text-[0.78em] text-foreground">
                   Local is stronger when you value <span className="text-warning">private execution</span>,{" "}
-                  <span className="text-success">predictable CLI batches</span>, and{" "}
+                  <span className="text-success">repeatable batch processing</span>, and{" "}
                   <span className="text-info">one-time ownership</span>.
                 </p>
 
@@ -265,7 +265,7 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
             </Badge>
             <h2 className="section-title md:text-4xl">Makers shipping real work</h2>
             <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-              The same indie customer stories from the landing page, reused here for consistency.
+              Stories from indie customers using Local in real creative workflows.
             </p>
           </div>
 
@@ -308,7 +308,7 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
           <h2 className="section-title md:text-4xl">Quick side-by-side</h2>
           <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
             Practical product-fit view, not a universal ranking. Local is highlighted where privacy,
-            repeatability, and one-time licensing matter most.
+            repeatability, and one-time pricing matter most.
           </p>
           <Table>
             <TableHeader>
@@ -369,7 +369,7 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
 
       <StickyCta
         title="Ready to ship local?"
-        description="Install now and run private app + CLI workflows."
+        description="Install now and process images privately."
         primaryLabel="Open downloads"
         primaryHref="/downloads"
         secondaryLabel="View pricing"

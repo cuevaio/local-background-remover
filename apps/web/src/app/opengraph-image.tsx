@@ -53,10 +53,10 @@ export default function OpenGraphImage() {
           padding: "34px",
         }}>
           <div style={{ display: "flex", fontSize: 68, lineHeight: 1.02, fontWeight: 600 }}>
-            Turn local background removal into a reliable system.
+            Clean backgrounds fast.
           </div>
           <div style={{ display: "flex", fontSize: 31, lineHeight: 1.25, color: "#525252" }}>
-            App and CLI. Public downloads. License-gated runtime. Works offline after activation.
+            Private processing, one-time pricing, and workflows built for creators.
           </div>
         </div>
       </div>

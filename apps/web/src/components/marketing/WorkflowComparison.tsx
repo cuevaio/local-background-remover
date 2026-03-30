@@ -27,7 +27,7 @@ const WORKFLOWS: Workflow[] = [
     name: "Desktop App",
     summary: "For solo designers who want fast visual polish before export.",
     bullets: [
-      "1 App key",
+      "Includes desktop access",
       "Drag-and-drop workflow",
       "Great for final QA",
     ],
@@ -38,7 +38,7 @@ const WORKFLOWS: Workflow[] = [
     name: "CLI",
     summary: "For indie hackers shipping repeatable image batches.",
     bullets: [
-      "1 CLI key",
+      "Includes command-line access",
       "Batch through terminal",
       "Fits scripts and automations",
     ],
@@ -50,8 +50,8 @@ const WORKFLOWS: Workflow[] = [
     summary: "For builders who automate in CLI and review in app before publishing.",
     badge: "Best value",
     bullets: [
-      "Two keys (App + CLI)",
-      "Desktop processing when both keys are active",
+      "Includes desktop + command-line access",
+      "Best when you want both visual and batch workflows",
       "Best for frequent shipping",
     ],
     cta: "Choose Bundle",

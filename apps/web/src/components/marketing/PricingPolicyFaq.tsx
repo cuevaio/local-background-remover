@@ -12,22 +12,22 @@ const FAQS: FaqItem[] = [
   {
     question: "Are downloads public?",
     answer:
-      "Yes. Installers are public. Runtime features unlock only after activating a valid key for each surface you use.",
+      "Yes. Anyone can download. Paid features unlock after activation.",
   },
   {
     question: "What does App + CLI include?",
     answer:
-      "The bundle includes two keys, one for the app and one for the CLI. Desktop processing requires both active keys.",
+      "The bundle includes desktop access and command-line access in one purchase.",
   },
   {
     question: "Can I keep working offline?",
     answer:
-      "Yes. After activation, usage remains available offline within the product's active and grace windows.",
+      "Yes. After activation, you can keep processing even when your internet is unstable.",
   },
   {
     question: "Can I start with one plan and upgrade later?",
     answer:
-      "Yes. You can buy the surface you need now and add the other later to complete the full workflow.",
+      "Yes. Start with desktop or command-line, then add the other later if you need both.",
   },
 ];
 
@@ -39,7 +39,7 @@ export default function PricingPolicyFaq() {
           <Badge variant="outline" className="w-fit bg-card">
             Purchase confidence
           </Badge>
-          <CardTitle>Clear policy and activation expectations</CardTitle>
+          <CardTitle>Clear purchase terms</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <Alert>
@@ -47,12 +47,12 @@ export default function PricingPolicyFaq() {
             <AlertDescription>No recurring subscription for core usage.</AlertDescription>
           </Alert>
           <Alert>
-            <AlertTitle>Surface-based licensing</AlertTitle>
-            <AlertDescription>App and CLI are separate entitlements with separate keys.</AlertDescription>
+            <AlertTitle>Flexible workflow choices</AlertTitle>
+            <AlertDescription>Choose desktop, command-line, or both based on how you work.</AlertDescription>
           </Alert>
           <Alert>
-            <AlertTitle>Offline operation after activation</AlertTitle>
-            <AlertDescription>Keep processing without continuous internet access.</AlertDescription>
+            <AlertTitle>Reliable in day-to-day use</AlertTitle>
+            <AlertDescription>Keep processing without needing a constant internet connection.</AlertDescription>
           </Alert>
         </CardContent>
       </Card>

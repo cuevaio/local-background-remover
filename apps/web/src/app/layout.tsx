@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Local Background Remover",
   },
   description:
-    "Private background removal for indie builders using desktop and CLI workflows. Download publicly, activate matching keys, and keep processing offline after activation.",
+    "Private background removal for indie builders. Use the desktop app or command line tool with simple one-time pricing.",
   alternates: {
     canonical: "/",
   },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: BRAND_NAME,
     title: "Local Background Remover for App and CLI",
     description:
-      "Private local background removal for independent creators using desktop and terminal workflows. Public downloads, license-gated runtime, offline after activation.",
+      "Private local background removal for independent creators using desktop and terminal workflows with one-time pricing.",
     images: [
       {
         url: "/opengraph-image",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Local Background Remover for App and CLI",
     description:
-      "Private local background removal for independent creators using desktop and terminal workflows. Public downloads, license-gated runtime, offline after activation.",
+      "Private local background removal for independent creators using desktop and terminal workflows with one-time pricing.",
     images: ["/twitter-image"],
   },
 };

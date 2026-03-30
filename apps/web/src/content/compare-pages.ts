@@ -68,8 +68,8 @@ function createComparePage(input: CompareInput): ComparePage {
     heroTitle: `Local Background Remover vs ${competitorName}`,
     heroDescription,
     heroHighlights: [
-      "Private local processing after activation",
-      "Desktop app + CLI in one stack",
+      "Private local processing on your device",
+      "Desktop app + command-line options",
       `Quick indie fit check vs ${competitorName}`,
     ],
     seoTitle: `${competitorName} Alternative for Private Local Background Removal`,
@@ -79,7 +79,7 @@ function createComparePage(input: CompareInput): ComparePage {
       source: "Workflow feedback from an indie ecommerce builder",
     },
     localBestFor: [
-      "Indie builders who want local processing after activation",
+      "Indie builders who want local processing",
       "Workflows that blend desktop review and CLI automation",
       "One-time pricing over recurring seats",
     ],
@@ -87,7 +87,7 @@ function createComparePage(input: CompareInput): ComparePage {
     comparisonRows: [
       {
         feature: "Processing workflow",
-        local: "On-device workflows after activation",
+        local: "Runs directly on your device",
         competitor: competitorWorkflow,
       },
       {
@@ -97,12 +97,12 @@ function createComparePage(input: CompareInput): ComparePage {
       },
       {
         feature: "Offline behavior",
-        local: "Designed for offline-after-activation usage",
+        local: "Keeps working even with unstable internet",
         competitor: "Commonly browser-first with online tool flows",
       },
       {
-        feature: "Automation surface",
-        local: "Desktop UI plus CLI for repeatable scripts",
+        feature: "Automation options",
+        local: "Desktop app plus command-line tool for repeat workflows",
         competitor: competitorAutomation,
       },
       {
@@ -125,12 +125,12 @@ function createComparePage(input: CompareInput): ComparePage {
       {
         question: "Do I need both app and CLI keys for desktop processing?",
         answer:
-          "Yes. Desktop processing in Local requires active app and CLI entitlements so both surfaces stay aligned.",
+          "If you buy the App + CLI bundle, activate both parts to use the full workflow.",
       },
       {
         question: "Can I test Local before purchasing?",
         answer:
-          "Yes. Installers are public at /downloads. Runtime commands and processing unlock after key activation.",
+          "Yes. You can download first at /downloads and unlock processing when you are ready.",
       },
     ],
     sources,
@@ -233,11 +233,11 @@ export const COMPARE_PAGES: ComparePage[] = [
     competitorBestFor: [
       "Users that want many hosted AI tools in one platform",
       "Users handling mixed image/video operations in the browser",
-      "Studios that value integrated online editing stacks",
+      "Studios that value integrated online editing suites",
     ],
     competitorWorkflow: "Hosted multi-tool platform with browser-first background removal",
     competitorPricing: "Plan and credit structure across hosted features",
-    competitorAutomation: "API and app integrations in cloud stacks",
+    competitorAutomation: "API and app integrations in cloud suites",
     sources: ["https://www.cutout.pro/remove-background"],
     lastReviewedAt: "2026-03-30",
   }),
