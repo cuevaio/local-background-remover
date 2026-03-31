@@ -11,10 +11,10 @@
     },
     "apps/desktop": {
       "name": "desktop",
-      "version": "0.3.3",
+      "version": "0.4.1",
       "devDependencies": {
         "@types/node": "^24.7.2",
-        "electron": "^41.1.0",
+        "electron": "41.1.0",
         "electron-builder": "^26.0.20",
         "typescript": "^5.9.3",
       },

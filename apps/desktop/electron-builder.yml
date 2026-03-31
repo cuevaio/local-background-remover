@@ -11,6 +11,7 @@ extraResources:
     filter:
       - "**/*"
 artifactName: local-background-remover-v${version}-darwin-${arch}.${ext}
+electronVersion: 41.1.0
 mac:
   target:
     - dmg
