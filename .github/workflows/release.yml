@@ -1,4 +1,4 @@
-name: Release CLI
+name: Release
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-cli:
     strategy:
       matrix:
         include:
@@ -45,8 +45,51 @@ jobs:
           name: rmbg-${{ matrix.target }}
           path: apps/rmbg/dist/release/*.tar.gz
 
+  build-desktop:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install JS dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Validate desktop version matches git tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PROJECT_VERSION="$(node -p "require('./apps/desktop/package.json').version")"
+          if [[ "v${PROJECT_VERSION}" != "${TAG}" ]]; then
+            echo "Tag ${TAG} does not match desktop package version v${PROJECT_VERSION}" >&2
+            exit 1
+          fi
+
+      - name: Build packaged CLI runtime
+        working-directory: apps/rmbg
+        run: bun run package:mac
+
+      - name: Build desktop installers
+        working-directory: apps/desktop
+        run: bun run dist:mac
+
+      - name: Upload desktop artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-darwin-arm64
+          path: |
+            apps/desktop/dist-packages/*.dmg
+            apps/desktop/dist-packages/*.zip
+
   publish:
-    needs: build
+    needs:
+      - build-cli
+      - build-desktop
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -58,13 +101,22 @@ jobs:
           path: release-assets
 
       - name: Generate checksums
+        shell: bash
         run: |
           cd release-assets
-          sha256sum *.tar.gz > checksums.txt
+          shopt -s nullglob
+          files=( *.tar.gz *.dmg *.zip )
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No release assets found to checksum" >&2
+            exit 1
+          fi
+          sha256sum "${files[@]}" > checksums.txt
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             release-assets/*.tar.gz
+            release-assets/*.dmg
+            release-assets/*.zip
             release-assets/checksums.txt

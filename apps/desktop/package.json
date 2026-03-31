@@ -1,18 +1,24 @@
 {
   "name": "desktop",
   "private": true,
+  "version": "0.4.0",
+  "description": "Local Background Remover desktop app",
+  "author": "Background Remover",
   "license": "UNLICENSED",
   "main": "dist/main/main.js",
   "scripts": {
     "dev": "tsc -p tsconfig.json && node ./scripts/copy-renderer-assets.mjs && electron .",
     "build": "tsc -p tsconfig.json && node ./scripts/copy-renderer-assets.mjs",
-    "lint": "node -e \"console.log('No desktop lint configured yet')\"",
-    "test": "node -e \"console.log('No desktop tests configured yet')\"",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "bun run build && node --test test/*.test.cjs",
+    "build:mac": "bun run build && node ./scripts/prepare-rmbg-runtime.mjs",
+    "dist:mac": "bun run build:mac && node ./scripts/dist-mac.mjs",
     "check": "bun run lint && bun run test"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
     "electron": "^41.1.0",
+    "electron-builder": "^26.0.20",
     "typescript": "^5.9.3"
   }
 }

@@ -1,9 +1,9 @@
 # Deployment Runbook
 
-This runbook covers the full CLI production flow:
+This runbook covers the full CLI + desktop production flow:
 
 1. Deploy web API (`apps/web`) to Vercel
-2. Publish CLI binaries to GitHub Releases
+2. Publish CLI binaries and desktop installers to GitHub Releases
 3. Install from `https://local.backgroundrm.com/install`
 4. Activate license and process an image
 
@@ -80,9 +80,9 @@ Expected:
 - `HTTP/2 200`
 - `content-type: text/x-shellscript`
 
-## Publish CLI release
+## Publish shared CLI + desktop release
 
-1. Bump `apps/rmbg` package version.
+1. Bump `apps/rmbg` and `apps/desktop` to the same version.
 2. Tag and push:
 
 ```bash
@@ -90,11 +90,12 @@ git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
 
-3. Wait for `Release CLI` workflow to finish.
+3. Wait for the `Release` workflow to finish.
 4. Confirm release assets include:
 
 - `rmbg-vX.Y.Z-darwin-arm64.tar.gz`
-- `rmbg-vX.Y.Z-darwin-x86_64.tar.gz`
+- `local-background-remover-vX.Y.Z-darwin-arm64.dmg`
+- `local-background-remover-vX.Y.Z-darwin-arm64.zip`
 - `checksums.txt`
 
 5. Verify checksums:
@@ -104,6 +105,11 @@ gh release download vX.Y.Z --repo cuevaio/local-background-remover -D /tmp/rmbg-
 cd /tmp/rmbg-release
 shasum -a 256 -c checksums.txt
 ```
+
+Notes:
+
+- App Store review is not required for the GitHub release `.dmg` flow.
+- Apple signing and notarization can be added later, but the first release can ship unsigned so testers can download it immediately.
 
 ## Full user flow test (production)
 

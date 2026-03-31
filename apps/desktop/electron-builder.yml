@@ -1,0 +1,19 @@
+appId: com.backgroundrm.desktop
+productName: Local Background Remover
+directories:
+  output: dist-packages
+files:
+  - dist/**
+  - package.json
+extraResources:
+  - from: build-resources/rmbg
+    to: rmbg
+    filter:
+      - "**/*"
+artifactName: local-background-remover-v${version}-darwin-${arch}.${ext}
+mac:
+  target:
+    - dmg
+    - zip
+  category: public.app-category.photography
+  hardenedRuntime: false
