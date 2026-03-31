@@ -11,6 +11,7 @@ from .config import DEFAULT_WORKER_IDLE_SECONDS, resolve_model_dir
 from .io import default_output_path, is_http_url, load_image, save_png
 from .license_manager import (
     activate_license,
+    ensure_desktop_hosted_runtime,
     ensure_required_surfaces,
     refresh_license,
     resolve_license_file,
@@ -88,6 +89,7 @@ def cmd_model_status(args: argparse.Namespace) -> int:
 def cmd_model_ensure(args: argparse.Namespace) -> int:
     model_dir = resolve_model_dir(args.model_dir)
     try:
+        ensure_desktop_hosted_runtime(args.surface)
         license_path = resolve_license_file(args.license_file)
         ensure_required_surfaces(license_path, _collect_required_surfaces(args))
         if should_refresh(license_path, args.surface):
@@ -142,6 +144,7 @@ def cmd_remove(args: argparse.Namespace) -> int:
     output_path = args.output or default_output_path(args.input)
 
     try:
+        ensure_desktop_hosted_runtime(args.surface)
         license_path = resolve_license_file(args.license_file)
         ensure_required_surfaces(license_path, _collect_required_surfaces(args))
         if should_refresh(license_path, args.surface):
@@ -229,6 +232,7 @@ def cmd_remove(args: argparse.Namespace) -> int:
 def cmd_license_activate(args: argparse.Namespace) -> int:
     license_path = resolve_license_file(args.license_file)
     try:
+        ensure_desktop_hosted_runtime(args.surface)
         response = activate_license(license_path, args.key, args.surface, args.api_base)
     except Exception as exc:
         _print({"ok": False, "error": str(exc)}, _wants_json(args))
@@ -270,6 +274,7 @@ def cmd_license_status(args: argparse.Namespace) -> int:
 def cmd_license_refresh(args: argparse.Namespace) -> int:
     license_path = resolve_license_file(args.license_file)
     try:
+        ensure_desktop_hosted_runtime(args.surface)
         response = refresh_license(license_path, args.surface, args.api_base)
     except Exception as exc:
         _print({"ok": False, "error": str(exc)}, _wants_json(args))
@@ -293,7 +298,20 @@ def cmd_license_refresh(args: argparse.Namespace) -> int:
 def cmd_worker(args: argparse.Namespace) -> int:
     from .worker_server import run_worker_server
 
-    return run_worker_server(args.idle_seconds, args.model_dir)
+    try:
+        ensure_desktop_hosted_runtime(args.surface)
+    except Exception as exc:
+        _print({"ok": False, "error": str(exc)}, _wants_json(args))
+        return 6
+
+    return run_worker_server(
+        args.idle_seconds,
+        args.model_dir,
+        surface=args.surface,
+        require_surfaces=_collect_required_surfaces(args),
+        license_file=args.license_file,
+        api_base=args.api_base,
+    )
 
 
 def _add_output_flags(cmd: argparse.ArgumentParser) -> None:
@@ -434,6 +452,30 @@ def build_parser() -> argparse.ArgumentParser:
         help="Auto-exit after this many idle seconds",
     )
     worker_parser.add_argument("--model-dir", type=str, default=None)
+    worker_parser.add_argument(
+        "--surface",
+        type=str,
+        choices=["cli", "desktop", "app"],
+        default="cli",
+        help="Primary license surface for worker requests",
+    )
+    worker_parser.add_argument(
+        "--require-surface",
+        type=str,
+        choices=["cli", "desktop", "app"],
+        action="append",
+        default=[],
+        help="Additional surface requirement(s), repeatable",
+    )
+    worker_parser.add_argument("--license-file", type=str, default=None)
+    worker_parser.add_argument("--api-base", type=str, default=None)
+    worker_parser.add_argument(
+        "--license-api",
+        dest="api_base",
+        type=str,
+        default=None,
+        help="Deprecated alias for --api-base",
+    )
     worker_parser.set_defaults(func=cmd_worker)
 
     license_parser = subparsers.add_parser(

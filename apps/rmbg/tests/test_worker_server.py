@@ -7,6 +7,8 @@ from rmbg_cli import worker_server
 def test_handle_request_remove_passes_url_to_shared_loader(monkeypatch) -> None:
     seen: dict[str, str] = {}
 
+    monkeypatch.setattr(worker_server, "_ensure_worker_license", lambda _state: None)
+
     monkeypatch.setattr(
         worker_server, "ensure_local_model", lambda *_args, **_kwargs: False
     )
@@ -44,6 +46,7 @@ def test_handle_request_remove_passes_url_to_shared_loader(monkeypatch) -> None:
 
 
 def test_worker_remove_surfaces_url_loader_errors(monkeypatch) -> None:
+    monkeypatch.setattr(worker_server, "_ensure_worker_license", lambda _state: None)
     monkeypatch.setattr(
         worker_server, "ensure_local_model", lambda *_args, **_kwargs: False
     )
@@ -69,3 +72,50 @@ def test_worker_remove_surfaces_url_loader_errors(monkeypatch) -> None:
 
     with pytest.raises(RuntimeError, match="download failed"):
         worker_server._handle_request(state, request)
+
+
+def test_worker_remove_enforces_required_surfaces(monkeypatch) -> None:
+    monkeypatch.setattr(
+        worker_server,
+        "ensure_required_surfaces",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            RuntimeError("license missing")
+        ),
+    )
+    monkeypatch.setattr(
+        worker_server, "resolve_license_file", lambda _override: "/tmp/license.json"
+    )
+
+    state = worker_server.WorkerState(
+        surface="cli", require_surfaces=("cli", "desktop")
+    )
+    request = {
+        "action": "remove",
+        "payload": {
+            "input_path": "https://example.com/photo.jpg",
+            "output_path": "/tmp/out.png",
+        },
+    }
+
+    with pytest.raises(RuntimeError, match="license missing"):
+        worker_server._handle_request(state, request)
+
+
+def test_run_worker_server_rejects_desktop_surface_without_hosted_runtime(
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        worker_server,
+        "ensure_desktop_hosted_runtime",
+        lambda _surface: (_ for _ in ()).throw(RuntimeError("desktop only")),
+    )
+
+    with pytest.raises(RuntimeError, match="desktop only"):
+        worker_server.run_worker_server(
+            30,
+            None,
+            surface="desktop",
+            require_surfaces=("desktop",),
+            license_file=None,
+            api_base=None,
+        )

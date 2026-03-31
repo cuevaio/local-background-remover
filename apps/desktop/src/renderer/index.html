@@ -8,87 +8,104 @@
   </head>
   <body>
     <div class="app-shell">
-      <header class="topbar">
+      <header class="brand-row">
         <div>
+          <p class="eyebrow">Local-first image tool</p>
           <h1>Local Background Remover</h1>
-          <p class="subtitle">Minimal background removal with local-first model runtime</p>
-        </div>
-        <div class="actions">
-          <button id="ensure-model-btn" class="btn secondary">Ensure Model</button>
-          <button id="add-images-btn" class="btn primary">Add Images</button>
+          <p class="subtitle">Clean cutouts in a few clicks, right on your device.</p>
         </div>
       </header>
 
-      <section class="status-row">
-        <span id="model-status" class="pill">Checking model...</span>
-        <span id="worker-status" class="pill">Worker: checking...</span>
-        <span id="app-license-status" class="pill">App key: checking...</span>
-        <span id="cli-license-status" class="pill">CLI key: checking...</span>
-        <span id="global-status" class="pill muted">Ready</span>
-      </section>
+      <section id="onboarding-screen" class="panel onboarding-screen">
+        <p class="step-title">Get started</p>
+        <h2>Activate your app key</h2>
+        <p class="step-copy">Paste your license to unlock the editor.</p>
 
-      <section class="license-grid">
-        <article class="license-panel">
-          <h2>App key</h2>
-          <label for="app-license-key-input">Activate desktop app</label>
-          <input
-            id="app-license-key-input"
-            type="text"
-            placeholder="Paste Polar app key"
-          />
-          <div class="license-actions">
-            <button id="app-license-activate-btn" class="btn primary">Activate app</button>
-            <button id="app-license-refresh-btn" class="btn secondary">Refresh</button>
+        <article class="step-card">
+          <label for="app-license-key-input">App license key</label>
+          <div class="inline-form">
+            <input id="app-license-key-input" type="text" placeholder="Paste your app key" />
+            <button id="app-license-activate-btn" class="btn primary" type="button">Activate</button>
           </div>
         </article>
-
-        <article class="license-panel">
-          <h2>CLI key</h2>
-          <label for="cli-license-key-input">Activate command-line runtime</label>
-          <input
-            id="cli-license-key-input"
-            type="text"
-            placeholder="Paste Polar CLI key"
-          />
-          <div class="license-actions">
-            <button id="cli-license-activate-btn" class="btn primary">Activate CLI</button>
-            <button id="cli-license-refresh-btn" class="btn secondary">Refresh</button>
-          </div>
-        </article>
-        <div class="license-note">
-          Desktop processing requires both keys to be active.
-        </div>
       </section>
 
-      <main>
+      <main id="workspace-screen" class="workspace hidden">
+        <section id="dropzone" class="dropzone" aria-label="Add new image">
+          <div class="dropzone-inner">
+            <h2>Add a new image</h2>
+            <p>Drag and drop, click to select files, or paste an image URL.</p>
+            <div class="dropzone-actions">
+              <button id="select-images-btn" class="btn primary" type="button">Select files</button>
+              <span class="or-label">or</span>
+              <div class="url-row">
+                <input id="image-url-input" type="url" placeholder="https://example.com/image.jpg" />
+                <button id="add-url-btn" class="btn secondary" type="button">Use URL</button>
+              </div>
+              <button id="open-library-folder-btn" class="btn ghost" type="button">Open library folder</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="focus-empty" class="focus-empty">
+          <h3>Select an image</h3>
+          <p>Choose one from your gallery below to preview and edit.</p>
+        </section>
+
+        <section id="focus-panel" class="focus-panel hidden">
+          <header class="focus-head">
+            <h2 id="focus-title">Image</h2>
+            <span id="focus-state" class="state">Ready</span>
+          </header>
+
+          <div class="focus-compare-wrap">
+            <img id="focus-before" class="img-before" alt="Original" />
+            <img id="focus-after" class="img-after" alt="Processed" />
+            <div id="focus-divider" class="compare-divider"></div>
+            <span class="compare-label before">Before</span>
+            <span class="compare-label after">After</span>
+          </div>
+
+          <input id="focus-slider" class="slider" type="range" min="0" max="100" value="50" />
+
+          <footer class="focus-actions">
+            <button id="focus-save-btn" class="btn secondary" type="button">Save as...</button>
+            <button id="focus-open-btn" class="btn ghost" type="button">Open folder</button>
+            <button id="focus-delete-btn" class="btn danger focus-delete-btn" type="button">Delete image</button>
+          </footer>
+        </section>
+
         <section id="gallery" class="gallery"></section>
         <section id="empty-state" class="empty-state">
-          <h2>No images yet</h2>
-          <p>Add one or more images to preview and remove backgrounds.</p>
+          <h3>Your gallery is empty</h3>
+          <p>Add an image. It will be kept in your library and loaded next time.</p>
         </section>
+
+        <div id="cli-notice" class="cli-notice hidden">
+          <span>Also have a CLI add-on key?</span>
+          <button id="show-cli-activation-btn" class="text-link" type="button">Activate it here</button>
+          <button id="dismiss-cli-notice-btn" class="notice-dismiss" type="button" aria-label="Dismiss">✕</button>
+          <div id="cli-activation-inline" class="cli-activation-inline hidden">
+            <input id="cli-license-key-input" type="text" placeholder="Paste your CLI key" />
+            <button id="cli-license-activate-btn" class="btn secondary" type="button">Activate</button>
+          </div>
+        </div>
       </main>
     </div>
 
+    <div id="status-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="false"></div>
+
     <template id="card-template">
-      <article class="card">
+      <article class="card thumb-card">
         <header class="card-head">
           <h3 class="filename"></h3>
-          <span class="state">Idle</span>
+          <span class="state">New</span>
         </header>
 
-        <div class="compare-wrap">
-          <img class="img-before" alt="Original" />
-          <div class="overlay">
-            <img class="img-after" alt="Processed" />
-          </div>
+        <div class="thumb-preview-wrap">
+          <img class="thumb-preview" alt="Thumbnail" />
         </div>
-
-        <input class="slider" type="range" min="0" max="100" value="50" />
-
-        <footer class="card-actions">
-          <button class="btn process-btn">Remove BG</button>
-          <button class="btn secondary save-btn" disabled>Save Result</button>
-        </footer>
       </article>
     </template>
 

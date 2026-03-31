@@ -8,6 +8,10 @@ __pycache__/
 dist/
 build/
 
+# Desktop packaging artifacts
+apps/desktop/build-resources/rmbg/
+apps/desktop/dist-packages/
+
 .DS_Store
 
 .next

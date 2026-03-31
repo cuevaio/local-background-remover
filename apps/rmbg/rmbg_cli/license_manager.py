@@ -23,6 +23,12 @@ from .config import (
 )
 
 VALID_SURFACES = {"cli", "desktop"}
+DESKTOP_SESSION_FILE_ENV = "RMBG_DESKTOP_SESSION_FILE"
+DESKTOP_SESSION_NONCE_ENV = "RMBG_DESKTOP_SESSION_NONCE"
+DESKTOP_RUNTIME_ONLY_ERROR = (
+    "This runtime is licensed for the desktop app only. Open Local Background "
+    "Remover to use it, or activate a CLI license for Terminal use."
+)
 
 
 def _b64url_decode(raw: str) -> bytes:
@@ -37,6 +43,35 @@ def normalize_surface(surface: str) -> str:
     if normalized in VALID_SURFACES:
         return normalized
     raise RuntimeError(f"Unsupported surface '{surface}'")
+
+
+def ensure_desktop_hosted_runtime(surface: str) -> None:
+    if normalize_surface(surface) != "desktop":
+        return
+
+    session_file = os.environ.get(DESKTOP_SESSION_FILE_ENV, "").strip()
+    session_nonce = os.environ.get(DESKTOP_SESSION_NONCE_ENV, "").strip()
+    if not session_file or not session_nonce:
+        raise RuntimeError(DESKTOP_RUNTIME_ONLY_ERROR)
+
+    try:
+        session_path = Path(session_file).expanduser().resolve()
+        payload = json.loads(session_path.read_text(encoding="utf-8"))
+    except (OSError, RuntimeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(DESKTOP_RUNTIME_ONLY_ERROR) from exc
+
+    stored_nonce = str(payload.get("nonce") or "").strip()
+    expires_at_raw = payload.get("expires_at")
+    try:
+        expires_at = int(expires_at_raw)
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError(DESKTOP_RUNTIME_ONLY_ERROR) from exc
+
+    if not stored_nonce or stored_nonce != session_nonce:
+        raise RuntimeError(DESKTOP_RUNTIME_ONLY_ERROR)
+
+    if int(time.time()) > expires_at:
+        raise RuntimeError(DESKTOP_RUNTIME_ONLY_ERROR)
 
 
 def _load_public_key(cached_key: Optional[str] = None) -> Ed25519PublicKey:

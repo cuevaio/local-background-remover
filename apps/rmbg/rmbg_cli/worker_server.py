@@ -12,6 +12,13 @@ from transformers import AutoModelForImageSegmentation
 from .config import DEFAULT_WORKER_IDLE_SECONDS, resolve_model_dir
 from .inference import get_runtime, load_model, remove_background
 from .io import load_image, save_png
+from .license_manager import (
+    ensure_desktop_hosted_runtime,
+    ensure_required_surfaces,
+    refresh_license,
+    resolve_license_file,
+    should_refresh,
+)
 from .model_manager import ensure_local_model
 
 
@@ -23,6 +30,10 @@ class WorkerState:
     model_dir: Optional[Path] = None
     shutdown_requested: bool = False
     model_dir_override: Optional[str] = None
+    license_file_override: Optional[str] = None
+    surface: str = "desktop"
+    require_surfaces: tuple[str, ...] = ("desktop",)
+    api_base: Optional[str] = None
 
 
 def _resolve_model_dir(state: WorkerState, payload: Dict[str, Any]) -> Path:
@@ -64,6 +75,16 @@ def _ensure_model_loaded(state: WorkerState, model_dir: Path) -> None:
     state.model_dir = model_dir
 
 
+def _ensure_worker_license(state: WorkerState) -> None:
+    license_path = resolve_license_file(state.license_file_override)
+    ensure_required_surfaces(license_path, state.require_surfaces)
+    if should_refresh(license_path, state.surface):
+        try:
+            refresh_license(license_path, state.surface, state.api_base)
+        except Exception:
+            pass
+
+
 def _handle_request(state: WorkerState, request: Dict[str, Any]) -> Dict[str, Any]:
     action = request.get("action")
     payload = request.get("payload") or {}
@@ -83,6 +104,7 @@ def _handle_request(state: WorkerState, request: Dict[str, Any]) -> Dict[str, An
         return {"shutdown": True}
 
     if action == "ensure_model":
+        _ensure_worker_license(state)
         model_dir = _resolve_model_dir(state, payload)
         bootstrapped = ensure_local_model(model_dir, allow_download=True)
         return {
@@ -93,6 +115,7 @@ def _handle_request(state: WorkerState, request: Dict[str, Any]) -> Dict[str, An
         }
 
     if action == "remove":
+        _ensure_worker_license(state)
         input_path = payload.get("input_path")
         output_path = payload.get("output_path")
         if not input_path:
@@ -127,9 +150,24 @@ def _emit(response: Dict[str, Any]) -> None:
     sys.stdout.flush()
 
 
-def run_worker_server(idle_seconds: int, model_dir_override: Optional[str]) -> int:
+def run_worker_server(
+    idle_seconds: int,
+    model_dir_override: Optional[str],
+    *,
+    surface: str,
+    require_surfaces: tuple[str, ...] | list[str],
+    license_file: Optional[str],
+    api_base: Optional[str],
+) -> int:
     idle_seconds = max(5, idle_seconds)
-    state = WorkerState(model_dir_override=model_dir_override)
+    ensure_desktop_hosted_runtime(surface)
+    state = WorkerState(
+        model_dir_override=model_dir_override,
+        license_file_override=license_file,
+        surface=surface,
+        require_surfaces=tuple(require_surfaces),
+        api_base=api_base,
+    )
 
     deadline = time.monotonic() + idle_seconds
 
@@ -172,8 +210,33 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="rmbg worker server")
     parser.add_argument("--idle-seconds", type=int, default=DEFAULT_WORKER_IDLE_SECONDS)
     parser.add_argument("--model-dir", type=str, default=None)
+    parser.add_argument(
+        "--surface",
+        type=str,
+        choices=["cli", "desktop", "app"],
+        default="cli",
+    )
+    parser.add_argument(
+        "--require-surface",
+        type=str,
+        choices=["cli", "desktop", "app"],
+        action="append",
+        default=[],
+    )
+    parser.add_argument("--license-file", type=str, default=None)
+    parser.add_argument("--api-base", type=str, default=None)
     args = parser.parse_args()
-    raise SystemExit(run_worker_server(args.idle_seconds, args.model_dir))
+    required = [args.surface, *(args.require_surface or [])]
+    raise SystemExit(
+        run_worker_server(
+            args.idle_seconds,
+            args.model_dir,
+            surface=args.surface,
+            require_surfaces=required,
+            license_file=args.license_file,
+            api_base=args.api_base,
+        )
+    )
 
 
 if __name__ == "__main__":

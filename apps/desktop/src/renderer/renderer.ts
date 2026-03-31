@@ -1,21 +1,53 @@
-const gallery = document.getElementById("gallery");
-const emptyState = document.getElementById("empty-state");
-const addImagesBtn = document.getElementById("add-images-btn") as HTMLButtonElement | null;
-const ensureModelBtn = document.getElementById("ensure-model-btn") as HTMLButtonElement | null;
-const modelStatusEl = document.getElementById("model-status");
-const workerStatusEl = document.getElementById("worker-status");
-const appLicenseStatusEl = document.getElementById("app-license-status");
-const cliLicenseStatusEl = document.getElementById("cli-license-status");
-const globalStatusEl = document.getElementById("global-status");
-const cardTemplate = document.getElementById("card-template") as HTMLTemplateElement | null;
+const onboardingScreen = document.getElementById("onboarding-screen");
+const workspaceScreen = document.getElementById("workspace-screen");
 
 const appLicenseInput = document.getElementById("app-license-key-input") as HTMLInputElement | null;
 const appActivateBtn = document.getElementById("app-license-activate-btn") as HTMLButtonElement | null;
-const appRefreshBtn = document.getElementById("app-license-refresh-btn") as HTMLButtonElement | null;
 
+const cliNotice = document.getElementById("cli-notice");
+const showCliActivationBtn = document.getElementById("show-cli-activation-btn") as HTMLButtonElement | null;
+const dismissCliNoticeBtn = document.getElementById("dismiss-cli-notice-btn") as HTMLButtonElement | null;
+const cliActivationInline = document.getElementById("cli-activation-inline");
 const cliLicenseInput = document.getElementById("cli-license-key-input") as HTMLInputElement | null;
 const cliActivateBtn = document.getElementById("cli-license-activate-btn") as HTMLButtonElement | null;
-const cliRefreshBtn = document.getElementById("cli-license-refresh-btn") as HTMLButtonElement | null;
+
+const dropzone = document.getElementById("dropzone");
+const selectImagesBtn = document.getElementById("select-images-btn") as HTMLButtonElement | null;
+const imageUrlInput = document.getElementById("image-url-input") as HTMLInputElement | null;
+const addUrlBtn = document.getElementById("add-url-btn") as HTMLButtonElement | null;
+const openLibraryFolderBtn = document.getElementById("open-library-folder-btn") as HTMLButtonElement | null;
+
+const focusEmpty = document.getElementById("focus-empty");
+const focusPanel = document.getElementById("focus-panel");
+const focusTitle = document.getElementById("focus-title");
+const focusState = document.getElementById("focus-state");
+const focusBefore = document.getElementById("focus-before") as HTMLImageElement | null;
+const focusAfter = document.getElementById("focus-after") as HTMLImageElement | null;
+const focusDivider = document.getElementById("focus-divider");
+const focusSlider = document.getElementById("focus-slider") as HTMLInputElement | null;
+const focusSaveBtn = document.getElementById("focus-save-btn") as HTMLButtonElement | null;
+const focusOpenBtn = document.getElementById("focus-open-btn") as HTMLButtonElement | null;
+const focusDeleteBtn = document.getElementById("focus-delete-btn") as HTMLButtonElement | null;
+
+const gallery = document.getElementById("gallery");
+const emptyState = document.getElementById("empty-state");
+const statusLiveEl = document.getElementById("status-live");
+const toastRegion = document.getElementById("toast-region");
+const cardTemplate = document.getElementById("card-template") as HTMLTemplateElement | null;
+
+let dragDepth = 0;
+let cliNoticeDismissed = false;
+let libraryItems: LibraryImageItem[] = [];
+let activeImageId: string | null = null;
+const processingIds = new Set<string>();
+let toastCounter = 0;
+
+type ToastTone = "default" | "success" | "error";
+
+type StatusOptions = {
+  toast?: boolean;
+  tone?: ToastTone;
+};
 
 function required<T>(value: T | null, label: string): T {
   if (!value) {
@@ -24,274 +56,564 @@ function required<T>(value: T | null, label: string): T {
   return value;
 }
 
-function setGlobalStatus(message: string) {
-  required(globalStatusEl, "global-status").textContent = message;
+function dismissToast(toast: HTMLElement) {
+  toast.classList.remove("visible");
+  window.setTimeout(() => {
+    toast.remove();
+  }, 180);
 }
 
-function setModelStatus(message: string) {
-  required(modelStatusEl, "model-status").textContent = message;
+function showToast(message: string, tone: ToastTone = "default") {
+  const region = required(toastRegion, "toast-region");
+  const toast = document.createElement("div");
+  toastCounter += 1;
+  toast.className = `toast toast-${tone}`;
+  toast.dataset.toastId = String(toastCounter);
+  toast.textContent = message;
+  region.appendChild(toast);
+
+  while (region.children.length > 4) {
+    const oldest = region.firstElementChild;
+    if (!(oldest instanceof HTMLElement)) {
+      break;
+    }
+    dismissToast(oldest);
+  }
+
+  requestAnimationFrame(() => {
+    toast.classList.add("visible");
+  });
+
+  window.setTimeout(() => {
+    if (toast.isConnected) {
+      dismissToast(toast);
+    }
+  }, tone === "error" ? 5200 : 2800);
 }
 
-function setWorkerStatus(message: string) {
-  required(workerStatusEl, "worker-status").textContent = message;
-}
+function setGlobalStatus(message: string, options: StatusOptions = {}) {
+  const liveRegion = required(statusLiveEl, "status-live");
+  liveRegion.textContent = "";
+  window.setTimeout(() => {
+    liveRegion.textContent = message;
+  }, 0);
 
-function setSurfaceStatus(el: HTMLElement | null, label: string, status: LicenseResponse | null | undefined) {
-  const target = required(el, `${label} status`);
-  if (!status || !status.ok) {
-    target.textContent = `${label}: unknown`;
+  if (options.toast === false || !message.trim()) {
     return;
   }
 
-  if (status.licensed) {
-    target.textContent = status.phase === "grace" ? `${label}: grace window` : `${label}: active`;
-    return;
-  }
+  showToast(message, options.tone || "default");
+}
 
-  if (status.phase === "missing") {
-    target.textContent = `${label}: not activated`;
-    return;
-  }
+function isHttpUrl(value: string) {
+  return /^https?:\/\//i.test(value);
+}
 
-  target.textContent = `${label}: invalid`;
+function toImageSrc(inputPath: string) {
+  return isHttpUrl(inputPath) ? inputPath : `file://${encodeURI(inputPath)}`;
+}
+
+function sourceName(inputPath: string) {
+  if (isHttpUrl(inputPath)) {
+    try {
+      const parsed = new URL(inputPath);
+      return parsed.pathname.split("/").filter(Boolean).pop() || parsed.host;
+    } catch {
+      return inputPath;
+    }
+  }
+  return inputPath.split("/").pop() || inputPath;
+}
+
+function isSurfaceLicensed(status: LicenseResponse | undefined) {
+  return Boolean(status?.ok && status.licensed);
+}
+
+function currentItem() {
+  return libraryItems.find((item) => item.id === activeImageId) || null;
+}
+
+function applyFocusSlider(value: string) {
+  const percent = Number.parseInt(value, 10);
+  const clamped = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) : 50;
+  required(focusAfter, "focus-after").style.clipPath = `inset(0 0 0 ${clamped}%)`;
+  required(focusDivider, "focus-divider").setAttribute("style", `left: ${clamped}%;`);
 }
 
 function updateEmptyState() {
-  const target = required(emptyState, "empty-state");
-  target.classList.toggle("hidden", required(gallery, "gallery").children.length > 0);
+  const hasItems = libraryItems.length > 0;
+  required(emptyState, "empty-state").classList.toggle("hidden", hasItems);
 }
 
-function toFileUrl(filePath: string) {
-  return `file://${encodeURI(filePath)}`;
-}
+function renderGallery() {
+  const galleryEl = required(gallery, "gallery");
+  galleryEl.innerHTML = "";
 
-function setCardState(card: Element, state: string) {
-  const stateEl = card.querySelector(".state");
-  if (stateEl) {
-    stateEl.textContent = state;
-  }
-}
-
-function createCard(filePath: string) {
-  const template = required(cardTemplate, "card-template");
-  const fragment = template.content.cloneNode(true);
-  const card = (fragment as DocumentFragment).querySelector(".card");
-  if (!card) {
-    return;
-  }
-
-  const filename = required(card.querySelector(".filename"), "card filename");
-  const before = required(card.querySelector(".img-before"), "before image") as HTMLImageElement;
-  const after = required(card.querySelector(".img-after"), "after image") as HTMLImageElement;
-  const slider = required(card.querySelector(".slider"), "compare slider") as HTMLInputElement;
-  const overlay = required(card.querySelector(".overlay"), "compare overlay") as HTMLElement;
-  const processBtn = required(card.querySelector(".process-btn"), "process button") as HTMLButtonElement;
-  const saveBtn = required(card.querySelector(".save-btn"), "save button") as HTMLButtonElement;
-
-  const name = filePath.split("/").pop() || filePath;
-  filename.textContent = name;
-  before.src = toFileUrl(filePath);
-  after.src = toFileUrl(filePath);
-
-  let outputPath: string | null = null;
-
-  slider.addEventListener("input", () => {
-    overlay.style.width = `${slider.value}%`;
-  });
-
-  processBtn.addEventListener("click", async () => {
-    processBtn.disabled = true;
-    setCardState(card, "Processing...");
-    setGlobalStatus(`Removing background for ${name}`);
-
-    try {
-      const result = await window.rmbg.removeBackground({ inputPath: filePath });
-      if (!result?.ok) {
-        throw new Error(result?.error || "Unknown processing error");
-      }
-
-      outputPath = result.output_path || null;
-      if (!outputPath) {
-        throw new Error("Missing output path from processing response");
-      }
-      after.src = `${toFileUrl(outputPath)}?v=${Date.now()}`;
-      setCardState(card, "Done");
-      saveBtn.disabled = false;
-      setGlobalStatus("Ready");
-    } catch (error: unknown) {
-      setCardState(card, "Failed");
-      const message = error instanceof Error ? error.message : "Processing failed";
-      setGlobalStatus(message);
-    } finally {
-      processBtn.disabled = false;
-      await refreshLicenseStatus();
-      await refreshWorkerStatus();
+  for (const item of libraryItems) {
+    const fragment = required(cardTemplate, "card-template").content.cloneNode(true) as DocumentFragment;
+    const card = fragment.querySelector(".thumb-card") as HTMLElement | null;
+    if (!card) {
+      continue;
     }
-  });
 
-  saveBtn.addEventListener("click", () => {
-    if (!outputPath) {
-      return;
+    const filename = card.querySelector(".filename") as HTMLElement | null;
+    const state = card.querySelector(".state") as HTMLElement | null;
+    const preview = card.querySelector(".thumb-preview") as HTMLImageElement | null;
+
+    if (filename) {
+      filename.textContent = item.original_name || sourceName(item.source_path);
     }
-    setGlobalStatus(`Saved: ${outputPath}`);
-  });
+    if (state) {
+      state.textContent = item.output_path ? "Processed" : "New";
+    }
+    if (preview) {
+      preview.src = toImageSrc(item.output_path || item.source_path);
+    }
 
-  required(gallery, "gallery").appendChild(card);
+    if (item.id === activeImageId) {
+      card.classList.add("active");
+    }
+
+    card.addEventListener("click", () => {
+      activeImageId = item.id;
+      renderGallery();
+      renderFocusPanel();
+    });
+
+    galleryEl.appendChild(card);
+  }
+
   updateEmptyState();
 }
 
-async function refreshModelStatus() {
-  try {
-    const status = await window.rmbg.modelStatus();
-    if (status.ready) {
-      setModelStatus("Model: ready (local)");
-    } else {
-      setModelStatus("Model: missing");
-    }
-  } catch {
-    setModelStatus("Model: unknown");
+function renderFocusPanel() {
+  const item = currentItem();
+  const emptyEl = required(focusEmpty, "focus-empty");
+  const panelEl = required(focusPanel, "focus-panel");
+
+  if (!item) {
+    emptyEl.classList.remove("hidden");
+    panelEl.classList.add("hidden");
+    return;
+  }
+
+  emptyEl.classList.add("hidden");
+  panelEl.classList.remove("hidden");
+
+  required(focusTitle, "focus-title").textContent = item.original_name || sourceName(item.source_path);
+  required(focusState, "focus-state").textContent = item.output_path
+    ? "Processed"
+    : processingIds.has(item.id)
+      ? "Processing..."
+      : "Queued";
+
+  required(focusBefore, "focus-before").src = toImageSrc(item.source_path);
+  required(focusAfter, "focus-after").src = toImageSrc(item.output_path || item.source_path);
+
+  const slider = required(focusSlider, "focus-slider");
+  slider.disabled = !item.output_path;
+  slider.value = "50";
+  applyFocusSlider("50");
+
+  const saveBtn = required(focusSaveBtn, "focus-save-btn");
+  const openBtn = required(focusOpenBtn, "focus-open-btn");
+  const deleteBtn = required(focusDeleteBtn, "focus-delete-btn");
+
+  saveBtn.classList.toggle("hidden", !item.output_path);
+  openBtn.classList.toggle("hidden", !item.output_path);
+  deleteBtn.disabled = processingIds.has(item.id);
+
+  if (!item.output_path && !processingIds.has(item.id)) {
+    void processActiveItem(item.id);
   }
 }
 
-async function refreshWorkerStatus() {
-  try {
-    const status = await window.rmbg.workerStatus();
-    if (!status?.running) {
-      setWorkerStatus("Worker: sleeping");
-      return;
-    }
-
-    if (status.model_loaded) {
-      const device = status.runtime_device ? status.runtime_device.toUpperCase() : "?";
-      setWorkerStatus(`Worker: warm (${device})`);
-      return;
-    }
-
-    setWorkerStatus("Worker: active");
-  } catch {
-    setWorkerStatus("Worker: unknown");
+async function deleteActiveItem() {
+  const item = currentItem();
+  if (!item) {
+    return;
   }
+  if (processingIds.has(item.id)) {
+    setGlobalStatus("Wait for processing to finish before deleting this image.", { tone: "error" });
+    return;
+  }
+
+  const confirmed = window.confirm(`Delete ${item.original_name || sourceName(item.source_path)} from your library?`);
+  if (!confirmed) {
+    return;
+  }
+
+  const button = required(focusDeleteBtn, "focus-delete-btn");
+  button.disabled = true;
+
+  try {
+    const result = await window.rmbg.libraryDelete({ id: item.id });
+    libraryItems = Array.isArray(result?.items) ? result.items : libraryItems.filter((candidate) => candidate.id !== item.id);
+    activeImageId = libraryItems[0]?.id || null;
+    renderGallery();
+    renderFocusPanel();
+    setGlobalStatus(`${item.original_name || sourceName(item.source_path)} deleted.`, { tone: "success" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unable to delete image";
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function humanizeErrorMessage(error: unknown, fallback: string) {
+  const raw = error instanceof Error ? error.message : fallback;
+  const message = raw.replace(/^\[[^\]]+\]\s*/, "").trim();
+  const lower = message.toLowerCase();
+
+  if (lower.includes("runtime install failed") || lower.includes("failed to download runtime installer")) {
+    return "The app could not install its background removal runtime. Check your connection and try again.";
+  }
+  if (lower.includes("not found") || lower.includes("invalid") || lower.includes("404")) {
+    return "That key looks invalid. Please check it and try again.";
+  }
+  if (lower.includes("license api error")) {
+    return "We could not validate your key right now. Please try again in a moment.";
+  }
+  return message || fallback;
+}
+
+async function refreshLibrary() {
+  const result = await window.rmbg.libraryList();
+  libraryItems = Array.isArray(result?.items) ? result.items : [];
+
+  if (!activeImageId || !libraryItems.some((item) => item.id === activeImageId)) {
+    activeImageId = libraryItems[0]?.id || null;
+  }
+
+  renderGallery();
+  renderFocusPanel();
+}
+
+async function processLibraryItem(id: string) {
+  if (processingIds.has(id)) {
+    return;
+  }
+
+  const item = libraryItems.find((candidate) => candidate.id === id);
+  if (!item || item.output_path) {
+    return;
+  }
+
+  processingIds.add(id);
+  renderGallery();
+  renderFocusPanel();
+
+  try {
+    const result = await window.rmbg.libraryProcess({ id });
+    libraryItems = Array.isArray(result?.items) ? result.items : libraryItems;
+    if (result?.item?.id) {
+      activeImageId = result.item.id;
+    }
+    await refreshLibrary();
+    setGlobalStatus(`${item.original_name} is ready.`, { tone: "success" });
+  } catch (error: unknown) {
+    setGlobalStatus(humanizeErrorMessage(error, "Unable to process this image."), {
+      tone: "error",
+    });
+  } finally {
+    processingIds.delete(id);
+    renderGallery();
+    renderFocusPanel();
+  }
+}
+
+async function processActiveItem(id: string) {
+  await processLibraryItem(id);
+}
+
+async function syncFlow(status: LicenseStatusResponse | null) {
+  const appLicensed = isSurfaceLicensed(status?.desktop);
+  const cliLicensed = isSurfaceLicensed(status?.cli);
+
+  required(onboardingScreen, "onboarding-screen").classList.toggle("hidden", appLicensed);
+  required(workspaceScreen, "workspace-screen").classList.toggle("hidden", !appLicensed);
+
+  if (cliNotice) {
+    const showNotice = appLicensed && !cliLicensed && !cliNoticeDismissed;
+    cliNotice.classList.toggle("hidden", !showNotice);
+  }
+
+  if (!appLicensed) {
+    setGlobalStatus("Activate your app key to continue.", { toast: false });
+    return;
+  }
+
+  await refreshLibrary();
+  setGlobalStatus("You're all set. Add an image to begin.", { toast: false });
 }
 
 async function refreshLicenseStatus() {
+  setGlobalStatus("Preparing app...", { toast: false });
   try {
     const status = await window.rmbg.licenseStatus();
-    setSurfaceStatus(appLicenseStatusEl, "App key", status?.desktop);
-    setSurfaceStatus(cliLicenseStatusEl, "CLI key", status?.cli);
-    setGlobalStatus(status?.ready ? "Ready" : "Activate both keys to process images");
-  } catch {
-    setSurfaceStatus(appLicenseStatusEl, "App key", null);
-    setSurfaceStatus(cliLicenseStatusEl, "CLI key", null);
+    await syncFlow(status);
+  } catch (error: unknown) {
+    await syncFlow(null);
+    setGlobalStatus(humanizeErrorMessage(error, "Unable to verify your license right now."), {
+      tone: "error",
+    });
   }
 }
 
-function wireLicenseControls({
-  surface,
-  label,
-  input,
-  activateButton,
-  refreshButton,
-}: {
-  surface: LicenseSurface;
-  label: string;
-  input: HTMLInputElement;
-  activateButton: HTMLButtonElement;
-  refreshButton: HTMLButtonElement;
-}) {
-  activateButton.addEventListener("click", async () => {
-    const key = input.value.trim();
-    if (!key) {
-      setGlobalStatus(`Paste your ${label} first`);
+async function activateLicense(surface: LicenseSurface, label: string, input: HTMLInputElement, button: HTMLButtonElement) {
+  const key = input.value.trim();
+  if (!key) {
+    setGlobalStatus(`Paste your ${label} first.`, { tone: "error" });
+    return;
+  }
+
+  let activated = false;
+  button.disabled = true;
+  setGlobalStatus(`Activating ${label}...`, { toast: false });
+
+  try {
+    const result = await window.rmbg.licenseActivate({ key, surface });
+    if (!result?.ok) {
+      throw new Error(result?.error || `Activation failed for ${label}`);
+    }
+
+    activated = true;
+    input.value = "";
+    setGlobalStatus(`${label} activated.`, { tone: "success" });
+  } catch (error: unknown) {
+    setGlobalStatus(humanizeErrorMessage(error, `Activation failed for ${label}`), { tone: "error" });
+  } finally {
+    button.disabled = false;
+    if (activated) {
+      await refreshLicenseStatus();
+    }
+  }
+}
+
+async function importFiles(paths: string[]) {
+  if (paths.length === 0) {
+    return;
+  }
+
+  const result = await window.rmbg.libraryImportFiles({ paths });
+  libraryItems = Array.isArray(result?.items) ? result.items : libraryItems;
+  const imported = Array.isArray(result?.imported) ? result.imported : [];
+  if (imported[0]?.id) {
+    activeImageId = imported[0].id;
+  }
+  renderGallery();
+  renderFocusPanel();
+}
+
+async function addImagesFromPicker() {
+  const button = required(selectImagesBtn, "select-images-btn");
+  button.disabled = true;
+  setGlobalStatus("Opening file picker...", { toast: false });
+
+  try {
+    const files = await window.rmbg.pickImages();
+    if (files.length === 0) {
+      setGlobalStatus("No files selected.", { toast: false });
       return;
     }
 
-    activateButton.disabled = true;
-    setGlobalStatus(`Activating ${label}...`);
-    try {
-      const result = await window.rmbg.licenseActivate({ key, surface });
-      if (!result?.ok) {
-        throw new Error(result?.error || `Activation failed for ${label}`);
-      }
-      input.value = "";
-      setGlobalStatus(`${label} activated`);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : `Activation failed for ${label}`;
-      setGlobalStatus(message);
-    } finally {
-      activateButton.disabled = false;
-      await refreshLicenseStatus();
-      await refreshWorkerStatus();
+    await importFiles(files);
+    if (activeImageId) {
+      await processLibraryItem(activeImageId);
     }
-  });
+    setGlobalStatus(`Added ${files.length} image${files.length === 1 ? "" : "s"}.`, { tone: "success" });
+  } catch {
+    setGlobalStatus("Unable to import those files.", { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+}
 
-  refreshButton.addEventListener("click", async () => {
-    refreshButton.disabled = true;
-    setGlobalStatus(`Refreshing ${label}...`);
-    try {
-      const result = await window.rmbg.licenseRefresh({ surface });
-      if (!result?.ok) {
-        throw new Error(result?.error || `Refresh failed for ${label}`);
-      }
-      setGlobalStatus(`${label} refreshed`);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : `Refresh failed for ${label}`;
-      setGlobalStatus(message);
-    } finally {
-      refreshButton.disabled = false;
-      await refreshLicenseStatus();
-      await refreshWorkerStatus();
+async function addImageFromUrl() {
+  const input = required(imageUrlInput, "image-url-input");
+  const url = input.value.trim();
+  if (!url) {
+    setGlobalStatus("Paste an image URL first.", { tone: "error" });
+    return;
+  }
+  if (!isHttpUrl(url)) {
+    setGlobalStatus("Please use a valid http(s) image URL.", { tone: "error" });
+    return;
+  }
+
+  const button = required(addUrlBtn, "add-url-btn");
+  button.disabled = true;
+  setGlobalStatus("Importing image URL...", { toast: false });
+  try {
+    const result = await window.rmbg.libraryImportUrl({ url });
+    libraryItems = Array.isArray(result?.items) ? result.items : libraryItems;
+    if (result?.imported?.id) {
+      activeImageId = result.imported.id;
     }
+    input.value = "";
+    renderGallery();
+    renderFocusPanel();
+    if (activeImageId) {
+      await processLibraryItem(activeImageId);
+    }
+    setGlobalStatus("Image added.", { tone: "success" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unable to import URL";
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function droppedFilePaths(event: DragEvent) {
+  const paths: string[] = [];
+  const transfer = event.dataTransfer;
+  if (!transfer) {
+    return paths;
+  }
+
+  for (const file of Array.from(transfer.files)) {
+    const filePath = (file as File & { path?: string }).path;
+    if (typeof filePath === "string" && filePath.trim()) {
+      paths.push(filePath);
+    }
+  }
+  return paths;
+}
+
+required(appActivateBtn, "app-license-activate-btn").addEventListener("click", async () => {
+  await activateLicense(
+    "desktop",
+    "app key",
+    required(appLicenseInput, "app-license-key-input"),
+    required(appActivateBtn, "app-license-activate-btn"),
+  );
+});
+
+if (cliActivateBtn) {
+  cliActivateBtn.addEventListener("click", async () => {
+    await activateLicense("cli", "CLI key", required(cliLicenseInput, "cli-license-key-input"), cliActivateBtn);
+    cliActivationInline?.classList.add("hidden");
   });
 }
 
-required(addImagesBtn, "add-images-btn").addEventListener("click", async () => {
-  const files = await window.rmbg.pickImages();
-  files.forEach((filePath) => createCard(filePath));
+showCliActivationBtn?.addEventListener("click", () => {
+  cliActivationInline?.classList.remove("hidden");
+  cliLicenseInput?.focus();
 });
 
-required(ensureModelBtn, "ensure-model-btn").addEventListener("click", async () => {
-  const button = required(ensureModelBtn, "ensure-model-btn");
-  button.disabled = true;
-  setGlobalStatus("Ensuring model files...");
+dismissCliNoticeBtn?.addEventListener("click", () => {
+  cliNoticeDismissed = true;
+  cliNotice?.classList.add("hidden");
+});
 
-  try {
-    const result = await window.rmbg.ensureModel();
-    if (!result?.ok) {
-      throw new Error(result?.error || "Model ensure failed");
-    }
-    setGlobalStatus(result.bootstrapped ? "Model downloaded and ready" : "Model already ready");
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Model ensure failed";
-    setGlobalStatus(message);
-  } finally {
-    button.disabled = false;
-    await refreshModelStatus();
-    await refreshLicenseStatus();
-    await refreshWorkerStatus();
+required(selectImagesBtn, "select-images-btn").addEventListener("click", async () => {
+  await addImagesFromPicker();
+});
+
+required(addUrlBtn, "add-url-btn").addEventListener("click", async () => {
+  await addImageFromUrl();
+});
+
+required(imageUrlInput, "image-url-input").addEventListener("keydown", async (event: KeyboardEvent) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    await addImageFromUrl();
   }
 });
 
-wireLicenseControls({
-  surface: "desktop",
-  label: "App key",
-  input: required(appLicenseInput, "app-license-key-input"),
-  activateButton: required(appActivateBtn, "app-license-activate-btn"),
-  refreshButton: required(appRefreshBtn, "app-license-refresh-btn"),
+required(openLibraryFolderBtn, "open-library-folder-btn").addEventListener("click", async () => {
+  await window.rmbg.openLibraryFolder();
 });
 
-wireLicenseControls({
-  surface: "cli",
-  label: "CLI key",
-  input: required(cliLicenseInput, "cli-license-key-input"),
-  activateButton: required(cliActivateBtn, "cli-license-activate-btn"),
-  refreshButton: required(cliRefreshBtn, "cli-license-refresh-btn"),
+required(dropzone, "dropzone").addEventListener("click", async (event: MouseEvent) => {
+  const target = event.target as HTMLElement | null;
+  if (target?.closest("button") || target?.closest("input")) {
+    return;
+  }
+  await addImagesFromPicker();
 });
 
-refreshModelStatus();
-refreshLicenseStatus();
-refreshWorkerStatus();
+required(dropzone, "dropzone").addEventListener("dragenter", (event: DragEvent) => {
+  event.preventDefault();
+  dragDepth += 1;
+  required(dropzone, "dropzone").classList.add("dragging");
+});
+
+required(dropzone, "dropzone").addEventListener("dragover", (event: DragEvent) => {
+  event.preventDefault();
+});
+
+required(dropzone, "dropzone").addEventListener("dragleave", (event: DragEvent) => {
+  event.preventDefault();
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) {
+    required(dropzone, "dropzone").classList.remove("dragging");
+  }
+});
+
+required(dropzone, "dropzone").addEventListener("drop", async (event: DragEvent) => {
+  event.preventDefault();
+  dragDepth = 0;
+  required(dropzone, "dropzone").classList.remove("dragging");
+
+  const paths = droppedFilePaths(event);
+  if (paths.length === 0) {
+    setGlobalStatus("Drop local image files, or use an image URL.", { tone: "error" });
+    return;
+  }
+
+  await importFiles(paths);
+  setGlobalStatus(`Added ${paths.length} image${paths.length === 1 ? "" : "s"}.`, { tone: "success" });
+});
+
+required(focusSlider, "focus-slider").addEventListener("input", () => {
+  applyFocusSlider(required(focusSlider, "focus-slider").value);
+});
+
+required(focusSaveBtn, "focus-save-btn").addEventListener("click", async () => {
+  const item = currentItem();
+  if (!item?.output_path) {
+    return;
+  }
+
+  const button = required(focusSaveBtn, "focus-save-btn");
+  button.disabled = true;
+  setGlobalStatus("Saving image...", { toast: false });
+  try {
+    const result = await window.rmbg.saveProcessedImage({
+      sourcePath: item.output_path,
+      inputPath: item.source_path,
+    });
+    if (result?.canceled) {
+      setGlobalStatus("Save canceled", { toast: false });
+      return;
+    }
+    if (!result?.ok || !result.output_path) {
+      throw new Error(result?.error || "Save failed");
+    }
+    setGlobalStatus(`Saved: ${result.output_path}`, { tone: "success" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Save failed";
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+});
+
+required(focusOpenBtn, "focus-open-btn").addEventListener("click", async () => {
+  const item = currentItem();
+  if (!item?.output_path) {
+    return;
+  }
+  await window.rmbg.openInFolder({ filePath: item.output_path });
+});
+
+required(focusDeleteBtn, "focus-delete-btn").addEventListener("click", async () => {
+  await deleteActiveItem();
+});
+
 updateEmptyState();
-
-setInterval(() => {
-  void refreshWorkerStatus();
-}, 5000);
+renderFocusPanel();
+void refreshLicenseStatus();

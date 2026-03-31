@@ -245,6 +245,58 @@ def test_ensure_required_surfaces_fails_when_one_missing(
         license_manager.ensure_required_surfaces(license_file, ["cli", "desktop"])
 
 
+def test_ensure_desktop_hosted_runtime_accepts_matching_session(
+    tmp_path: Path, monkeypatch
+) -> None:
+    session_file = tmp_path / "desktop-session.json"
+    session_file.write_text(
+        json.dumps({"nonce": "nonce-123", "expires_at": int(time.time()) + 60}),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("RMBG_DESKTOP_SESSION_FILE", str(session_file))
+    monkeypatch.setenv("RMBG_DESKTOP_SESSION_NONCE", "nonce-123")
+
+    license_manager.ensure_desktop_hosted_runtime("desktop")
+
+
+def test_ensure_desktop_hosted_runtime_rejects_missing_env(monkeypatch) -> None:
+    monkeypatch.delenv("RMBG_DESKTOP_SESSION_FILE", raising=False)
+    monkeypatch.delenv("RMBG_DESKTOP_SESSION_NONCE", raising=False)
+
+    with pytest.raises(RuntimeError, match="desktop app only"):
+        license_manager.ensure_desktop_hosted_runtime("desktop")
+
+
+def test_ensure_desktop_hosted_runtime_rejects_nonce_mismatch(
+    tmp_path: Path, monkeypatch
+) -> None:
+    session_file = tmp_path / "desktop-session.json"
+    session_file.write_text(
+        json.dumps({"nonce": "nonce-123", "expires_at": int(time.time()) + 60}),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("RMBG_DESKTOP_SESSION_FILE", str(session_file))
+    monkeypatch.setenv("RMBG_DESKTOP_SESSION_NONCE", "nonce-456")
+
+    with pytest.raises(RuntimeError, match="desktop app only"):
+        license_manager.ensure_desktop_hosted_runtime("desktop")
+
+
+def test_ensure_desktop_hosted_runtime_rejects_expired_session(
+    tmp_path: Path, monkeypatch
+) -> None:
+    session_file = tmp_path / "desktop-session.json"
+    session_file.write_text(
+        json.dumps({"nonce": "nonce-123", "expires_at": int(time.time()) - 1}),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("RMBG_DESKTOP_SESSION_FILE", str(session_file))
+    monkeypatch.setenv("RMBG_DESKTOP_SESSION_NONCE", "nonce-123")
+
+    with pytest.raises(RuntimeError, match="desktop app only"):
+        license_manager.ensure_desktop_hosted_runtime("desktop")
+
+
 def test_machine_fingerprint_is_stable_with_device_file(
     tmp_path: Path, monkeypatch
 ) -> None:

@@ -7,12 +7,14 @@ from rmbg_cli import cli
 from rmbg_cli import inference
 
 
-def _remove_args(input_ref: str, output: str | None = None) -> argparse.Namespace:
+def _remove_args(
+    input_ref: str, output: str | None = None, surface: str = "cli"
+) -> argparse.Namespace:
     return argparse.Namespace(
         input=input_ref,
         output=output,
         model_dir=None,
-        surface="cli",
+        surface=surface,
         require_surface=[],
         license_file=None,
         api_base=None,
@@ -108,3 +110,17 @@ def test_cmd_remove_uses_url_default_output_when_output_omitted(monkeypatch) -> 
     assert Path(seen["output_path"]).parent == Path.cwd()
     assert Path(seen["output_path"]).name == "cat_photo_rmbg.png"
     assert captured.get("output_path") == seen["output_path"]
+
+
+def test_cmd_remove_rejects_desktop_surface_without_hosted_runtime(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(
+        cli, "_print", lambda payload, _as_json: captured.update(payload)
+    )
+
+    exit_code = cli.cmd_remove(
+        _remove_args("https://example.com/cat.png", surface="desktop")
+    )
+
+    assert exit_code == 6
+    assert "desktop app only" in str(captured.get("error", ""))
