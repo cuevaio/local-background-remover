@@ -31,9 +31,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 type PricingPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     exp?: string | string[];
-  };
+  }>;
 };
 
 const PRICING_HERO_COPY: Record<string, { title: string; description: string }> = {
@@ -62,7 +62,8 @@ const PRICING_STICKY_LABELS: Record<string, { primary: string; secondary: string
 
 export default async function PricingPage({ searchParams }: PricingPageProps) {
   const assignments = await evaluatePricingAssignments();
-  const incomingExp = readSingleParam(searchParams?.exp);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const incomingExp = readSingleParam(resolvedSearchParams?.exp);
   const exp = mergeExperimentToken(incomingExp, assignments);
 
   const heroCopy = PRICING_HERO_COPY[assignments.pricingHeroCopy];

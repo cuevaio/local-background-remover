@@ -61,9 +61,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 type HomePageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     exp?: string | string[];
-  };
+  }>;
 };
 
 const HOME_HERO_TITLE: Record<string, string> = {
@@ -86,7 +86,8 @@ const HOME_STICKY_LABELS: Record<string, { primary: string; secondary: string }>
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const assignments = await evaluateHomeAssignments();
-  const incomingExp = readSingleParam(searchParams?.exp);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const incomingExp = readSingleParam(resolvedSearchParams?.exp);
   const exp = mergeExperimentToken(incomingExp, assignments);
 
   const heroTitle = HOME_HERO_TITLE[assignments.homeHeroHeadline];

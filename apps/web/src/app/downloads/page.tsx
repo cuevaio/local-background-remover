@@ -44,9 +44,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 type DownloadsPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     exp?: string | string[];
-  };
+  }>;
 };
 
 const DOWNLOADS_HERO_COPY: Record<string, { title: string; description: string }> = {
@@ -75,7 +75,8 @@ const DOWNLOADS_STICKY_LABELS: Record<string, { primary: string; secondary: stri
 
 export default async function DownloadsPage({ searchParams }: DownloadsPageProps) {
   const assignments = await evaluateDownloadsAssignments();
-  const incomingExp = readSingleParam(searchParams?.exp);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const incomingExp = readSingleParam(resolvedSearchParams?.exp);
   const exp = mergeExperimentToken(incomingExp, assignments);
 
   const heroCopy = DOWNLOADS_HERO_COPY[assignments.downloadsHeroCopy];

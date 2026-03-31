@@ -19,15 +19,16 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 type ThankYouPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     kind?: string | string[];
     exp?: string | string[];
-  };
+  }>;
 };
 
-export default function ThankYouPage({ searchParams }: ThankYouPageProps) {
-  const kind = readSingleParam(searchParams?.kind) || "unknown";
-  const exp = readSingleParam(searchParams?.exp) || "";
+export default async function ThankYouPage({ searchParams }: ThankYouPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const kind = readSingleParam(resolvedSearchParams?.kind) || "unknown";
+  const exp = readSingleParam(resolvedSearchParams?.exp) || "";
 
   return (
     <main className="site-frame flex flex-col gap-0 pb-20">
