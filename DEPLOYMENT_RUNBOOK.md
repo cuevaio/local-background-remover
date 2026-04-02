@@ -82,23 +82,32 @@ Expected:
 
 ## Publish shared CLI + desktop release
 
-1. Bump `apps/rmbg` and `apps/desktop` to the same version.
-2. Tag and push:
+1. Ensure these GitHub Actions secrets are configured for the desktop release job:
+
+- `CSC_LINK`
+- `CSC_NAME`
+- `CSC_KEY_PASSWORD`
+- `APPLE_ID`
+- `APPLE_APP_SPECIFIC_PASSWORD`
+- `APPLE_TEAM_ID`
+
+2. Bump `apps/rmbg` and `apps/desktop` to the same version.
+3. Tag and push:
 
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
 
-3. Wait for the `Release` workflow to finish.
-4. Confirm release assets include:
+4. Wait for the `Release` workflow to finish.
+5. Confirm release assets include:
 
 - `rmbg-vX.Y.Z-darwin-arm64.tar.gz`
 - `local-background-remover-vX.Y.Z-darwin-arm64.dmg`
 - `local-background-remover-vX.Y.Z-darwin-arm64.zip`
 - `checksums.txt`
 
-5. Verify checksums:
+6. Verify checksums:
 
 ```bash
 gh release download vX.Y.Z --repo cuevaio/local-background-remover -D /tmp/rmbg-release
@@ -106,10 +115,17 @@ cd /tmp/rmbg-release
 shasum -a 256 -c checksums.txt
 ```
 
+7. Confirm the downloaded desktop app clears macOS security checks:
+
+```bash
+codesign --verify --deep --strict --verbose=2 "/Applications/Local Background Remover.app"
+spctl --assess --type execute --verbose=4 "/Applications/Local Background Remover.app"
+```
+
 Notes:
 
 - App Store review is not required for the GitHub release `.dmg` flow.
-- Apple signing and notarization can be added later, but the first release can ship unsigned so testers can download it immediately.
+- The desktop release job is expected to sign and notarize macOS artifacts. Missing Apple credentials should fail the workflow rather than publishing unsigned installers.
 
 ## Full user flow test (production)
 

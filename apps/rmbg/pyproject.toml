@@ -1,6 +1,6 @@
 [project]
 name = "rmbg"
-version = "0.4.2"
+version = "0.4.3"
 description = "CLI background removal tool"
 license = { text = "Proprietary" }
 requires-python = ">=3.10"

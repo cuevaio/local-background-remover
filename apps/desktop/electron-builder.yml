@@ -13,8 +13,12 @@ extraResources:
 artifactName: local-background-remover-v${version}-darwin-${arch}.${ext}
 electronVersion: 41.1.0
 mac:
+  binaries:
+    - build-resources/rmbg/rmbg
   target:
     - dmg
     - zip
   category: public.app-category.photography
-  hardenedRuntime: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.inherit.plist
+  hardenedRuntime: true

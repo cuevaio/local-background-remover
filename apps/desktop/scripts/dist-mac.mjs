@@ -15,13 +15,36 @@ const SIGNING_ENV_KEYS = [
   "APPLE_TEAM_ID",
 ];
 
-const hasSigningEnv = SIGNING_ENV_KEYS.some((key) => String(process.env[key] || "").trim().length > 0);
+const requireSigning = String(process.env.RMBG_REQUIRE_MAC_SIGNING || "").trim() === "true";
+const missingSigningEnvKeys = SIGNING_ENV_KEYS.filter((key) => String(process.env[key] || "").trim().length === 0);
+const hasAllSigningEnv = missingSigningEnvKeys.length === 0;
+const hasAnySigningEnv = missingSigningEnvKeys.length !== SIGNING_ENV_KEYS.length;
 
 const env = {
   ...process.env,
 };
 
-if (!hasSigningEnv && !String(process.env.CSC_IDENTITY_AUTO_DISCOVERY || "").trim()) {
+if (requireSigning && !hasAllSigningEnv) {
+  console.error(
+    [
+      "Missing required mac signing/notarization env vars for release packaging.",
+      `Missing: ${missingSigningEnvKeys.join(", ")}`,
+    ].join(" "),
+  );
+  process.exit(1);
+}
+
+if (hasAnySigningEnv && !hasAllSigningEnv) {
+  console.error(
+    [
+      "Incomplete mac signing/notarization environment.",
+      `Missing: ${missingSigningEnvKeys.join(", ")}`,
+    ].join(" "),
+  );
+  process.exit(1);
+}
+
+if (!hasAllSigningEnv && !String(process.env.CSC_IDENTITY_AUTO_DISCOVERY || "").trim()) {
   env.CSC_IDENTITY_AUTO_DISCOVERY = "false";
   console.log("No signing env vars detected. Building unsigned local mac artifacts.");
 } else {
@@ -31,7 +54,7 @@ if (!hasSigningEnv && !String(process.env.CSC_IDENTITY_AUTO_DISCOVERY || "").tri
 const command = fs.existsSync(localBuilderBin) ? localBuilderBin : binName;
 const args = ["--mac", "dmg", "zip"];
 
-if (!hasSigningEnv) {
+if (!hasAllSigningEnv) {
   args.push("--config.mac.identity=null");
 }
 

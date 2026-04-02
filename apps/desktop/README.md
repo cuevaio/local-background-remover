@@ -70,19 +70,35 @@ bun run dist:mac
 
 Artifacts are produced under `apps/desktop/dist-packages`.
 
-By default, local packaging runs unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`) unless signing env vars are provided (for example `CSC_LINK`/`CSC_NAME` and Apple notarization vars).
+By default, local packaging runs unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`) unless the full mac signing and notarization env set is present:
+
+- `CSC_LINK`
+- `CSC_NAME`
+- `CSC_KEY_PASSWORD`
+- `APPLE_ID`
+- `APPLE_APP_SPECIFIC_PASSWORD`
+- `APPLE_TEAM_ID`
+
+If only some of those values are set, packaging fails fast instead of silently producing an unsigned fallback build.
 
 ## GitHub release flow
 
 Desktop releases use the same shared `v*` tag flow as the CLI.
 
 1. Keep `apps/rmbg/pyproject.toml` and `apps/desktop/package.json` on the same version.
-2. Push a tag like `v0.3.4`.
-3. GitHub Actions builds the CLI archive and desktop installers, then attaches them to one GitHub release.
+2. Configure these GitHub Actions secrets before tagging:
+   - `CSC_LINK`
+   - `CSC_NAME`
+   - `CSC_KEY_PASSWORD`
+   - `APPLE_ID`
+   - `APPLE_APP_SPECIFIC_PASSWORD`
+   - `APPLE_TEAM_ID`
+3. Push a tag like `v0.3.4`.
+4. GitHub Actions builds the CLI archive and signed desktop installers, validates the macOS signature and notarization, then attaches them to one GitHub release.
 
 Expected desktop release assets:
 
 - `local-background-remover-vX.Y.Z-darwin-arm64.dmg`
 - `local-background-remover-vX.Y.Z-darwin-arm64.zip`
 
-The first GitHub-distributed desktop release does not require App Store submission. If signing and notarization secrets are not configured, the workflow will publish unsigned installers so users can try the app immediately, with the usual macOS Gatekeeper warnings.
+App Store submission is not required for GitHub-distributed `.dmg` releases, but the release workflow now expects Developer ID signing plus Apple notarization. If those secrets are missing, the desktop release job fails instead of publishing Gatekeeper-blocked installers.
