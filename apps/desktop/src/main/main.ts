@@ -64,6 +64,11 @@ function installedRuntimePath() {
   return path.join(app.getPath("home"), ".local", "bin", executable);
 }
 
+function bundledRuntimePath() {
+  const executable = process.platform === "win32" ? "rmbg.exe" : "rmbg";
+  return path.join(path.dirname(app.getAppPath()), "rmbg", executable);
+}
+
 function desktopSessionFilePath() {
   return path.join(app.getPath("userData"), DESKTOP_SESSION_FILE_NAME);
 }
@@ -190,8 +195,16 @@ async function ensureDesktopRuntimeInstalled() {
   }
 
   runtimeInstallPromise = (async () => {
-    const runtimePath = installedRuntimePath();
     const expectedVersion = app.getVersion();
+    const bundledPath = bundledRuntimePath();
+    const bundledVersion = await readInstalledRuntimeVersion(bundledPath);
+
+    if (bundledVersion === expectedVersion) {
+      process.env.RMBG_DESKTOP_CLI_PATH = bundledPath;
+      return bundledPath;
+    }
+
+    const runtimePath = installedRuntimePath();
 
     const installedVersion = await readInstalledRuntimeVersion(runtimePath);
     if (installedVersion !== expectedVersion) {

@@ -8,10 +8,11 @@
   "main": "dist/main/main.js",
   "scripts": {
     "dev": "tsc -p tsconfig.json && node ./scripts/copy-renderer-assets.mjs && electron .",
+    "icon:mac": "node ./scripts/generate-mac-icon.mjs",
     "build": "tsc -p tsconfig.json && node ./scripts/copy-renderer-assets.mjs",
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "bun run build && node --test test/*.test.cjs",
-    "build:mac": "bun run build",
+    "build:mac": "bun run icon:mac && node ./scripts/build-mac-runtime.mjs && bun run build",
     "dist:mac": "bun run build:mac && node ./scripts/dist-mac.mjs",
     "check": "bun run lint && bun run test"
   },

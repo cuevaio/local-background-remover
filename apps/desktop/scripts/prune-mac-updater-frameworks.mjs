@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const UPDATER_FRAMEWORKS = [
   {
@@ -26,6 +27,21 @@ async function pathExists(filePath) {
   } catch {
     return false;
   }
+}
+
+function getLinkedLibraries(binaryPath) {
+  const result = spawnSync("otool", ["-L", binaryPath], { encoding: "utf8" });
+
+  if (result.status !== 0) {
+    const details = [result.stdout, result.stderr]
+      .filter((value) => typeof value === "string" && value.trim().length > 0)
+      .join("\n")
+      .trim();
+
+    throw new Error(details ? `Failed to inspect linked macOS libraries.\n${details}` : "Failed to inspect linked macOS libraries.");
+  }
+
+  return result.stdout;
 }
 
 export default async function pruneMacUpdaterFrameworks(context) {
@@ -78,6 +94,33 @@ export default async function pruneMacUpdaterFrameworks(context) {
         throw new Error(`Expected updater framework path moved or missing: ${requiredPath}`);
       }
     }
+  }
+
+  const electronFrameworkBinaryPath = path.join(
+    frameworksDir,
+    "Electron Framework.framework",
+    "Versions",
+    "A",
+    "Electron Framework",
+  );
+
+  if (!(await pathExists(electronFrameworkBinaryPath))) {
+    throw new Error(`Missing Electron Framework binary while pruning: ${electronFrameworkBinaryPath}`);
+  }
+
+  const linkedLibraries = getLinkedLibraries(electronFrameworkBinaryPath);
+  const requiredFrameworks = presentFrameworks.filter((framework) =>
+    linkedLibraries.includes(`@rpath/${framework.name}/${framework.name.replace(".framework", "")}`),
+  );
+
+  if (requiredFrameworks.length > 0) {
+    console.log(
+      [
+        "Skipping mac updater framework pruning because Electron Framework still links against:",
+        requiredFrameworks.map((framework) => framework.name).join(", "),
+      ].join(" "),
+    );
+    return;
   }
 
   console.log(`Pruning unused mac updater frameworks from ${frameworksDir}`);

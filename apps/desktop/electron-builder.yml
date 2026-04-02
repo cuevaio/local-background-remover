@@ -5,6 +5,9 @@ directories:
 files:
   - dist/**
   - package.json
+extraResources:
+  - from: ../rmbg/dist/rmbg
+    to: rmbg
 artifactName: local-background-remover-v${version}-darwin-${arch}.${ext}
 electronVersion: 41.1.0
 mac:
