@@ -20,7 +20,6 @@ import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD, CLI_REMOVE_CMD } from "@/content/cli
 import {
   mergeExperimentToken,
   readSingleParam,
-  withExpParam,
 } from "@/lib/experiments/attribution";
 import {
   evaluateHomeAssignments,
@@ -171,13 +170,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Button asChild size="lg">
-                  <Link href={withExpParam("/downloads", exp)}>{primaryCtaLabel}</Link>
+                  <Link href="/downloads">{primaryCtaLabel}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href={withExpParam("/pricing", exp)}>See pricing</Link>
+                  <Link href="/pricing">See pricing</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href={withExpParam("/docs", exp)}>CLI docs</Link>
+                  <Link href="/docs">CLI docs</Link>
                 </Button>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -279,7 +278,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         primaryHref="/pricing"
         secondaryLabel={stickyLabels.secondary}
         secondaryHref="/downloads"
-        exp={exp}
       />
     </>
   );

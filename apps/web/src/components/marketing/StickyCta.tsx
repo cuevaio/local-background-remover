@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { withExpParam } from "@/lib/experiments/attribution";
 
 type StickyCtaProps = {
   title: string;
@@ -10,7 +9,6 @@ type StickyCtaProps = {
   primaryHref: string;
   secondaryLabel: string;
   secondaryHref: string;
-  exp?: string;
 };
 
 export default function StickyCta({
@@ -20,11 +18,7 @@ export default function StickyCta({
   primaryHref,
   secondaryLabel,
   secondaryHref,
-  exp = "",
 }: StickyCtaProps) {
-  const primaryTarget = withExpParam(primaryHref, exp);
-  const secondaryTarget = withExpParam(secondaryHref, exp);
-
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/92 p-3 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
       <div className="site-frame flex w-full flex-col gap-3 rounded-xl border border-border bg-card p-3 md:flex-row md:items-center md:justify-between md:px-4">
@@ -34,10 +28,10 @@ export default function StickyCta({
         </div>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" variant="outline">
-            <Link href={secondaryTarget}>{secondaryLabel}</Link>
+            <Link href={secondaryHref}>{secondaryLabel}</Link>
           </Button>
           <Button asChild size="sm">
-            <Link href={primaryTarget}>{primaryLabel}</Link>
+            <Link href={primaryHref}>{primaryLabel}</Link>
           </Button>
         </div>
       </div>

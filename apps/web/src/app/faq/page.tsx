@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 const FAQ_ITEMS = [
   {
@@ -41,43 +42,84 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default function FaqPage() {
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://local.backgroundrm.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "FAQ",
+        item: "https://local.backgroundrm.com/faq",
+      },
+    ],
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
   return (
-    <main className="site-frame pb-28">
-      <section className="section-block flex flex-col gap-5">
-        <Badge variant="outline" className="w-fit bg-card">
-          Frequently asked questions
-        </Badge>
-        <h1 className="display-title md:text-5xl">Answers before you buy</h1>
-        <p className="section-copy md:text-lg">
-          Quick answers for setup, pricing structure, and how local processing works in desktop and
-          CLI workflows.
-        </p>
-      </section>
+    <>
+      <Script id="faq-breadcrumb-jsonld" type="application/ld+json">
+        {serializeJsonLd(breadcrumbJsonLd)}
+      </Script>
+      <Script id="faq-page-jsonld" type="application/ld+json">
+        {serializeJsonLd(faqJsonLd)}
+      </Script>
 
-      <section className="section-block section-divider">
-        <Accordion type="single" collapsible>
-          {FAQ_ITEMS.map((item) => (
-            <AccordionItem key={item.q} value={item.q}>
-              <AccordionTrigger>{item.q}</AccordionTrigger>
-              <AccordionContent>
-                <p>{item.a}</p>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </section>
+      <main className="site-frame pb-28">
+        <section className="section-block flex flex-col gap-5">
+          <Badge variant="outline" className="w-fit bg-card">
+            Frequently asked questions
+          </Badge>
+          <h1 className="display-title md:text-5xl">Answers before you buy</h1>
+          <p className="section-copy md:text-lg">
+            Quick answers for setup, pricing structure, and how local processing works in desktop and
+            CLI workflows.
+          </p>
+        </section>
 
-      <section className="section-block section-divider flex flex-wrap items-center gap-2">
-        <Button asChild>
-          <Link href="/downloads">Open downloads</Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href="/pricing">View pricing</Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href="/contact">Contact cueva.io</Link>
-        </Button>
-      </section>
-    </main>
+        <section className="section-block section-divider">
+          <Accordion type="single" collapsible>
+            {FAQ_ITEMS.map((item) => (
+              <AccordionItem key={item.q} value={item.q}>
+                <AccordionTrigger>{item.q}</AccordionTrigger>
+                <AccordionContent>
+                  <p>{item.a}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </section>
+
+        <section className="section-block section-divider flex flex-wrap items-center gap-2">
+          <Button asChild>
+            <Link href="/downloads">Open downloads</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/pricing">View pricing</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/contact">Contact cueva.io</Link>
+          </Button>
+        </section>
+      </main>
+    </>
   );
 }

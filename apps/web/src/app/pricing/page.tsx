@@ -12,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   mergeExperimentToken,
   readSingleParam,
-  withExpParam,
 } from "@/lib/experiments/attribution";
 import {
   evaluatePricingAssignments,
@@ -126,10 +125,10 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
-              <Link href={withExpParam("/docs", exp)}>Read CLI docs</Link>
+              <Link href="/docs">Read CLI docs</Link>
             </Button>
             <Button asChild>
-              <Link href={withExpParam("/downloads", exp)}>Open downloads</Link>
+              <Link href="/downloads">Open downloads</Link>
             </Button>
           </div>
         </section>
@@ -183,7 +182,6 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
         primaryHref="/pricing"
         secondaryLabel={stickyLabels.secondary}
         secondaryHref="/downloads"
-        exp={exp}
       />
     </>
   );

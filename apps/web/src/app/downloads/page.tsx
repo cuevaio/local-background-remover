@@ -27,7 +27,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   mergeExperimentToken,
   readSingleParam,
-  withExpParam,
 } from "@/lib/experiments/attribution";
 import {
   evaluateDownloadsAssignments,
@@ -133,10 +132,10 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <Link href={withExpParam("/docs", exp)}>Open CLI docs</Link>
+              <Link href="/docs">Open CLI docs</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={withExpParam("/pricing", exp)}>Need a key?</Link>
+              <Link href="/pricing">Need a key?</Link>
             </Button>
           </div>
         </section>
@@ -174,7 +173,7 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
                     {CLI_STATUS_CMD}
                   </pre>
                   <Button asChild variant="outline" className="w-fit">
-                    <Link href={withExpParam("/docs", exp)}>Read full CLI command docs</Link>
+                    <Link href="/docs">Read full CLI command docs</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -229,10 +228,10 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild>
-                  <Link href={withExpParam("/pricing", exp)}>Open pricing</Link>
+                  <Link href="/pricing">Open pricing</Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href={withExpParam("/docs", exp)}>CLI docs</Link>
+                  <Link href="/docs">CLI docs</Link>
                 </Button>
               </div>
             </CardContent>
@@ -247,7 +246,6 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
         primaryHref="/pricing"
         secondaryLabel={stickyLabels.secondary}
         secondaryHref="/"
-        exp={exp}
       />
     </>
   );
