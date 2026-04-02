@@ -94,6 +94,5 @@ Desktop releases use the same shared `v*` tag flow as the CLI.
 Expected desktop release assets:
 
 - `local-background-remover-vX.Y.Z-darwin-arm64.dmg`
-- `local-background-remover-vX.Y.Z-darwin-arm64.zip`
 
 App Store submission is not required for GitHub-distributed `.dmg` releases, but the release workflow now expects Developer ID signing plus Apple notarization. If those secrets are missing, the desktop release job fails instead of publishing Gatekeeper-blocked installers. The packaged app depends on the matching CLI release artifact being available so it can self-install `rmbg` externally.

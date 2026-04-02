@@ -52,7 +52,7 @@ if (!hasAllSigningEnv && !String(process.env.CSC_IDENTITY_AUTO_DISCOVERY || "").
 }
 
 const command = fs.existsSync(localBuilderBin) ? localBuilderBin : binName;
-const args = ["--mac", "dmg", "zip"];
+const args = ["--mac", "dmg"];
 
 if (!hasAllSigningEnv) {
   args.push("--config.mac.identity=null");

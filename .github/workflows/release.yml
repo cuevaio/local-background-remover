@@ -107,7 +107,6 @@ jobs:
           name: desktop-darwin-arm64
           path: |
             apps/desktop/dist-packages/*.dmg
-            apps/desktop/dist-packages/*.zip
 
   publish:
     needs:
@@ -128,7 +127,7 @@ jobs:
         run: |
           cd release-assets
           shopt -s nullglob
-          files=( *.tar.gz *.dmg *.zip )
+          files=( *.tar.gz *.dmg )
           if [[ ${#files[@]} -eq 0 ]]; then
             echo "No release assets found to checksum" >&2
             exit 1
@@ -141,5 +140,4 @@ jobs:
           files: |
             release-assets/*.tar.gz
             release-assets/*.dmg
-            release-assets/*.zip
             release-assets/checksums.txt

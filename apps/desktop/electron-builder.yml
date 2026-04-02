@@ -10,8 +10,8 @@ electronVersion: 41.1.0
 mac:
   target:
     - dmg
-    - zip
   category: public.app-category.photography
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.inherit.plist
   hardenedRuntime: true
+afterPack: ./scripts/prune-mac-updater-frameworks.mjs

@@ -104,7 +104,6 @@ git push origin vX.Y.Z
 
 - `rmbg-vX.Y.Z-darwin-arm64.tar.gz`
 - `local-background-remover-vX.Y.Z-darwin-arm64.dmg`
-- `local-background-remover-vX.Y.Z-darwin-arm64.zip`
 - `checksums.txt`
 
 6. Verify checksums:
