@@ -57,9 +57,11 @@ interface Window {
     copyToStorage: (payload: { sourcePath: string }) => Promise<{ ok: boolean; path: string; name: string }>;
     getStorageDir: () => Promise<string>;
     pickImages: () => Promise<string[]>;
+    resolveDroppedFilePaths: (files: File[]) => string[];
     libraryList: () => Promise<{ ok?: boolean; folder_path?: string; items?: LibraryImageItem[] }>;
     libraryImportFiles: (payload: { paths: string[] }) => Promise<{ ok?: boolean; items?: LibraryImageItem[]; imported?: LibraryImageItem[] }>;
     libraryImportUrl: (payload: { url: string }) => Promise<{ ok?: boolean; items?: LibraryImageItem[]; imported?: LibraryImageItem }>;
+    libraryImportClipboardImage: (payload: { bytes: Uint8Array; contentType: string; originalName?: string }) => Promise<{ ok?: boolean; items?: LibraryImageItem[]; imported?: LibraryImageItem }>;
     libraryProcess: (payload: { id: string }) => Promise<{ ok?: boolean; item?: LibraryImageItem; items?: LibraryImageItem[]; error?: string }>;
     libraryDelete: (payload: { id: string }) => Promise<{ ok?: boolean; deleted_id?: string; items?: LibraryImageItem[]; error?: string }>;
     openLibraryFolder: () => Promise<{ ok?: boolean; folder_path?: string }>;

@@ -24,6 +24,12 @@ type LibraryState = {
   items: LibraryItem[];
 };
 
+type LibraryImportClipboardImagePayload = {
+  bytes?: ArrayBuffer | Uint8Array | number[];
+  contentType?: string;
+  originalName?: string;
+};
+
 const repoRoot = path.resolve(__dirname, "../../../../");
 const rmbgProjectDir = path.join(repoRoot, "apps", "rmbg");
 const storageDir = path.join(app.getPath("pictures"), "Local Background Remover");
@@ -355,6 +361,27 @@ function extensionFromContentType(contentType: string | null) {
   return ".png";
 }
 
+function isSupportedClipboardImageType(contentType: string | null) {
+  const value = String(contentType || "").toLowerCase();
+  return value === "image/png" || value === "image/jpeg" || value === "image/jpg" || value === "image/webp";
+}
+
+function bytesFromPayload(value: unknown) {
+  if (value instanceof Uint8Array) {
+    return Buffer.from(value);
+  }
+  if (value instanceof ArrayBuffer) {
+    return Buffer.from(value);
+  }
+  if (ArrayBuffer.isView(value)) {
+    return Buffer.from(value.buffer, value.byteOffset, value.byteLength);
+  }
+  if (Array.isArray(value) && value.every((entry) => Number.isInteger(entry) && entry >= 0 && entry <= 255)) {
+    return Buffer.from(value);
+  }
+  throw new Error("Clipboard image bytes are required");
+}
+
 function libraryOutputPathFor(itemId: string) {
   return path.join(libraryOutputsDir(), `${itemId}.png`);
 }
@@ -409,6 +436,34 @@ async function importUrlIntoLibrary(url: string): Promise<LibraryItem> {
     originalName = `image${ext}`;
   }
 
+  const targetPath = path.join(libraryOriginalsDir(), `${id}${ext}`);
+  await fs.promises.writeFile(targetPath, bytes);
+
+  return {
+    id,
+    original_name: originalName,
+    source_path: targetPath,
+    output_path: null,
+    created_at: Date.now(),
+    processed_at: null,
+  };
+}
+
+async function importClipboardImageIntoLibrary(payload: LibraryImportClipboardImagePayload): Promise<LibraryItem> {
+  ensureLibraryDirs();
+  const contentType = String(payload?.contentType || "").trim().toLowerCase();
+  if (!isSupportedClipboardImageType(contentType)) {
+    throw new Error("Clipboard image type is not supported yet");
+  }
+
+  const bytes = bytesFromPayload(payload?.bytes);
+  if (bytes.length === 0) {
+    throw new Error("Clipboard image is empty");
+  }
+
+  const id = createId();
+  const ext = extensionFromContentType(contentType);
+  const originalName = String(payload?.originalName || "").trim() || `pasted-image-${id}${ext}`;
   const targetPath = path.join(libraryOriginalsDir(), `${id}${ext}`);
   await fs.promises.writeFile(targetPath, bytes);
 
@@ -940,6 +995,17 @@ ipcMain.handle("library-import-url", async (_event: unknown, payload: { url?: st
   }
 
   const imported = await importUrlIntoLibrary(url);
+  const items = upsertLibraryItems([imported]);
+  return {
+    ok: true,
+    imported,
+    items,
+  };
+});
+
+ipcMain.handle("library-import-clipboard-image", async (_event: unknown, payload: LibraryImportClipboardImagePayload) => {
+  await requireDesktopLicense();
+  const imported = await importClipboardImageIntoLibrary(payload);
   const items = upsertLibraryItems([imported]);
   return {
     ok: true,

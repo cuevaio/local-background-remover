@@ -46,6 +46,7 @@ let activeImageId: string | null = null;
 const processingIds = new Set<string>();
 let toastCounter = 0;
 let runtimeSetupRequired = false;
+let clipboardImportInFlight = false;
 
 type ToastTone = "default" | "success" | "error";
 
@@ -158,6 +159,48 @@ function sourceName(inputPath: string) {
     }
   }
   return inputPath.split("/").pop() || inputPath;
+}
+
+function isWorkspaceVisible() {
+  return !required(workspaceScreen, "workspace-screen").classList.contains("hidden");
+}
+
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) {
+    return true;
+  }
+
+  return Boolean(target.closest("input, textarea, select, [contenteditable=''], [contenteditable='true'], [contenteditable='plaintext-only']"));
+}
+
+function clipboardImageFile(event: ClipboardEvent) {
+  const transfer = event.clipboardData;
+  if (!transfer) {
+    return null;
+  }
+
+  for (const item of Array.from(transfer.items)) {
+    if (!item.type.startsWith("image/")) {
+      continue;
+    }
+
+    const file = item.getAsFile();
+    if (file) {
+      return file;
+    }
+  }
+
+  for (const file of Array.from(transfer.files)) {
+    if (file.type.startsWith("image/")) {
+      return file;
+    }
+  }
+
+  return null;
 }
 
 function isSurfaceLicensed(status: LicenseResponse | undefined) {
@@ -549,20 +592,67 @@ async function addImageFromUrl() {
   }
 }
 
-function droppedFilePaths(event: DragEvent) {
-  const paths: string[] = [];
+async function importClipboardImage(file: File) {
+  if (clipboardImportInFlight) {
+    return;
+  }
+
+  clipboardImportInFlight = true;
+  setGlobalStatus("Importing clipboard image...", { toast: false });
+
+  try {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const result = await window.rmbg.libraryImportClipboardImage({
+      bytes,
+      contentType: file.type,
+      originalName: file.name,
+    });
+    libraryItems = Array.isArray(result?.items) ? result.items : libraryItems;
+    if (result?.imported?.id) {
+      activeImageId = result.imported.id;
+    }
+    renderGallery();
+    renderFocusPanel();
+    if (activeImageId) {
+      await processLibraryItem(activeImageId);
+    }
+    setGlobalStatus("Clipboard image added.", { tone: "success" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unable to import clipboard image";
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    clipboardImportInFlight = false;
+  }
+}
+
+function droppedFiles(event: DragEvent) {
+  const files: File[] = [];
   const transfer = event.dataTransfer;
   if (!transfer) {
-    return paths;
+    return files;
   }
 
   for (const file of Array.from(transfer.files)) {
-    const filePath = (file as File & { path?: string }).path;
-    if (typeof filePath === "string" && filePath.trim()) {
-      paths.push(filePath);
+    files.push(file);
+  }
+
+  for (const item of Array.from(transfer.items)) {
+    if (item.kind !== "file") {
+      continue;
+    }
+
+    const file = item.getAsFile();
+    if (file) {
+      files.push(file);
     }
   }
-  return paths;
+
+  return files;
+}
+
+function droppedFilePaths(event: DragEvent) {
+  const paths = window.rmbg.resolveDroppedFilePaths(droppedFiles(event));
+  return Array.from(new Set(paths.filter((filePath) => filePath.trim())));
 }
 
 required(appActivateBtn, "app-license-activate-btn").addEventListener("click", async () => {
@@ -657,6 +747,20 @@ required(dropzone, "dropzone").addEventListener("drop", async (event: DragEvent)
 
   await importFiles(paths);
   setGlobalStatus(`Added ${paths.length} image${paths.length === 1 ? "" : "s"}.`, { tone: "success" });
+});
+
+document.addEventListener("paste", async (event: ClipboardEvent) => {
+  if (!isWorkspaceVisible() || isEditableTarget(event.target)) {
+    return;
+  }
+
+  const file = clipboardImageFile(event);
+  if (!file) {
+    return;
+  }
+
+  event.preventDefault();
+  await importClipboardImage(file);
 });
 
 required(focusSlider, "focus-slider").addEventListener("input", () => {

@@ -32,16 +32,20 @@ body {
 .app-shell {
   width: min(1100px, 100% - 40px);
   margin: 0 auto;
-  padding: 26px 24px 40px;
+  padding: 18px 24px 24px;
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
   background: rgba(250, 250, 250, 0.95);
 }
 
+.brand-row {
+  margin-bottom: 2px;
+}
+
 .brand-row h1 {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   font-family: "Space Grotesk", "Geist", sans-serif;
-  font-size: clamp(32px, 4vw, 52px);
+  font-size: clamp(30px, 3.8vw, 48px);
   line-height: 1.04;
   letter-spacing: -0.02em;
 }
@@ -52,8 +56,8 @@ body {
   margin: 0;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 11px;
+  padding: 5px 11px;
+  font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
@@ -61,10 +65,10 @@ body {
 }
 
 .subtitle {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   max-width: 620px;
   color: var(--muted);
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .panel,
@@ -171,9 +175,9 @@ input:focus {
 }
 
 .workspace {
-  margin-top: 20px;
+  margin-top: 14px;
   display: grid;
-  gap: 20px;
+  gap: 14px;
 }
 
 .cli-notice {
@@ -183,10 +187,10 @@ input:focus {
   gap: 8px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: #f5f5f5;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .notice-dismiss {
@@ -211,7 +215,7 @@ input:focus {
 
 .dropzone {
   border-style: dashed;
-  padding: 22px;
+  padding: 18px 20px;
   transition: border-color 140ms ease, transform 140ms ease;
 }
 
@@ -223,20 +227,21 @@ input:focus {
 .dropzone-inner h2 {
   margin: 0;
   font-family: "Space Grotesk", "Geist", sans-serif;
-  font-size: 26px;
+  font-size: 22px;
 }
 
 .dropzone-inner p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
+  font-size: 14px;
 }
 
 .dropzone-actions {
-  margin-top: 16px;
+  margin-top: 12px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .or-label {
@@ -246,9 +251,9 @@ input:focus {
 
 .url-row {
   flex: 1;
-  min-width: 280px;
+  min-width: 260px;
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .url-row input {
@@ -257,7 +262,7 @@ input:focus {
 
 .focus-empty {
   text-align: center;
-  padding: 24px;
+  padding: 20px;
   color: var(--muted);
 }
 
@@ -272,9 +277,9 @@ input:focus {
 }
 
 .focus-panel {
-  padding: 18px;
+  padding: 14px;
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .focus-head {
@@ -286,11 +291,11 @@ input:focus {
 
 .focus-head h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .state {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
 }
 
@@ -300,7 +305,7 @@ input:focus {
   border-radius: 12px;
   overflow: hidden;
   background: #f5f5f5;
-  height: min(60vh, 580px);
+  height: clamp(240px, 31vh, 360px);
 }
 
 .focus-compare-wrap .img-before,
@@ -331,12 +336,12 @@ input:focus {
 
 .compare-label {
   position: absolute;
-  top: 10px;
+  top: 8px;
   border-radius: 999px;
   background: rgba(17, 17, 17, 0.75);
   color: #fff;
-  padding: 3px 8px;
-  font-size: 11px;
+  padding: 2px 7px;
+  font-size: 10px;
   pointer-events: none;
 }
 
@@ -365,14 +370,14 @@ input:focus {
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
 }
 
 .thumb-card {
-  padding: 10px;
+  padding: 8px;
   display: grid;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
   cursor: pointer;
   box-shadow: none;
@@ -395,7 +400,7 @@ input:focus {
   flex: 1;
   min-width: 0;
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -410,7 +415,7 @@ input:focus {
   border-radius: 10px;
   overflow: hidden;
   background: #fff;
-  height: 110px;
+  height: 96px;
 }
 
 .thumb-preview {
@@ -421,7 +426,7 @@ input:focus {
 }
 
 .empty-state {
-  padding: 28px;
+  padding: 22px;
   text-align: center;
   color: var(--muted);
   box-shadow: none;
@@ -442,9 +447,9 @@ input:focus {
   border-radius: 11px;
   background: #fff;
   color: var(--foreground);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 9px 14px;
+  padding: 8px 12px;
   cursor: pointer;
   transition: transform 130ms ease, border-color 130ms ease;
 }

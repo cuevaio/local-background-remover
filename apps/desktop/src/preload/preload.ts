@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 type PreloadLicenseSurface = "desktop" | "cli";
 
@@ -24,6 +24,12 @@ type LibraryImportUrlPayload = {
   url: string;
 };
 
+type LibraryImportClipboardImagePayload = {
+  bytes: Uint8Array;
+  contentType: string;
+  originalName?: string;
+};
+
 type LibraryProcessPayload = {
   id: string;
 };
@@ -41,16 +47,32 @@ type RefreshPayload = {
   surface: PreloadLicenseSurface;
 };
 
+function resolveDroppedFilePaths(files: File[]) {
+  return Array.from(files)
+    .map((file) => {
+      try {
+        const filePath = webUtils.getPathForFile(file);
+        return typeof filePath === "string" ? filePath.trim() : "";
+      } catch {
+        return "";
+      }
+    })
+    .filter((filePath) => filePath.length > 0);
+}
+
 contextBridge.exposeInMainWorld("rmbg", {
   scanStorage: () => ipcRenderer.invoke("scan-storage"),
   copyToStorage: (payload: { sourcePath: string }) => ipcRenderer.invoke("copy-to-storage", payload),
   getStorageDir: () => ipcRenderer.invoke("get-storage-dir"),
   pickImages: () => ipcRenderer.invoke("pick-images"),
+  resolveDroppedFilePaths: (files: File[]) => resolveDroppedFilePaths(files),
   libraryList: () => ipcRenderer.invoke("library-list"),
   libraryImportFiles: (payload: LibraryImportFilesPayload) =>
     ipcRenderer.invoke("library-import-files", payload),
   libraryImportUrl: (payload: LibraryImportUrlPayload) =>
     ipcRenderer.invoke("library-import-url", payload),
+  libraryImportClipboardImage: (payload: LibraryImportClipboardImagePayload) =>
+    ipcRenderer.invoke("library-import-clipboard-image", payload),
   libraryProcess: (payload: LibraryProcessPayload) => ipcRenderer.invoke("library-process", payload),
   libraryDelete: (payload: LibraryDeletePayload) => ipcRenderer.invoke("library-delete", payload),
   openLibraryFolder: () => ipcRenderer.invoke("open-library-folder"),
