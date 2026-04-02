@@ -1,5 +1,9 @@
 const onboardingScreen = document.getElementById("onboarding-screen");
 const workspaceScreen = document.getElementById("workspace-screen");
+const runtimeNotice = document.getElementById("runtime-notice");
+const runtimeNoticeMessage = document.getElementById("runtime-notice-message");
+const runtimeRetryBtn = document.getElementById("runtime-retry-btn") as HTMLButtonElement | null;
+const runtimeInstallBtn = document.getElementById("runtime-install-btn") as HTMLButtonElement | null;
 
 const appLicenseInput = document.getElementById("app-license-key-input") as HTMLInputElement | null;
 const appActivateBtn = document.getElementById("app-license-activate-btn") as HTMLButtonElement | null;
@@ -41,6 +45,7 @@ let libraryItems: LibraryImageItem[] = [];
 let activeImageId: string | null = null;
 const processingIds = new Set<string>();
 let toastCounter = 0;
+let runtimeSetupRequired = false;
 
 type ToastTone = "default" | "success" | "error";
 
@@ -103,6 +108,36 @@ function setGlobalStatus(message: string, options: StatusOptions = {}) {
   }
 
   showToast(message, options.tone || "default");
+}
+
+function showRuntimeNotice(message: string) {
+  runtimeSetupRequired = true;
+  if (runtimeNoticeMessage) {
+    runtimeNoticeMessage.textContent = message;
+  }
+  if (runtimeNotice) {
+    runtimeNotice.classList.remove("hidden");
+  }
+}
+
+function clearRuntimeNotice() {
+  runtimeSetupRequired = false;
+  if (runtimeNotice) {
+    runtimeNotice.classList.add("hidden");
+  }
+}
+
+function isRuntimeSetupError(message: string) {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("runtime install failed") ||
+    lower.includes("failed to download runtime installer") ||
+    lower.includes("installed runtime not found") ||
+    lower.includes("installed rmbg version") ||
+    lower.includes("unable to verify installed rmbg runtime") ||
+    lower.includes("configured rmbg runtime not found") ||
+    lower.includes("run runtime setup first")
+  );
 }
 
 function isHttpUrl(value: string) {
@@ -223,8 +258,28 @@ function renderFocusPanel() {
   openBtn.classList.toggle("hidden", !item.output_path);
   deleteBtn.disabled = processingIds.has(item.id);
 
-  if (!item.output_path && !processingIds.has(item.id)) {
+  if (!runtimeSetupRequired && !item.output_path && !processingIds.has(item.id)) {
     void processActiveItem(item.id);
+  }
+}
+
+async function retryRuntimeSetup() {
+  const retryButton = required(runtimeRetryBtn, "runtime-retry-btn");
+  retryButton.disabled = true;
+  setGlobalStatus("Setting up runtime...", { toast: false });
+
+  try {
+    await window.rmbg.ensureRuntime();
+    clearRuntimeNotice();
+    await refreshLicenseStatus();
+    renderFocusPanel();
+    setGlobalStatus("Background removal runtime is ready.", { tone: "success" });
+  } catch (error: unknown) {
+    const message = humanizeErrorMessage(error, "Unable to set up the background removal runtime.");
+    showRuntimeNotice(message);
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    retryButton.disabled = false;
   }
 }
 
@@ -267,7 +322,22 @@ function humanizeErrorMessage(error: unknown, fallback: string) {
   const lower = message.toLowerCase();
 
   if (lower.includes("runtime install failed") || lower.includes("failed to download runtime installer")) {
-    return "The app could not install its background removal runtime. Check your connection and try again.";
+    return "The app could not install the matching rmbg runtime. Check your connection and try setup again.";
+  }
+  if (lower.includes("installed runtime not found")) {
+    return "The app installed rmbg but could not find the binary afterward. Try setup again.";
+  }
+  if (lower.includes("installed rmbg version")) {
+    return "The installed rmbg version does not match this app version. Try setup again to install the matching runtime.";
+  }
+  if (lower.includes("unable to verify installed rmbg runtime")) {
+    return "The app could not verify the installed rmbg runtime. Try setup again.";
+  }
+  if (lower.includes("configured rmbg runtime not found")) {
+    return "The configured custom rmbg runtime path is missing. Update RMBG_DESKTOP_CLI_PATH or retry setup.";
+  }
+  if (lower.includes("run runtime setup first")) {
+    return "This app needs the external rmbg runtime before it can continue. Run setup again.";
   }
   if (lower.includes("not found") || lower.includes("invalid") || lower.includes("404")) {
     return "That key looks invalid. Please check it and try again.";
@@ -313,6 +383,10 @@ async function processLibraryItem(id: string) {
     await refreshLibrary();
     setGlobalStatus(`${item.original_name} is ready.`, { tone: "success" });
   } catch (error: unknown) {
+    const raw = error instanceof Error ? error.message : "";
+    if (isRuntimeSetupError(raw)) {
+      showRuntimeNotice(humanizeErrorMessage(error, "Unable to set up the background removal runtime."));
+    }
     setGlobalStatus(humanizeErrorMessage(error, "Unable to process this image."), {
       tone: "error",
     });
@@ -352,8 +426,13 @@ async function refreshLicenseStatus() {
   setGlobalStatus("Preparing app...", { toast: false });
   try {
     const status = await window.rmbg.licenseStatus();
+    clearRuntimeNotice();
     await syncFlow(status);
   } catch (error: unknown) {
+    const raw = error instanceof Error ? error.message : "";
+    if (isRuntimeSetupError(raw)) {
+      showRuntimeNotice(humanizeErrorMessage(error, "Unable to set up the background removal runtime."));
+    }
     await syncFlow(null);
     setGlobalStatus(humanizeErrorMessage(error, "Unable to verify your license right now."), {
       tone: "error",
@@ -382,6 +461,10 @@ async function activateLicense(surface: LicenseSurface, label: string, input: HT
     input.value = "";
     setGlobalStatus(`${label} activated.`, { tone: "success" });
   } catch (error: unknown) {
+    const raw = error instanceof Error ? error.message : "";
+    if (isRuntimeSetupError(raw)) {
+      showRuntimeNotice(humanizeErrorMessage(error, `Unable to set up runtime for ${label}.`));
+    }
     setGlobalStatus(humanizeErrorMessage(error, `Activation failed for ${label}`), { tone: "error" });
   } finally {
     button.disabled = false;
@@ -521,6 +604,14 @@ required(imageUrlInput, "image-url-input").addEventListener("keydown", async (ev
     event.preventDefault();
     await addImageFromUrl();
   }
+});
+
+required(runtimeRetryBtn, "runtime-retry-btn").addEventListener("click", async () => {
+  await retryRuntimeSetup();
+});
+
+required(runtimeInstallBtn, "runtime-install-btn").addEventListener("click", async () => {
+  await window.rmbg.openRuntimeInstallUrl();
 });
 
 required(openLibraryFolderBtn, "open-library-folder-btn").addEventListener("click", async () => {

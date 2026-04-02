@@ -8,7 +8,7 @@ type RmbgResolveInput = {
   rmbgProjectDir: string;
   env: NodeJS.ProcessEnv;
   isPackaged: boolean;
-  processResourcesPath: string;
+  installedRuntimePath: string;
   existsSyncFn: ExistsSyncFn;
 };
 
@@ -17,15 +17,11 @@ type RmbgCommand = {
   commandArgs: string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
-  source: "env" | "packaged" | "venv" | "uv";
+  source: "env" | "installed" | "venv" | "uv";
 };
 
 function executableName() {
   return process.platform === "win32" ? "rmbg.exe" : "rmbg";
-}
-
-function resolvePackagedRmbgBinary(input: RmbgResolveInput) {
-  return path.join(input.processResourcesPath, "rmbg", executableName());
 }
 
 function resolveRmbgCommand(input: RmbgResolveInput, args: string[]): RmbgCommand {
@@ -34,26 +30,26 @@ function resolveRmbgCommand(input: RmbgResolveInput, args: string[]): RmbgComman
     return {
       command: envPath,
       commandArgs: args,
-      cwd: input.repoRoot,
+      cwd: input.isPackaged ? path.dirname(envPath) : input.repoRoot,
       env: input.env,
       source: "env",
     };
   }
 
   if (input.isPackaged) {
-    const packagedRmbg = resolvePackagedRmbgBinary(input);
-    if (!input.existsSyncFn(packagedRmbg)) {
+    const installedRmbg = String(input.installedRuntimePath || "").trim();
+    if (!installedRmbg || !input.existsSyncFn(installedRmbg)) {
       throw new Error(
-        `Packaged rmbg runtime not found at ${packagedRmbg}. Rebuild desktop package with bundled runtime.`,
+        `Installed rmbg runtime not found at ${installedRmbg || "<unset>"}. Run runtime setup first.`,
       );
     }
 
     return {
-      command: packagedRmbg,
+      command: installedRmbg,
       commandArgs: args,
-      cwd: input.processResourcesPath,
+      cwd: path.dirname(installedRmbg),
       env: input.env,
-      source: "packaged",
+      source: "installed",
     };
   }
 
@@ -78,6 +74,5 @@ function resolveRmbgCommand(input: RmbgResolveInput, args: string[]): RmbgComman
 }
 
 module.exports = {
-  resolvePackagedRmbgBinary,
   resolveRmbgCommand,
 };

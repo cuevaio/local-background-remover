@@ -126,6 +126,7 @@ Notes:
 
 - App Store review is not required for the GitHub release `.dmg` flow.
 - The desktop release job is expected to sign and notarize macOS artifacts. Missing Apple credentials should fail the workflow rather than publishing unsigned installers.
+- The packaged desktop app no longer includes the CLI runtime. On first launch it installs or updates the matching `rmbg` release externally via `https://local.backgroundrm.com/install`, so the CLI artifact for the same version must be published successfully.
 
 ## Full user flow test (production)
 

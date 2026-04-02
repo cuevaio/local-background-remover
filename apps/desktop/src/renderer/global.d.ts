@@ -63,6 +63,8 @@ interface Window {
     libraryProcess: (payload: { id: string }) => Promise<{ ok?: boolean; item?: LibraryImageItem; items?: LibraryImageItem[]; error?: string }>;
     libraryDelete: (payload: { id: string }) => Promise<{ ok?: boolean; deleted_id?: string; items?: LibraryImageItem[]; error?: string }>;
     openLibraryFolder: () => Promise<{ ok?: boolean; folder_path?: string }>;
+    ensureRuntime: () => Promise<{ ok?: boolean; runtime_path?: string | null }>;
+    openRuntimeInstallUrl: () => Promise<{ ok?: boolean; url?: string }>;
     modelStatus: () => Promise<{ ready?: boolean }>;
     workerStatus: () => Promise<WorkerStatusResponse>;
     ensureModel: () => Promise<{ ok?: boolean; error?: string; bootstrapped?: boolean }>;

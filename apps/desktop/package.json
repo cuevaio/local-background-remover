@@ -1,7 +1,7 @@
 {
   "name": "desktop",
   "private": true,
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Local Background Remover desktop app",
   "author": "Background Remover",
   "license": "UNLICENSED",
@@ -11,7 +11,7 @@
     "build": "tsc -p tsconfig.json && node ./scripts/copy-renderer-assets.mjs",
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "bun run build && node --test test/*.test.cjs",
-    "build:mac": "bun run build && node ./scripts/prepare-rmbg-runtime.mjs",
+    "build:mac": "bun run build",
     "dist:mac": "bun run build:mac && node ./scripts/dist-mac.mjs",
     "check": "bun run lint && bun run test"
   },

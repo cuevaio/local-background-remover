@@ -54,14 +54,7 @@ Common runtime variables:
 
 ## Build and package (macOS MVP)
 
-1. Build bundled CLI runtime:
-
-```bash
-cd apps/rmbg
-bun run package:mac
-```
-
-2. Build and package desktop app:
+Build and package desktop app:
 
 ```bash
 cd apps/desktop
@@ -69,6 +62,8 @@ bun run dist:mac
 ```
 
 Artifacts are produced under `apps/desktop/dist-packages`.
+
+Packaged desktop no longer bundles the CLI runtime inside the `.app`. On first packaged launch it installs or updates the matching `rmbg` version externally via `https://local.backgroundrm.com/install`, then uses that installed runtime for processing commands.
 
 By default, local packaging runs unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`) unless the full mac signing and notarization env set is present:
 
@@ -101,4 +96,4 @@ Expected desktop release assets:
 - `local-background-remover-vX.Y.Z-darwin-arm64.dmg`
 - `local-background-remover-vX.Y.Z-darwin-arm64.zip`
 
-App Store submission is not required for GitHub-distributed `.dmg` releases, but the release workflow now expects Developer ID signing plus Apple notarization. If those secrets are missing, the desktop release job fails instead of publishing Gatekeeper-blocked installers.
+App Store submission is not required for GitHub-distributed `.dmg` releases, but the release workflow now expects Developer ID signing plus Apple notarization. If those secrets are missing, the desktop release job fails instead of publishing Gatekeeper-blocked installers. The packaged app depends on the matching CLI release artifact being available so it can self-install `rmbg` externally.

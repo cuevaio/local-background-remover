@@ -54,6 +54,8 @@ contextBridge.exposeInMainWorld("rmbg", {
   libraryProcess: (payload: LibraryProcessPayload) => ipcRenderer.invoke("library-process", payload),
   libraryDelete: (payload: LibraryDeletePayload) => ipcRenderer.invoke("library-delete", payload),
   openLibraryFolder: () => ipcRenderer.invoke("open-library-folder"),
+  ensureRuntime: () => ipcRenderer.invoke("ensure-runtime"),
+  openRuntimeInstallUrl: () => ipcRenderer.invoke("open-runtime-install-url"),
   modelStatus: () => ipcRenderer.invoke("model-status"),
   workerStatus: () => ipcRenderer.invoke("worker-status"),
   ensureModel: () => ipcRenderer.invoke("ensure-model"),

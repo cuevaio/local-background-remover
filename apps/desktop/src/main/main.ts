@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 const { normalizeCommandFailure, normalizeWorkerFailure } = require("./rmbg-errors");
-const { resolvePackagedRmbgBinary, resolveRmbgCommand } = require("./rmbg-runtime");
+const { resolveRmbgCommand } = require("./rmbg-runtime");
 export {};
 
 type JsonMap = Record<string, unknown>;
@@ -39,14 +39,6 @@ let runtimeInstallPromise: Promise<string> | null = null;
 let desktopSessionNonce: string | null = null;
 let desktopSessionExpiresAt = 0;
 
-function getResourcesPath() {
-  const electronProcess = process as NodeJS.Process & { resourcesPath?: string };
-  if (electronProcess.resourcesPath) {
-    return electronProcess.resourcesPath;
-  }
-  return path.resolve(app.getAppPath(), "..");
-}
-
 function commandForRmbg(args: string[]) {
   return resolveRmbgCommand(
     {
@@ -54,7 +46,7 @@ function commandForRmbg(args: string[]) {
       rmbgProjectDir,
       env: process.env,
       isPackaged: app.isPackaged,
-      processResourcesPath: getResourcesPath(),
+      installedRuntimePath: installedRuntimePath(),
       existsSyncFn: fs.existsSync,
     },
     args,
@@ -180,7 +172,10 @@ async function ensureDesktopRuntimeInstalled() {
   }
 
   const configuredPath = String(process.env.RMBG_DESKTOP_CLI_PATH || "").trim();
-  if (configuredPath && fs.existsSync(configuredPath)) {
+  if (configuredPath) {
+    if (!fs.existsSync(configuredPath)) {
+      throw new Error(`Configured rmbg runtime not found at ${configuredPath}.`);
+    }
     return configuredPath;
   }
 
@@ -203,22 +198,16 @@ async function ensureDesktopRuntimeInstalled() {
       return runtimePath;
     }
 
-    const packagedBinary = resolvePackagedRmbgBinary({
-      repoRoot,
-      rmbgProjectDir,
-      env: process.env,
-      isPackaged: app.isPackaged,
-      processResourcesPath: getResourcesPath(),
-      existsSyncFn: fs.existsSync,
-    });
-    if (fs.existsSync(packagedBinary)) {
-      process.env.RMBG_DESKTOP_CLI_PATH = packagedBinary;
-      return packagedBinary;
+    if (!fs.existsSync(runtimePath)) {
+      throw new Error(`Installed runtime not found at ${runtimePath} after setup.`);
+    }
+    if (finalVersion) {
+      throw new Error(
+        `Installed rmbg version ${finalVersion} does not match desktop app version ${expectedVersion}.`,
+      );
     }
 
-    throw new Error(
-      `Unable to prepare the background removal runtime for app version ${expectedVersion}.`,
-    );
+    throw new Error(`Unable to verify installed rmbg runtime at ${runtimePath}.`);
   })();
 
   try {
@@ -1012,6 +1001,16 @@ ipcMain.handle("open-library-folder", async () => {
   ensureLibraryDirs();
   shell.openPath(libraryRootDir());
   return { ok: true, folder_path: libraryRootDir() };
+});
+
+ipcMain.handle("ensure-runtime", async () => {
+  const runtimePath = await ensureDesktopRuntimeInstalled();
+  return { ok: true, runtime_path: runtimePath };
+});
+
+ipcMain.handle("open-runtime-install-url", async () => {
+  await shell.openExternal(RMBG_INSTALL_URL);
+  return { ok: true, url: RMBG_INSTALL_URL };
 });
 
 ipcMain.handle(

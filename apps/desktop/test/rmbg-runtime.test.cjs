@@ -9,7 +9,7 @@ function baseInput(overrides = {}) {
     rmbgProjectDir: "/repo/apps/rmbg",
     env: {},
     isPackaged: false,
-    processResourcesPath: "/Applications/App.app/Contents/Resources",
+    installedRuntimePath: "/Users/test/.local/bin/rmbg",
     existsSyncFn: () => false,
     ...overrides,
   };
@@ -40,6 +40,20 @@ test("uses RMBG_DESKTOP_CLI_PATH override in packaged mode", () => {
   assert.equal(command.source, "env");
 });
 
+test("uses installed runtime in packaged mode", () => {
+  const command = resolveRmbgCommand(
+    baseInput({
+      isPackaged: true,
+      existsSyncFn: (targetPath) => targetPath === "/Users/test/.local/bin/rmbg",
+    }),
+    ["license", "status", "--surface", "desktop", "--json"],
+  );
+
+  assert.equal(command.command, "/Users/test/.local/bin/rmbg");
+  assert.equal(command.cwd, "/Users/test/.local/bin");
+  assert.equal(command.source, "installed");
+});
+
 test("uses uv fallback in dev when venv binary is missing", () => {
   const command = resolveRmbgCommand(baseInput(), ["license", "status"]);
 
@@ -48,15 +62,16 @@ test("uses uv fallback in dev when venv binary is missing", () => {
   assert.deepEqual(command.commandArgs.slice(0, 4), ["run", "--project", "/repo/apps/rmbg", "rmbg"]);
 });
 
-test("throws in packaged mode when bundled runtime is missing", () => {
+test("throws in packaged mode when installed runtime is missing", () => {
   assert.throws(
     () =>
       resolveRmbgCommand(
         baseInput({
           isPackaged: true,
+          installedRuntimePath: "/Users/test/.local/bin/rmbg",
         }),
         ["model", "status"],
       ),
-    /Packaged rmbg runtime not found/,
+    /Installed rmbg runtime not found/,
   );
 });

@@ -70,10 +70,6 @@ jobs:
             exit 1
           fi
 
-      - name: Build packaged CLI runtime
-        working-directory: apps/rmbg
-        run: bun run package:mac
-
       - name: Build desktop installers
         working-directory: apps/desktop
         env:

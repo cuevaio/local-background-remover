@@ -5,16 +5,9 @@ directories:
 files:
   - dist/**
   - package.json
-extraResources:
-  - from: build-resources/rmbg
-    to: rmbg
-    filter:
-      - "**/*"
 artifactName: local-background-remover-v${version}-darwin-${arch}.${ext}
 electronVersion: 41.1.0
 mac:
-  binaries:
-    - build-resources/rmbg/rmbg
   target:
     - dmg
     - zip
