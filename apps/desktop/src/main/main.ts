@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, clipboard, dialog, ipcMain, nativeImage, shell } = require("electron");
 const { spawn } = require("node:child_process");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
@@ -1122,6 +1122,21 @@ ipcMain.handle(
     };
   },
 );
+
+ipcMain.handle("copy-processed-image", async (_event: unknown, payload: { sourcePath?: string }) => {
+  const sourcePath = normalizeUserPath(payload?.sourcePath);
+  if (!fs.existsSync(sourcePath)) {
+    throw new Error("Processed image file is missing. Run Remove BG again.");
+  }
+
+  const image = nativeImage.createFromPath(sourcePath);
+  if (image.isEmpty()) {
+    throw new Error("Processed image could not be copied.");
+  }
+
+  clipboard.writeImage(image);
+  return { ok: true };
+});
 
 ipcMain.handle("open-in-folder", async (_event: unknown, payload: { filePath?: string }) => {
   const filePath = normalizeUserPath(payload?.filePath);

@@ -16,6 +16,10 @@ type OpenInFolderPayload = {
   filePath: string;
 };
 
+type CopyProcessedPayload = {
+  sourcePath: string;
+};
+
 type LibraryImportFilesPayload = {
   paths: string[];
 };
@@ -85,6 +89,8 @@ contextBridge.exposeInMainWorld("rmbg", {
     ipcRenderer.invoke("remove-background", payload),
   saveProcessedImage: (payload: SaveProcessedPayload) =>
     ipcRenderer.invoke("save-processed-image", payload),
+  copyProcessedImage: (payload: CopyProcessedPayload) =>
+    ipcRenderer.invoke("copy-processed-image", payload),
   openInFolder: (payload: OpenInFolderPayload) => ipcRenderer.invoke("open-in-folder", payload),
   licenseStatus: () => ipcRenderer.invoke("license-status"),
   licenseActivate: (payload: LicensePayload) => ipcRenderer.invoke("license-activate", payload),

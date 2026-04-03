@@ -33,6 +33,11 @@ type OpenInFolderResponse = {
   error?: string;
 };
 
+type CopyProcessedResponse = {
+  ok?: boolean;
+  error?: string;
+};
+
 type LicenseResponse = {
   ok?: boolean;
   licensed?: boolean;
@@ -72,6 +77,7 @@ interface Window {
     ensureModel: () => Promise<{ ok?: boolean; error?: string; bootstrapped?: boolean }>;
     removeBackground: (payload: { inputPath: string; outputPath?: string }) => Promise<RemoveBackgroundResponse>;
     saveProcessedImage: (payload: { sourcePath: string; inputPath: string }) => Promise<SaveProcessedResponse>;
+    copyProcessedImage: (payload: { sourcePath: string }) => Promise<CopyProcessedResponse>;
     openInFolder: (payload: { filePath: string }) => Promise<OpenInFolderResponse>;
     licenseStatus: () => Promise<LicenseStatusResponse>;
     licenseActivate: (payload: { key: string; surface: LicenseSurface }) => Promise<{ ok?: boolean; error?: string }>;

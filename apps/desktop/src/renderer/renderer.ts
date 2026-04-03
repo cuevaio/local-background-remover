@@ -30,6 +30,7 @@ const focusAfter = document.getElementById("focus-after") as HTMLImageElement | 
 const focusDivider = document.getElementById("focus-divider");
 const focusSlider = document.getElementById("focus-slider") as HTMLInputElement | null;
 const focusSaveBtn = document.getElementById("focus-save-btn") as HTMLButtonElement | null;
+const focusCopyBtn = document.getElementById("focus-copy-btn") as HTMLButtonElement | null;
 const focusOpenBtn = document.getElementById("focus-open-btn") as HTMLButtonElement | null;
 const focusDeleteBtn = document.getElementById("focus-delete-btn") as HTMLButtonElement | null;
 
@@ -294,10 +295,12 @@ function renderFocusPanel() {
   applyFocusSlider("50");
 
   const saveBtn = required(focusSaveBtn, "focus-save-btn");
+  const copyBtn = required(focusCopyBtn, "focus-copy-btn");
   const openBtn = required(focusOpenBtn, "focus-open-btn");
   const deleteBtn = required(focusDeleteBtn, "focus-delete-btn");
 
   saveBtn.classList.toggle("hidden", !item.output_path);
+  copyBtn.classList.toggle("hidden", !item.output_path);
   openBtn.classList.toggle("hidden", !item.output_path);
   deleteBtn.disabled = processingIds.has(item.id);
 
@@ -354,6 +357,31 @@ async function deleteActiveItem() {
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unable to delete image";
     setGlobalStatus(message, { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function copyCurrentProcessedImage() {
+  const item = currentItem();
+  if (!item?.output_path) {
+    return false;
+  }
+
+  const button = required(focusCopyBtn, "focus-copy-btn");
+  button.disabled = true;
+  setGlobalStatus("Copying image...", { toast: false });
+  try {
+    const result = await window.rmbg.copyProcessedImage({ sourcePath: item.output_path });
+    if (!result?.ok) {
+      throw new Error(result?.error || "Copy failed");
+    }
+    setGlobalStatus("Copied image to clipboard.", { tone: "success" });
+    return true;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Copy failed";
+    setGlobalStatus(message, { tone: "error" });
+    return false;
   } finally {
     button.disabled = false;
   }
@@ -763,6 +791,21 @@ document.addEventListener("paste", async (event: ClipboardEvent) => {
   await importClipboardImage(file);
 });
 
+document.addEventListener("keydown", async (event: KeyboardEvent) => {
+  const isCopyShortcut = (event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "c";
+  if (!isCopyShortcut || !isWorkspaceVisible() || isEditableTarget(event.target)) {
+    return;
+  }
+
+  const item = currentItem();
+  if (!item?.output_path) {
+    return;
+  }
+
+  event.preventDefault();
+  await copyCurrentProcessedImage();
+});
+
 required(focusSlider, "focus-slider").addEventListener("input", () => {
   applyFocusSlider(required(focusSlider, "focus-slider").value);
 });
@@ -795,6 +838,10 @@ required(focusSaveBtn, "focus-save-btn").addEventListener("click", async () => {
   } finally {
     button.disabled = false;
   }
+});
+
+required(focusCopyBtn, "focus-copy-btn").addEventListener("click", async () => {
+  await copyCurrentProcessedImage();
 });
 
 required(focusOpenBtn, "focus-open-btn").addEventListener("click", async () => {
