@@ -154,9 +154,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       />
 
       <main className="site-frame">
-        <BeforeAfterShowcase />
+        <BeforeAfterShowcase className="pb-6 md:pb-8" />
 
-        <section className="section-block">
+        <section className="section-block pt-6 md:pt-8">
           <div className="flex flex-col gap-5">
             <Badge variant="outline" className="w-fit bg-card">
               Local-first cutouts
