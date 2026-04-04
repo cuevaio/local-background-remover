@@ -6,6 +6,7 @@ import { FlagValues } from "flags/react";
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
+import InputOptionsSection from "@/components/marketing/InputOptionsSection";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import ProofStrip from "@/components/marketing/ProofStrip";
 import QuoteSection from "@/components/marketing/QuoteSection";
@@ -194,6 +195,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </section>
 
         <ProofStrip />
+
+        <InputOptionsSection />
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
