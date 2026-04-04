@@ -6,7 +6,6 @@ import { FlagValues } from "flags/react";
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
-import HeroExamplePanel from "@/components/marketing/HeroExamplePanel";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import ProofStrip from "@/components/marketing/ProofStrip";
 import QuoteSection from "@/components/marketing/QuoteSection";
@@ -155,31 +154,32 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       />
 
       <main className="site-frame">
+        <BeforeAfterShowcase />
+
         <section className="section-block">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="flex flex-col gap-5">
-              <Badge variant="outline" className="w-fit bg-card">
-                Local-first cutouts
-              </Badge>
-              <div className="flex flex-col gap-4">
-                <h1 className="display-title">{heroTitle}</h1>
-                <p className="section-copy">
-                  Build cleaner product shots, profile photos, and launch assets with local
-                  workflows made for independent makers.
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <Button asChild size="lg">
-                  <Link href="/downloads">{primaryCtaLabel}</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/pricing">See pricing</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/docs">CLI docs</Link>
-                </Button>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-5">
+            <Badge variant="outline" className="w-fit bg-card">
+              Local-first cutouts
+            </Badge>
+            <div className="flex flex-col gap-4">
+              <h1 className="display-title">{heroTitle}</h1>
+              <p className="section-copy">
+                Build cleaner product shots, profile photos, and launch assets with local
+                workflows made for independent makers.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button asChild size="lg">
+                <Link href="/downloads">{primaryCtaLabel}</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/pricing">See pricing</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/docs">CLI docs</Link>
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <Badge variant="outline" className="bg-card">
                   Works with people + products
                 </Badge>
@@ -189,10 +189,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 <Badge variant="outline" className="bg-card">
                   Private on your device
                 </Badge>
-              </div>
             </div>
-
-            <HeroExamplePanel />
           </div>
         </section>
 
@@ -256,9 +253,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </Button>
           </div>
         </section>
-
-        <BeforeAfterShowcase />
-
         <QuoteSection />
 
         <TestimonialMosaic />
