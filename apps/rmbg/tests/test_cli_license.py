@@ -1,6 +1,8 @@
 import argparse
 from pathlib import Path
 
+import pytest
+
 from rmbg_cli import cli
 from rmbg_cli.cli import build_parser
 
@@ -78,6 +80,27 @@ def test_worker_parser_accepts_license_surfaces() -> None:
     assert args.surface == "desktop"
     assert args.require_surface == ["cli"]
     assert args.api_base == "http://localhost:3000"
+
+
+def test_root_help_hides_surface_flags() -> None:
+    parser = build_parser()
+
+    help_output = parser.format_help()
+
+    assert "--surface" not in help_output
+    assert "--require-surface" not in help_output
+
+
+def test_remove_help_hides_surface_flags(capsys) -> None:
+    parser = build_parser()
+
+    with pytest.raises(SystemExit):
+        parser.parse_args(["remove", "--help"])
+
+    help_output = capsys.readouterr().out
+
+    assert "--surface" not in help_output
+    assert "--require-surface" not in help_output
 
 
 def test_resource_tracker_fd_detected_from_frozen_style_argv() -> None:

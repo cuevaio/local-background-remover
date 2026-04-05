@@ -13,13 +13,12 @@ uv sync --group dev
 
 ```bash
 cd apps/rmbg
-uv run rmbg license activate --key YOUR_KEY --surface cli --json
-uv run rmbg license status --surface cli --json
-uv run rmbg license refresh --surface cli --json
+uv run rmbg license activate --key YOUR_KEY --json
+uv run rmbg license status --json
+uv run rmbg license refresh --json
 uv run rmbg model status --json
-uv run rmbg model ensure --surface cli --format json
-uv run rmbg remove --surface cli --input ../../butterfly.jpg --output /tmp/butterfly-rmbg.png --format json
-uv run rmbg remove --surface cli --require-surface desktop --input ../../butterfly.jpg --output /tmp/butterfly-rmbg.png --format json
+uv run rmbg model ensure --format json
+uv run rmbg remove --input ../../butterfly.jpg --output /tmp/butterfly-rmbg.png --format json
 ```
 
 When working from the monorepo root, use `uv run --project apps/rmbg rmbg ...` instead of bare `uv run rmbg ...` so uv resolves the editable CLI project rather than an installed binary elsewhere on your machine.
@@ -39,8 +38,7 @@ Set these env vars before activating:
 
 `RMBG_LICENSE_CA_BUNDLE`, `SSL_CERT_FILE`, and `REQUESTS_CA_BUNDLE` also apply to HTTPS image downloads for `--input https://...`.
 
-Note: desktop app processing uses CLI internally and requires both `desktop` and `cli`
-surface activations.
+Note: the desktop app manages any internal license context itself.
 
 ## Model behavior
 

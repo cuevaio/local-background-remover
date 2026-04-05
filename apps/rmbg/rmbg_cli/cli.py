@@ -25,7 +25,7 @@ from .upgrade import DEFAULT_INSTALL_URL, DEFAULT_METADATA_URL, run_upgrade
 try:
     RMBG_VERSION = version("rmbg")
 except PackageNotFoundError:
-    RMBG_VERSION = "0.3.3"
+    RMBG_VERSION = "0.5.3"
 
 
 RESOURCE_TRACKER_COMMAND_RE = re.compile(
@@ -369,8 +369,8 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=(
             "Examples:\n"
             "  rmbg upgrade --format json\n"
-            "  rmbg license activate --key YOUR_KEY --surface cli --json\n"
-            "  rmbg model ensure --surface cli --format json\n"
+            "  rmbg license activate --key YOUR_KEY --json\n"
+            "  rmbg model ensure --format json\n"
             "  rmbg remove --input image.jpg --output image_rmbg.png --format json"
         ),
         formatter_class=argparse.RawTextHelpFormatter,
@@ -393,7 +393,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
-        help="License surface to validate before bootstrap",
+        help=argparse.SUPPRESS,
     )
     model_ensure.add_argument(
         "--require-surface",
@@ -401,7 +401,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["cli", "desktop", "app"],
         action="append",
         default=[],
-        help="Additional surface requirement(s), repeatable",
+        help=argparse.SUPPRESS,
     )
     model_ensure.add_argument("--license-file", type=str, default=None)
     model_ensure.add_argument("--api-base", type=str, default=None)
@@ -431,7 +431,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
-        help="License surface to validate before processing",
+        help=argparse.SUPPRESS,
     )
     remove_parser.add_argument(
         "--require-surface",
@@ -439,7 +439,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["cli", "desktop", "app"],
         action="append",
         default=[],
-        help="Additional surface requirement(s), repeatable",
+        help=argparse.SUPPRESS,
     )
     remove_parser.add_argument("--license-file", type=str, default=None)
     remove_parser.add_argument("--api-base", type=str, default=None)
@@ -476,7 +476,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
-        help="Primary license surface for worker requests",
+        help=argparse.SUPPRESS,
     )
     worker_parser.add_argument(
         "--require-surface",
@@ -484,7 +484,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["cli", "desktop", "app"],
         action="append",
         default=[],
-        help="Additional surface requirement(s), repeatable",
+        help=argparse.SUPPRESS,
     )
     worker_parser.add_argument("--license-file", type=str, default=None)
     worker_parser.add_argument("--api-base", type=str, default=None)
@@ -533,6 +533,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
+        help=argparse.SUPPRESS,
     )
     license_activate.add_argument("--license-file", type=str, default=None)
     license_activate.add_argument("--api-base", type=str, default=None)
@@ -545,6 +546,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
+        help=argparse.SUPPRESS,
     )
     license_status.add_argument("--license-file", type=str, default=None)
     _add_output_flags(license_status)
@@ -558,6 +560,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
+        help=argparse.SUPPRESS,
     )
     license_refresh.add_argument("--license-file", type=str, default=None)
     license_refresh.add_argument("--api-base", type=str, default=None)

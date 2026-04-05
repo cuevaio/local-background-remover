@@ -215,6 +215,7 @@ def main() -> None:
         type=str,
         choices=["cli", "desktop", "app"],
         default="cli",
+        help=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--require-surface",
@@ -222,6 +223,7 @@ def main() -> None:
         choices=["cli", "desktop", "app"],
         action="append",
         default=[],
+        help=argparse.SUPPRESS,
     )
     parser.add_argument("--license-file", type=str, default=None)
     parser.add_argument("--api-base", type=str, default=None)
