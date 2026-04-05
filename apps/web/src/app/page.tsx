@@ -9,6 +9,7 @@ import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
 import InputOptionsSection from "@/components/marketing/InputOptionsSection";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import ProofStrip from "@/components/marketing/ProofStrip";
+import QuickstartComparison from "@/components/marketing/QuickstartComparison";
 import QuoteSection from "@/components/marketing/QuoteSection";
 import StickyCta from "@/components/marketing/StickyCta";
 import TestimonialMosaic from "@/components/marketing/TestimonialMosaic";
@@ -16,7 +17,6 @@ import WorkflowComparison from "@/components/marketing/WorkflowComparison";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD, CLI_REMOVE_CMD } from "@/content/cli-docs";
 import {
   mergeExperimentToken,
   readSingleParam,
@@ -31,6 +31,15 @@ import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 type Faq = {
   q: string;
   a: string;
+};
+
+const QUICKSTART_COMMAND = "rmbg remove --input elon.webp --json";
+
+const QUICKSTART_RESULT = {
+  ok: true,
+  input_path: "/rmbg/elon.webp",
+  output_path: "/rmbg/elon_clean.png",
+  duration_ms: 1142,
 };
 
 const FAQS: Faq[] = [
@@ -210,45 +219,33 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2 className="section-title">Command-line quickstart in three commands</h2>
+            <h2 className="section-title">Command-line quickstart</h2>
             <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-              Download, activate, and process your first image locally.
+              Run one command, get a clean JSON response back, and check the cutout right away.
             </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
             <Card className="bg-card/95">
               <CardHeader>
-                <CardTitle>Install</CardTitle>
-                <CardDescription>macOS one-liner installer.</CardDescription>
+                <CardTitle>Try one image</CardTitle>
+                <CardDescription>
+                  A simple command to process an image and return a friendly machine-readable result.
+                </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-4">
                 <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
-                  {CLI_INSTALL_CMD}
+                  {QUICKSTART_COMMAND}
                 </pre>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-foreground">What comes back</p>
+                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs leading-6 text-foreground whitespace-pre-wrap break-all">
+                    {JSON.stringify(QUICKSTART_RESULT, null, 2)}
+                  </pre>
+                </div>
               </CardContent>
             </Card>
-            <Card className="bg-card/95">
-              <CardHeader>
-                <CardTitle>Activate</CardTitle>
-                <CardDescription>Enable command access.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
-                  {CLI_ACTIVATE_CMD}
-                </pre>
-              </CardContent>
-            </Card>
-            <Card className="bg-card/95">
-              <CardHeader>
-                <CardTitle>Use</CardTitle>
-                <CardDescription>Remove one background to verify setup.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
-                  {CLI_REMOVE_CMD}
-                </pre>
-              </CardContent>
-            </Card>
+
+            <QuickstartComparison />
           </div>
           <div>
             <Button asChild variant="outline">
@@ -256,16 +253,18 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </Button>
           </div>
         </section>
+
+        <AutomationChats />
+
         <QuoteSection />
 
         <TestimonialMosaic />
-
-        <AutomationChats />
 
         <section className="section-block section-divider flex flex-col gap-6">
           <h2 className="section-title">Questions before checkout</h2>
           <PricingPolicyFaq />
         </section>
+
       </main>
 
       <StickyCta

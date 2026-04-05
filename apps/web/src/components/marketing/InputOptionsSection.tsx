@@ -22,9 +22,9 @@ const INPUT_OPTIONS: InputOption[] = [
   },
   {
     title: "Auto-remove on import",
-    eyebrow: "1.2 to 1.5s",
+    eyebrow: "1.2 - 1.5s",
     description:
-      "When an image is selected, background removal starts automatically and usually finishes in about 1.2 to 1.5 seconds per image.",
+      "When an image is selected, background removal starts automatically and usually finishes in about 1.2 - 1.5 seconds per image.",
   },
   {
     title: "Move through earlier results",
@@ -54,7 +54,7 @@ export default function InputOptionsSection() {
               In the macOS app, you can select a file from disk, paste an image URL,
               or use Cmd+V to drop an image from your clipboard. As soon as an image
               is added, background removal starts automatically, usually taking about
-              1.2 to 1.5 seconds per image. You can move through previous images in the
+              1.2 - 1.5 seconds per image. You can move through previous images in the
               gallery, then press Cmd+C to copy the selected result into Canva,
               Photoshop, Illustrator, WhatsApp, and similar tools.
             </p>
@@ -94,7 +94,7 @@ export default function InputOptionsSection() {
           </CardHeader>
           <CardContent className="p-0">
             <img
-              src="/images/input-options.gif"
+              src="/app-input-options.gif"
               alt="Desktop app showing file selection from disk, URL import, before and after comparison, gallery navigation, and clipboard copy actions."
               className="block h-auto w-full"
             />

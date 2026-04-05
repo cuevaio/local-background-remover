@@ -27,7 +27,7 @@ const CLI_REMOVE_HELP_CMD = "rmbg remove --help";
 export const metadata: Metadata = buildPageMetadata({
   title: "CLI Docs: Install, Activate, and Command Reference",
   description:
-    "Practical CLI docs for Local Background Remover: installation, activation, first-run commands, and command reference.",
+    "Practical CLI docs for Local Background Remover: installation, activation, first-run commands, agent-friendly automation, and command reference.",
   path: "/docs",
 });
 
@@ -105,6 +105,9 @@ export default function DocsPage() {
           </h1>
           <p className="section-copy md:text-lg">
             Follow this guide in order: install, activate, verify, then run your first image.
+            The <code>rmbg</code> CLI is agent-friendly, so tools like Claude Code and OpenCode
+            can understand your project structure and automate removals across single images,
+            folders, and larger batches with average execution around 1.2 - 1.5 seconds per image.
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>

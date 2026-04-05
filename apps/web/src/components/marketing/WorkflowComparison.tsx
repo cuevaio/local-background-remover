@@ -39,7 +39,7 @@ const WORKFLOWS: Workflow[] = [
     bullets: [
       "Includes command-line access",
       "Batch through terminal",
-      "Fits scripts and automations",
+      "Fits scripts, automations, and coding agents",
     ],
     cta: "Choose CLI plan",
   },
