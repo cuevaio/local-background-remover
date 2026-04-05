@@ -13,7 +13,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Purchase Complete: Activation Steps",
   description:
-    "Your purchase is complete. Activate your app or command-line access and start processing.",
+    "Your purchase is complete. Check your email for license keys, then activate your app or command-line access and start processing.",
   path: "/thank-you",
   noindex: true,
 });
@@ -41,7 +41,8 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
           Thanks for your Local Background Remover purchase.
         </h1>
         <p className="section-copy md:text-lg">
-          Install your preferred workflow, activate your purchase, and start processing.
+          You’ll receive an email with your license keys after purchase. Install your preferred
+          workflow, activate your purchase, and start processing.
         </p>
       </section>
 
@@ -64,7 +65,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
               {CLI_INSTALL_CMD}
             </pre>
-            <p>2. Copy your key from your purchase email.</p>
+            <p>2. Get your license keys from your purchase email.</p>
             <p>3. Activate command-line access:</p>
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
               {CLI_ACTIVATE_CMD}
