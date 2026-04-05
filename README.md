@@ -58,6 +58,8 @@ uv run rmbg model ensure --json
 uv run rmbg remove --input ../../butterfly.jpg --output /tmp/butterfly-rmbg.png --json
 ```
 
+If you stay in the monorepo root, use `uv run --project apps/rmbg rmbg ...`. Bare `uv run rmbg ...` can resolve to an installed `rmbg` binary outside this repo instead of the editable `apps/rmbg` project.
+
 ## Licensing env vars
 
 - API service: `POLAR_ACCESS_TOKEN`, `POLAR_ORGANIZATION_ID`, `POLAR_WEBHOOK_SECRET`
