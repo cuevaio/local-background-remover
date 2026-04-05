@@ -50,9 +50,13 @@ def test_default_output_path_for_url_falls_back_to_image_rmbg_png() -> None:
 
 def test_load_image_from_url_success_returns_rgb_image(monkeypatch) -> None:
     payload = _png_bytes()
+    expected_context = object()
 
-    def _fake_urlopen(_req, timeout: int):
+    monkeypatch.setattr(io_module, "build_ssl_context", lambda: expected_context)
+
+    def _fake_urlopen(_req, timeout: int, context=None):
         assert timeout == io_module.DOWNLOAD_TIMEOUT_SECONDS
+        assert context is expected_context
         return _FakeResponse(
             payload,
             {
@@ -74,8 +78,11 @@ def test_load_image_rejects_non_http_scheme() -> None:
 
 
 def test_load_image_rejects_non_image_content_type(monkeypatch) -> None:
-    def _fake_urlopen(_req, timeout: int):
+    monkeypatch.setattr(io_module, "build_ssl_context", lambda: object())
+
+    def _fake_urlopen(_req, timeout: int, context=None):
         assert timeout == io_module.DOWNLOAD_TIMEOUT_SECONDS
+        assert context is not None
         return _FakeResponse(b"<html></html>", {"Content-Type": "text/html"})
 
     monkeypatch.setattr(io_module.request, "urlopen", _fake_urlopen)
@@ -87,8 +94,11 @@ def test_load_image_rejects_non_image_content_type(monkeypatch) -> None:
 def test_load_image_rejects_content_length_over_20mb(monkeypatch) -> None:
     too_large = io_module.MAX_DOWNLOAD_BYTES + 1
 
-    def _fake_urlopen(_req, timeout: int):
+    monkeypatch.setattr(io_module, "build_ssl_context", lambda: object())
+
+    def _fake_urlopen(_req, timeout: int, context=None):
         assert timeout == io_module.DOWNLOAD_TIMEOUT_SECONDS
+        assert context is not None
         return _FakeResponse(
             b"x",
             {"Content-Type": "image/png", "Content-Length": str(too_large)},
@@ -105,8 +115,11 @@ def test_load_image_rejects_stream_exceeding_20mb_without_content_length(
 ) -> None:
     payload = b"x" * (io_module.MAX_DOWNLOAD_BYTES + 1)
 
-    def _fake_urlopen(_req, timeout: int):
+    monkeypatch.setattr(io_module, "build_ssl_context", lambda: object())
+
+    def _fake_urlopen(_req, timeout: int, context=None):
         assert timeout == io_module.DOWNLOAD_TIMEOUT_SECONDS
+        assert context is not None
         return _FakeResponse(payload, {"Content-Type": "image/png"})
 
     monkeypatch.setattr(io_module.request, "urlopen", _fake_urlopen)
@@ -116,8 +129,11 @@ def test_load_image_rejects_stream_exceeding_20mb_without_content_length(
 
 
 def test_load_image_reports_timeout_actionably(monkeypatch) -> None:
-    def _fake_urlopen(_req, timeout: int):
+    monkeypatch.setattr(io_module, "build_ssl_context", lambda: object())
+
+    def _fake_urlopen(_req, timeout: int, context=None):
         assert timeout == io_module.DOWNLOAD_TIMEOUT_SECONDS
+        assert context is not None
         raise error.URLError(socket.timeout())
 
     monkeypatch.setattr(io_module.request, "urlopen", _fake_urlopen)

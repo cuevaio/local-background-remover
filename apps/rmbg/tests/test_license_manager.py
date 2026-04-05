@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 import pytest
 
 from rmbg_cli import license_manager
+from rmbg_cli import tls as tls_module
 
 
 def _b64url(raw: bytes) -> str:
@@ -370,7 +371,7 @@ def test_refresh_license_updates_cached_public_key(tmp_path: Path, monkeypatch) 
     assert state["activations"]["cli"]["public_key"] == "pubkey-2"
 
 
-def test_post_json_loads_certifi_bundle_when_no_env(monkeypatch) -> None:
+def test_build_ssl_context_loads_certifi_bundle_when_no_env(monkeypatch) -> None:
     monkeypatch.delenv("RMBG_LICENSE_CA_BUNDLE", raising=False)
     monkeypatch.delenv("SSL_CERT_FILE", raising=False)
     monkeypatch.delenv("REQUESTS_CA_BUNDLE", raising=False)
@@ -391,6 +392,65 @@ def test_post_json_loads_certifi_bundle_when_no_env(monkeypatch) -> None:
         created["context"] = context
         return context
 
+    class _Certifi:
+        @staticmethod
+        def where() -> str:
+            return __file__
+
+    monkeypatch.setattr(tls_module.ssl, "create_default_context", _fake_context)
+    monkeypatch.setitem(sys.modules, "certifi", _Certifi)
+
+    context = tls_module.build_ssl_context()
+
+    assert created["cafile"] is None
+    assert context is created["context"]
+    assert created["context"].loaded == [__file__]
+
+
+def test_build_ssl_context_loads_env_bundle_and_certifi(
+    tmp_path: Path, monkeypatch
+) -> None:
+    env_bundle = tmp_path / "ca.pem"
+    env_bundle.write_text("-----BEGIN CERTIFICATE-----\n", encoding="utf-8")
+
+    monkeypatch.setenv("RMBG_LICENSE_CA_BUNDLE", str(env_bundle))
+    monkeypatch.delenv("SSL_CERT_FILE", raising=False)
+    monkeypatch.delenv("REQUESTS_CA_BUNDLE", raising=False)
+
+    class _Context:
+        def __init__(self) -> None:
+            self.loaded: list[str] = []
+
+        def load_verify_locations(self, cafile=None, _capath=None, _cadata=None):
+            if cafile:
+                self.loaded.append(cafile)
+
+    created: dict[str, object] = {}
+
+    def _fake_context(*args, **kwargs):
+        created["cafile"] = kwargs.get("cafile")
+        context = _Context()
+        created["context"] = context
+        return context
+
+    class _Certifi:
+        @staticmethod
+        def where() -> str:
+            return __file__
+
+    monkeypatch.setattr(tls_module.ssl, "create_default_context", _fake_context)
+    monkeypatch.setitem(sys.modules, "certifi", _Certifi)
+
+    context = tls_module.build_ssl_context()
+
+    assert created["cafile"] is None
+    assert context is created["context"]
+    assert created["context"].loaded == [str(env_bundle.resolve()), __file__]
+
+
+def test_post_json_uses_shared_ssl_context(monkeypatch) -> None:
+    expected_context = object()
+
     class _Response:
         def __enter__(self):
             return self
@@ -407,21 +467,13 @@ def test_post_json_loads_certifi_bundle_when_no_env(monkeypatch) -> None:
         seen["context"] = kwargs.get("context")
         return _Response()
 
-    class _Certifi:
-        @staticmethod
-        def where() -> str:
-            return __file__
-
-    monkeypatch.setattr(license_manager.ssl, "create_default_context", _fake_context)
+    monkeypatch.setattr(license_manager, "build_ssl_context", lambda: expected_context)
     monkeypatch.setattr(license_manager.urllib.request, "urlopen", _fake_urlopen)
-    monkeypatch.setitem(sys.modules, "certifi", _Certifi)
 
     result = license_manager._post_json("https://example.com", {"hello": "world"})
 
     assert result["ok"] is True
-    assert created["cafile"] is None
-    assert seen["context"] is created["context"]
-    assert created["context"].loaded == [__file__]
+    assert seen["context"] is expected_context
 
 
 def test_resolve_ca_bundle_path_prefers_explicit_env(
@@ -434,11 +486,11 @@ def test_resolve_ca_bundle_path_prefers_explicit_env(
     monkeypatch.delenv("SSL_CERT_FILE", raising=False)
     monkeypatch.delenv("REQUESTS_CA_BUNDLE", raising=False)
 
-    assert license_manager._resolve_ca_bundle_path() == str(bundle.resolve())
+    assert tls_module.resolve_ca_bundle_path() == str(bundle.resolve())
 
 
 def test_resolve_ca_bundle_path_errors_for_missing_file(monkeypatch) -> None:
     monkeypatch.setenv("RMBG_LICENSE_CA_BUNDLE", "/tmp/does-not-exist-rmbg-ca.pem")
 
     with pytest.raises(RuntimeError, match="RMBG_LICENSE_CA_BUNDLE"):
-        license_manager._resolve_ca_bundle_path()
+        tls_module.resolve_ca_bundle_path()

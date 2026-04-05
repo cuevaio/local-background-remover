@@ -5,6 +5,8 @@ from urllib import error, parse, request
 
 from PIL import Image, ImageOps
 
+from .tls import build_ssl_context
+
 DOWNLOAD_TIMEOUT_SECONDS = 20
 MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024
 READ_CHUNK_BYTES = 64 * 1024
@@ -48,6 +50,7 @@ def _validate_image_response(url: str, content_type: str | None) -> None:
 
 
 def _fetch_url_image_bytes(url: str) -> bytes:
+    ssl_context = build_ssl_context()
     req = request.Request(
         url,
         headers={
@@ -58,7 +61,9 @@ def _fetch_url_image_bytes(url: str) -> bytes:
     )
 
     try:
-        with request.urlopen(req, timeout=DOWNLOAD_TIMEOUT_SECONDS) as response:
+        with request.urlopen(
+            req, timeout=DOWNLOAD_TIMEOUT_SECONDS, context=ssl_context
+        ) as response:
             _validate_image_response(url, response.headers.get("Content-Type"))
 
             content_length = response.headers.get("Content-Length")

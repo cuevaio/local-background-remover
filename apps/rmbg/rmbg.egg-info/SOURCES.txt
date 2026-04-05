@@ -13,6 +13,7 @@ rmbg_cli/inference.py
 rmbg_cli/io.py
 rmbg_cli/license_manager.py
 rmbg_cli/model_manager.py
+rmbg_cli/tls.py
 rmbg_cli/worker_server.py
 tests/test_cli_license.py
 tests/test_cli_remove.py
