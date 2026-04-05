@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="outline">
-            <Link href="/contact">Privacy questions</Link>
+            <ExpLink href="/contact">Privacy questions</ExpLink>
           </Button>
         </div>
       </section>

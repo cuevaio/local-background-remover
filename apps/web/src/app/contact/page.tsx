@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,10 +66,10 @@ export default function ContactPage() {
 
       <section className="section-block section-divider flex flex-wrap items-center gap-2">
         <Button asChild>
-          <Link href="/faq">Read FAQ</Link>
+          <ExpLink href="/faq">Read FAQ</ExpLink>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/docs">Open docs</Link>
+          <ExpLink href="/docs">Open docs</ExpLink>
         </Button>
       </section>
     </main>

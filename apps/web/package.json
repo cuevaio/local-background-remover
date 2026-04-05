@@ -7,7 +7,7 @@
     "build": "NEXT_PRIVATE_BUILD_WORKER=1 next build",
     "start": "next start",
     "lint": "node -e \"console.log('No web lint configured yet')\"",
-    "test": "node -e \"console.log('No web tests configured yet')\"",
+    "test": "bun test src/lib/experiments/attribution.test.ts",
     "check": "bun run lint && bun run test"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@polar-sh/nextjs": "^0.9.5",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/toolbar": "^0.2.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "flags": "^4.0.1",

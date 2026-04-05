@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import ExampleComparisonGrid from "@/components/marketing/ExampleComparisonGrid";
 import { EXAMPLE_GALLERY } from "@/components/marketing/example-gallery";
 import { Badge } from "@/components/ui/badge";
@@ -28,10 +28,10 @@ export default function GalleryPage() {
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <Button asChild>
-            <Link href="/downloads">Download free installer</Link>
+            <ExpLink href="/downloads">Download free installer</ExpLink>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/pricing">See pricing</Link>
+            <ExpLink href="/pricing">See pricing</ExpLink>
           </Button>
         </div>
       </section>

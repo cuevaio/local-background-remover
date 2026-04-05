@@ -5,6 +5,7 @@ import Script from "next/script";
 import { notFound } from "next/navigation";
 import { ArrowRightIcon, ShieldCheckIcon, SparklesIcon, TerminalIcon } from "lucide-react";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -132,7 +133,7 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
                   {comparePage.eyebrow}
                 </Badge>
                 <Button asChild variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                  <Link href="/compare">All comparisons</Link>
+                  <ExpLink href="/compare">All comparisons</ExpLink>
                 </Button>
               </div>
               <h1 className="display-title md:text-5xl">{comparePage.heroTitle}</h1>
@@ -151,10 +152,10 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
 
               <div className="flex flex-wrap items-center gap-3">
                 <Button asChild>
-                  <Link href="/downloads">Download Local</Link>
+                  <ExpLink href="/downloads">Download Local</ExpLink>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href="/pricing">See one-time pricing</Link>
+                  <ExpLink href="/pricing">See one-time pricing</ExpLink>
                 </Button>
                 <Button asChild variant="ghost">
                   <Link href={comparePage.competitorUrl} target="_blank" rel="noreferrer">

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import CommandBlock from "@/components/marketing/CommandBlock";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -108,10 +108,10 @@ export default function DocsPage() {
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <Link href="/downloads">Open downloads</Link>
+              <ExpLink href="/downloads">Open downloads</ExpLink>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/pricing">Get CLI license</Link>
+              <ExpLink href="/pricing">Get CLI license</ExpLink>
             </Button>
           </div>
         </section>

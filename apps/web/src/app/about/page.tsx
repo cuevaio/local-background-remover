@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,10 +47,10 @@ export default function AboutPage() {
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild>
-            <Link href="/downloads">Open downloads</Link>
+            <ExpLink href="/downloads">Open downloads</ExpLink>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/contact">Contact cueva.io</Link>
+            <ExpLink href="/contact">Contact cueva.io</ExpLink>
           </Button>
         </div>
       </section>

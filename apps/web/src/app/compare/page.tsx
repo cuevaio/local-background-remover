@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,10 +67,10 @@ export default function CompareIndexPage() {
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild>
-              <Link href="/downloads">Download Local</Link>
+              <ExpLink href="/downloads">Download Local</ExpLink>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/pricing">View one-time pricing</Link>
+              <ExpLink href="/pricing">View one-time pricing</ExpLink>
             </Button>
           </div>
         </section>
@@ -87,7 +87,7 @@ export default function CompareIndexPage() {
                   Reviewed from public product pages on {page.lastReviewedAt}.
                 </p>
                 <Button asChild variant="outline" className="w-full">
-                  <Link href={`/compare/${page.slug}`}>{`Open ${page.competitorName} comparison`}</Link>
+                  <ExpLink href={`/compare/${page.slug}`}>{`Open ${page.competitorName} comparison`}</ExpLink>
                 </Button>
               </CardContent>
             </Card>

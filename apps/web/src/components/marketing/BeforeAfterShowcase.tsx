@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,7 +30,7 @@ export default function BeforeAfterShowcase({ className }: BeforeAfterShowcasePr
 
       <div>
         <Button asChild variant="outline">
-          <Link href="/gallery">See more examples</Link>
+          <ExpLink href="/gallery">See more examples</ExpLink>
         </Button>
       </div>
     </section>

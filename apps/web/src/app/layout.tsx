@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { VercelToolbar } from "@vercel/toolbar/next";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import SiteFooter from "@/components/marketing/SiteFooter";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,8 @@ type RootLayoutProps = {
 };
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const shouldInjectToolbar = process.env.NODE_ENV === "development";
+
   return (
     <html
       lang="en"
@@ -76,27 +79,27 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body>
         <header className="sticky top-0 z-50 border-b border-border bg-background/88 backdrop-blur-md supports-[backdrop-filter]:bg-background/74">
           <div className="site-frame flex min-h-16 items-center justify-between gap-4 px-5 md:px-10">
-            <Link href="/" className="inline-flex items-center">
+            <ExpLink href="/" className="inline-flex items-center">
               <BrandLogo />
-            </Link>
+            </ExpLink>
             <nav className="flex items-center gap-2 md:gap-3">
               <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
-                <Link href="/docs">Docs</Link>
+                <ExpLink href="/docs">Docs</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
-                <Link href="/compare">Compare</Link>
+                <ExpLink href="/compare">Compare</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
-                <Link href="/pricing">Pricing</Link>
+                <ExpLink href="/pricing">Pricing</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
-                <Link href="/downloads">Downloads</Link>
+                <ExpLink href="/downloads">Downloads</ExpLink>
               </Button>
               <Button asChild size="sm" variant="outline" className="sm:hidden">
-                <Link href="/pricing">Plans</Link>
+                <ExpLink href="/pricing">Plans</ExpLink>
               </Button>
               <Button asChild size="sm" className="inline-flex">
-                <Link href="/pricing">Buy once</Link>
+                <ExpLink href="/pricing">Buy once</ExpLink>
               </Button>
             </nav>
           </div>
@@ -106,6 +109,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <SiteFooter />
         </div>
         <Analytics />
+        {shouldInjectToolbar ? <VercelToolbar /> : null}
       </body>
     </html>
   );

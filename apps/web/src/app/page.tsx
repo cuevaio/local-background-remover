@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
+import ExpLink from "@/components/experiments/ExpLink";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
 import InputOptionsSection from "@/components/marketing/InputOptionsSection";
@@ -171,13 +171,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <Link href="/downloads">{primaryCtaLabel}</Link>
+                <ExpLink href="/downloads">{primaryCtaLabel}</ExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/pricing">See pricing</Link>
+                <ExpLink href="/pricing">See pricing</ExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/docs">CLI docs</Link>
+                <ExpLink href="/docs">CLI docs</ExpLink>
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -252,7 +252,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
           <div>
             <Button asChild variant="outline">
-              <Link href="/docs">Open full command docs</Link>
+              <ExpLink href="/docs">Open full command docs</ExpLink>
             </Button>
           </div>
         </section>

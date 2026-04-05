@@ -1,7 +1,8 @@
 import { vercelAdapter } from "@flags-sdk/vercel";
-import { flag, type Flag } from "flags/next";
 import type { Adapter } from "flags";
+import { flag, type Flag } from "flags/next";
 
+import { getFlagsEnv } from "@/env";
 import type {
   DownloadsHeroCopyVariant,
   ExperimentAssignments,
@@ -12,10 +13,26 @@ import type {
   StickyCtaCopyVariant,
 } from "@/lib/experiments/types";
 
-// When FLAGS env is present (Vercel deployment) the vercelAdapter handles bucketing.
-// Without it (local dev) the `decide` fallback always returns "control".
-function getAdapter<V, E = any>(): Adapter<V, E> | undefined {
-  if (!process.env.FLAGS) return undefined;
+let hasValidatedFlagsEnv = false;
+
+function ensureFlagsEnv() {
+  if (hasValidatedFlagsEnv) {
+    return;
+  }
+
+  try {
+    getFlagsEnv();
+  } catch {
+    throw new Error(
+      "Vercel Flags requires FLAGS and FLAGS_SECRET. Run `vercel env pull .env.local --yes` locally and ensure both env vars are configured in Vercel.",
+    );
+  }
+
+  hasValidatedFlagsEnv = true;
+}
+
+function getAdapter<V, E = any>(): Adapter<V, E> {
+  ensureFlagsEnv();
   return vercelAdapter<V, E>();
 }
 
@@ -28,7 +45,6 @@ export const homeHeroHeadlineFlag: Flag<HomeHeroHeadlineVariant> = flag<HomeHero
     { value: "outcome", label: "Outcome" },
     { value: "privacy", label: "Privacy" },
   ],
-  decide: () => "control",
 });
 
 export const homePrimaryCtaFlag: Flag<HomePrimaryCtaVariant> = flag<HomePrimaryCtaVariant>({
@@ -40,7 +56,6 @@ export const homePrimaryCtaFlag: Flag<HomePrimaryCtaVariant> = flag<HomePrimaryC
     { value: "download_free", label: "Download Free" },
     { value: "start_downloads", label: "Start Downloads" },
   ],
-  decide: () => "control",
 });
 
 export const pricingHeroCopyFlag: Flag<PricingHeroCopyVariant> = flag<PricingHeroCopyVariant>({
@@ -52,7 +67,6 @@ export const pricingHeroCopyFlag: Flag<PricingHeroCopyVariant> = flag<PricingHer
     { value: "one_payment", label: "One Payment" },
     { value: "upgrade_later", label: "Upgrade Later" },
   ],
-  decide: () => "control",
 });
 
 export const pricingPlanCtaFlag: Flag<PricingPlanCtaVariant> = flag<PricingPlanCtaVariant>({
@@ -64,7 +78,6 @@ export const pricingPlanCtaFlag: Flag<PricingPlanCtaVariant> = flag<PricingPlanC
     { value: "get_access", label: "Get Access" },
     { value: "unlock", label: "Unlock" },
   ],
-  decide: () => "control",
 });
 
 export const stickyCtaCopyFlag: Flag<StickyCtaCopyVariant> = flag<StickyCtaCopyVariant>({
@@ -76,7 +89,6 @@ export const stickyCtaCopyFlag: Flag<StickyCtaCopyVariant> = flag<StickyCtaCopyV
     { value: "compare_install", label: "Compare/Install" },
     { value: "buy_get", label: "Buy/Get" },
   ],
-  decide: () => "control",
 });
 
 export const downloadsHeroCopyFlag: Flag<DownloadsHeroCopyVariant> = flag<DownloadsHeroCopyVariant>({
@@ -88,7 +100,6 @@ export const downloadsHeroCopyFlag: Flag<DownloadsHeroCopyVariant> = flag<Downlo
     { value: "install_minutes", label: "Install Minutes" },
     { value: "download_then_buy", label: "Download Then Buy" },
   ],
-  decide: () => "control",
 });
 
 export const flagDefinitions = {

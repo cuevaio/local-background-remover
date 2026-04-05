@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
+import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -132,10 +132,10 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <Link href="/docs">Open CLI docs</Link>
+              <ExpLink href="/docs">Open CLI docs</ExpLink>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/pricing">Need a key?</Link>
+              <ExpLink href="/pricing">Need a key?</ExpLink>
             </Button>
           </div>
         </section>
@@ -173,7 +173,7 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
                     {CLI_STATUS_CMD}
                   </pre>
                   <Button asChild variant="outline" className="w-fit">
-                    <Link href="/docs">Read full CLI command docs</Link>
+                    <ExpLink href="/docs">Read full CLI command docs</ExpLink>
                   </Button>
                 </CardContent>
               </Card>
@@ -228,10 +228,10 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild>
-                  <Link href="/pricing">Open pricing</Link>
+                  <ExpLink href="/pricing">Open pricing</ExpLink>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link href="/docs">CLI docs</Link>
+                  <ExpLink href="/docs">CLI docs</ExpLink>
                 </Button>
               </div>
             </CardContent>

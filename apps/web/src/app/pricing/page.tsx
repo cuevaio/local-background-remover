@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
+import ExpLink from "@/components/experiments/ExpLink";
 import PricingPolicyFaq from "@/components/marketing/PricingPolicyFaq";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Badge } from "@/components/ui/badge";
@@ -125,10 +125,10 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
-              <Link href="/docs">Read CLI docs</Link>
+              <ExpLink href="/docs">Read CLI docs</ExpLink>
             </Button>
             <Button asChild>
-              <Link href="/downloads">Open downloads</Link>
+              <ExpLink href="/downloads">Open downloads</ExpLink>
             </Button>
           </div>
         </section>

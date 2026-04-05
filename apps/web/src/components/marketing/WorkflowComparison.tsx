@@ -1,5 +1,4 @@
-import Link from "next/link";
-
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,7 +85,7 @@ export default function WorkflowComparison() {
             </CardContent>
             <CardFooter className="justify-end bg-secondary/45">
               <Button asChild size="sm">
-                <Link href="/pricing">{workflow.cta}</Link>
+                <ExpLink href="/pricing">{workflow.cta}</ExpLink>
               </Button>
             </CardFooter>
           </Card>

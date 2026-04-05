@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Script from "next/script";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -110,13 +110,13 @@ export default function FaqPage() {
 
         <section className="section-block section-divider flex flex-wrap items-center gap-2">
           <Button asChild>
-            <Link href="/downloads">Open downloads</Link>
+            <ExpLink href="/downloads">Open downloads</ExpLink>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/pricing">View pricing</Link>
+            <ExpLink href="/pricing">View pricing</ExpLink>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/contact">Contact cueva.io</Link>
+            <ExpLink href="/contact">Contact cueva.io</ExpLink>
           </Button>
         </section>
       </main>

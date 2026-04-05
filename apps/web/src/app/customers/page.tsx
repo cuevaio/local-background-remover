@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,10 +71,10 @@ export default function CustomersPage() {
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild>
-            <Link href="/pricing">View pricing</Link>
+            <ExpLink href="/pricing">View pricing</ExpLink>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/contact">Talk to cueva.io</Link>
+            <ExpLink href="/contact">Talk to cueva.io</ExpLink>
           </Button>
         </div>
       </section>

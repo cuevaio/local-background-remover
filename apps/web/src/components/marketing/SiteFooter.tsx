@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { StarIcon } from "lucide-react";
 
+import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -101,7 +102,7 @@ export default function SiteFooter() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" variant="secondary" className="bg-white text-black hover:bg-white/90">
-              <Link href="/pricing">View one-time pricing</Link>
+              <ExpLink href="/pricing">View one-time pricing</ExpLink>
             </Button>
             <Button
               asChild
@@ -109,7 +110,7 @@ export default function SiteFooter() {
               variant="outline"
               className="border-white/25 bg-white/8 text-white hover:bg-white/14 hover:text-white"
             >
-              <Link href="/downloads">Open downloads</Link>
+              <ExpLink href="/downloads">Open downloads</ExpLink>
             </Button>
           </div>
 
@@ -135,13 +136,13 @@ export default function SiteFooter() {
         <div className="section-block space-y-12 pt-14 pb-28">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))]">
             <div className="space-y-6">
-              <Link href="/" className="inline-flex w-fit items-center">
+              <ExpLink href="/" className="inline-flex w-fit items-center">
                 <BrandLogo
                   markClassName="size-8"
                   wordmarkClassName="text-2xl md:text-3xl"
                   wordmark="local"
                 />
-              </Link>
+              </ExpLink>
               <p className="max-w-xs text-sm text-muted-foreground">
                 Download in minutes. Process images privately. Keep your workflow simple.
               </p>
@@ -167,9 +168,9 @@ export default function SiteFooter() {
                 <ul className="space-y-2.5 text-sm text-muted-foreground">
                   {column.links.map((item) => (
                     <li key={`${column.title}-${item.label}`}>
-                      <Link href={item.href} className="transition-colors hover:text-foreground">
+                      <ExpLink href={item.href} className="transition-colors hover:text-foreground">
                         {item.label}
-                      </Link>
+                      </ExpLink>
                     </li>
                   ))}
                 </ul>
@@ -189,7 +190,7 @@ export default function SiteFooter() {
               </p>
             </div>
             <Button asChild variant="outline" size="sm" className="w-fit">
-              <Link href="/about">Read the indie story</Link>
+              <ExpLink href="/about">Read the indie story</ExpLink>
             </Button>
           </div>
 

@@ -3,6 +3,18 @@ import { z } from "zod";
 
 const nonEmpty = z.string().min(1);
 
+export const flagsEnvSchema = z.object({
+  FLAGS: nonEmpty,
+  FLAGS_SECRET: nonEmpty,
+});
+
+export function getFlagsEnv() {
+  return flagsEnvSchema.parse({
+    FLAGS: process.env.FLAGS,
+    FLAGS_SECRET: process.env.FLAGS_SECRET,
+  });
+}
+
 export const env = createEnv({
   server: {
     POLAR_SERVER: z.enum(["sandbox", "production"]).default("sandbox"),
