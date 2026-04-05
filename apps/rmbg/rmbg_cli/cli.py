@@ -19,6 +19,7 @@ from .license_manager import (
     status,
 )
 from .model_manager import ensure_local_model, validate_local_model_dir
+from .upgrade import DEFAULT_INSTALL_URL, DEFAULT_METADATA_URL, run_upgrade
 
 
 try:
@@ -314,6 +315,23 @@ def cmd_worker(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_upgrade(args: argparse.Namespace) -> int:
+    try:
+        payload = run_upgrade(
+            current_version=RMBG_VERSION,
+            current_executable=sys.argv[0],
+            metadata_url=args.metadata_url,
+            install_url=args.install_url,
+            force=args.force,
+        )
+    except Exception as exc:
+        _print({"ok": False, "error": str(exc)}, _wants_json(args))
+        return 1
+
+    _print(payload, _wants_json(args))
+    return 0
+
+
 def _add_output_flags(cmd: argparse.ArgumentParser) -> None:
     cmd.add_argument("--json", action="store_true", help="Output JSON")
     cmd.add_argument(
@@ -350,6 +368,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Background removal CLI",
         epilog=(
             "Examples:\n"
+            "  rmbg upgrade --format json\n"
             "  rmbg license activate --key YOUR_KEY --surface cli --json\n"
             "  rmbg model ensure --surface cli --format json\n"
             "  rmbg remove --input image.jpg --output image_rmbg.png --format json"
@@ -477,6 +496,30 @@ def build_parser() -> argparse.ArgumentParser:
         help="Deprecated alias for --api-base",
     )
     worker_parser.set_defaults(func=cmd_worker)
+
+    upgrade_parser = subparsers.add_parser(
+        "upgrade",
+        help="Install the latest managed CLI binary",
+    )
+    upgrade_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Install the latest release even when already up to date",
+    )
+    upgrade_parser.add_argument(
+        "--metadata-url",
+        type=str,
+        default=DEFAULT_METADATA_URL,
+        help="Latest release metadata endpoint",
+    )
+    upgrade_parser.add_argument(
+        "--install-url",
+        type=str,
+        default=DEFAULT_INSTALL_URL,
+        help="Install script URL",
+    )
+    _add_output_flags(upgrade_parser)
+    upgrade_parser.set_defaults(func=cmd_upgrade)
 
     license_parser = subparsers.add_parser(
         "license", help="License activation and status"
