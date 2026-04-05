@@ -24,7 +24,7 @@ export default function QuoteSection() {
 
         <div className="pointer-events-none absolute bottom-12 right-8 hidden w-36 rotate-6 rounded-xl border border-border bg-card/95 p-3 shadow-sm lg:block">
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Avg run</p>
-          <p className="font-mono text-xl font-medium text-info">1m 42s</p>
+          <p className="font-mono text-xl font-medium text-info">1300ms</p>
         </div>
 
         <div className="relative mx-auto flex w-full max-w-3xl flex-col gap-5">
