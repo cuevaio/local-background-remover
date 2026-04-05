@@ -56,6 +56,28 @@ export async function POST(request: Request) {
 
     const organizationId = env.POLAR_ORGANIZATION_ID;
     const requiredBenefitId = requiredBenefitForSurface(surface);
+
+    const preflightLicense = await validateLicenseKey({
+      key,
+      organizationId,
+      surface,
+      machineHash,
+    });
+
+    if (!preflightLicense || preflightLicense.status !== "granted") {
+      return NextResponse.json(
+        { ok: false, error: "License key is not active" },
+        { status: 403 },
+      );
+    }
+
+    if (preflightLicense.benefit_id !== requiredBenefitId) {
+      return NextResponse.json(
+        { ok: false, error: "License key does not include required entitlement" },
+        { status: 403 },
+      );
+    }
+
     const activation = await activateLicenseKey({
       key,
       organizationId,

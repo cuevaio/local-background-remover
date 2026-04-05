@@ -7,7 +7,7 @@
     "build": "NEXT_PRIVATE_BUILD_WORKER=1 next build",
     "start": "next start",
     "lint": "node -e \"console.log('No web lint configured yet')\"",
-    "test": "bun test src/lib/experiments/attribution.test.ts",
+    "test": "bun test",
     "check": "bun run lint && bun run test"
   },
   "dependencies": {
