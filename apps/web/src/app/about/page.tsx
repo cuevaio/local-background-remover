@@ -25,9 +25,9 @@ const PRINCIPLES = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "About",
+  title: "About Local Background Remover",
   description:
-    "Learn about cueva.io and why Local Background Remover is built as an indie, local-first product.",
+    "Learn why Local Background Remover is built as a private, local-first tool for sellers, creators, and small teams.",
   path: "/about",
 });
 
@@ -40,14 +40,11 @@ export default function AboutPage() {
         </Badge>
         <h1 className="display-title md:text-5xl">Product built by cueva.io.</h1>
         <p className="section-copy md:text-lg">
-          Hi, I am Anthony. I build Local Background Remover as an independent product for people
-          who want fast background cleanup without giving up privacy. Every part of this product is
-          shaped to stay practical: simple setup, one-time pricing, and local processing you can
-          trust.
+          Hi, I am Anthony. I build Local Background Remover for people who want clean image results without subscriptions or upload-first workflows. The goal is simple: private processing on your Mac, clear pricing, and an optional CLI for advanced automation.
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild>
-            <ExpLink href="/downloads">Open downloads</ExpLink>
+            <ExpLink href="/pricing">View pricing</ExpLink>
           </Button>
           <Button asChild variant="outline">
             <ExpLink href="/contact">Contact cueva.io</ExpLink>
@@ -71,9 +68,7 @@ export default function AboutPage() {
       <section className="section-block section-divider flex flex-col gap-4 md:max-w-3xl">
         <h2 className="section-title text-3xl md:text-4xl">Why this exists</h2>
         <p className="text-sm text-muted-foreground md:text-base">
-          I wanted a background remover that feels dependable for real delivery work: local, quick to
-          install, and predictable to run in both desktop and terminal flows. That is the baseline I
-          continue to build against.
+          I wanted a background remover that feels dependable for real work: local, quick to set up, and simple enough for non-technical buyers to use with confidence.
         </p>
         <p className="text-sm text-muted-foreground md:text-base">
           Thanks for supporting indie software. Your purchases and feedback directly fund product

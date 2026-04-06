@@ -26,9 +26,9 @@ const CONTACT_CHANNELS = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Contact",
+  title: "Contact Local Background Remover",
   description:
-    "Contact cueva.io for product questions, support, and feedback about Local Background Remover.",
+    "Contact cueva.io for support, billing questions, product feedback, and help choosing the right Local Background Remover plan.",
   path: "/contact",
 });
 
@@ -41,8 +41,7 @@ export default function ContactPage() {
         </Badge>
         <h1 className="display-title md:text-5xl">Reach me directly</h1>
         <p className="section-copy md:text-lg">
-          I build and support this product myself. If you have setup issues, licensing questions, or
-          feature ideas, send a message through any of these channels.
+          I build and support this product myself. If you need help choosing a plan, have install questions, or want product support, send a message through any of these channels.
         </p>
       </section>
 
@@ -69,7 +68,7 @@ export default function ContactPage() {
           <ExpLink href="/faq">Read FAQ</ExpLink>
         </Button>
         <Button asChild variant="outline">
-          <ExpLink href="/docs">Open docs</ExpLink>
+          <ExpLink href="/pricing">View pricing</ExpLink>
         </Button>
       </section>
     </main>

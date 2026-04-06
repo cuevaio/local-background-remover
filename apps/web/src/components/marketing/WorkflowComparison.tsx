@@ -24,42 +24,42 @@ const WORKFLOWS: Workflow[] = [
   {
     key: "app",
     name: "Desktop App",
-    summary: "For solo designers who want fast visual polish before export.",
+    summary: "Best for most people who want a simple Mac app for product photos, portraits, and quick edits.",
     bullets: [
-      "Includes desktop access",
-      "Drag-and-drop workflow",
-      "Great for final QA",
+      "Simple app workflow on your Mac",
+      "Great for visual checks before export",
+      "Best choice for everyday image cleanup",
     ],
-    cta: "Choose App plan",
+    cta: "See App plan",
   },
   {
     key: "cli",
     name: "CLI",
-    summary: "For indie hackers shipping repeatable image batches.",
+    summary: "For developers who want scripts, batches, and coding-agent automation.",
     bullets: [
-      "Includes command-line access",
-      "Batch through terminal",
-      "Fits scripts, automations, and coding agents",
+      "Runs from the command line",
+      "Great for repeat batches and scripts",
+      "Works well with coding agents",
     ],
-    cta: "Choose CLI plan",
+    cta: "See CLI plan",
   },
   {
     key: "both",
     name: "App + CLI",
-    summary: "For builders who automate in CLI and review in app before publishing.",
+    summary: "For teams or power users who want both a simple app and command-line automation.",
     badge: "Best value",
     bullets: [
-      "Includes desktop + command-line access",
-      "Best when you want both visual and batch workflows",
-      "Best for frequent shipping",
+      "Includes the app and the CLI",
+      "Useful when you want visual checks plus batch jobs",
+      "Best if you know you will use both",
     ],
-    cta: "Choose Bundle",
+    cta: "See Bundle",
   },
 ];
 
 export default function WorkflowComparison() {
   return (
-    <Tabs defaultValue="both" className="w-full">
+    <Tabs defaultValue="app" className="w-full">
       <TabsList className="w-full justify-start md:w-fit">
         {WORKFLOWS.map((workflow) => (
           <TabsTrigger key={workflow.key} value={workflow.key}>

@@ -35,9 +35,9 @@ const FAQ_ITEMS = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "FAQ",
+  title: "Background Remover FAQ",
   description:
-    "Frequently asked questions about downloads, pricing, offline usage, and support for Local Background Remover.",
+    "Frequently asked questions about pricing, offline use, downloads, and support for Local Background Remover.",
   path: "/faq",
 });
 
@@ -90,8 +90,7 @@ export default function FaqPage() {
           </Badge>
           <h1 className="display-title md:text-5xl">Answers before you buy</h1>
           <p className="section-copy md:text-lg">
-            Quick answers for setup, pricing structure, and how local processing works in desktop and
-            CLI workflows.
+            Quick answers about plans, offline use, downloads, privacy, and when the CLI actually matters.
           </p>
         </section>
 
@@ -110,10 +109,10 @@ export default function FaqPage() {
 
         <section className="section-block section-divider flex flex-wrap items-center gap-2">
           <Button asChild>
-            <ExpLink href="/downloads">Open downloads</ExpLink>
+            <ExpLink href="/pricing">View pricing</ExpLink>
           </Button>
           <Button asChild variant="outline">
-            <ExpLink href="/pricing">View pricing</ExpLink>
+            <ExpLink href="/downloads">Install anytime</ExpLink>
           </Button>
           <Button asChild variant="outline">
             <ExpLink href="/contact">Contact cueva.io</ExpLink>

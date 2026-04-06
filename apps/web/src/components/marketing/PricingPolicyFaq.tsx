@@ -12,12 +12,12 @@ const FAQS: FaqItem[] = [
   {
     question: "Are downloads public?",
     answer:
-      "Yes. Anyone can download. Paid features unlock after activation.",
+      "Yes. You can install anytime. Most buyers should choose a plan first, then come back here for install steps.",
   },
   {
     question: "What does App + CLI include?",
     answer:
-      "The bundle includes desktop access and command-line access in one purchase.",
+      "The bundle includes the Mac app plus the CLI in one purchase.",
   },
   {
     question: "Can I keep working offline?",
@@ -27,7 +27,7 @@ const FAQS: FaqItem[] = [
   {
     question: "Can I start with one plan and upgrade later?",
     answer:
-      "Yes. Start with desktop or command-line, then add the other later if you need both.",
+      "Yes. Start with the app or the CLI, then add the other later if you need both.",
   },
 ];
 
@@ -48,7 +48,7 @@ export default function PricingPolicyFaq() {
           </Alert>
           <Alert>
             <AlertTitle>Flexible workflow choices</AlertTitle>
-            <AlertDescription>Choose desktop, command-line, or both based on how you work.</AlertDescription>
+            <AlertDescription>Choose the app, the CLI, or both based on how simple or automated you want your workflow to be.</AlertDescription>
           </Alert>
           <Alert>
             <AlertTitle>Reliable in day-to-day use</AlertTitle>

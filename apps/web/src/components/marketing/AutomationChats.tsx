@@ -39,16 +39,13 @@ export default function AutomationChats() {
     <section className="section-block section-divider flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <Badge variant="outline" className="w-fit bg-card">
-          Using with agents
+          Advanced automation
         </Badge>
         <h2 className="section-title">
-          Agent-friendly CLI for Claude Code and OpenCode
+          Need scripts or coding agents? The CLI is ready.
         </h2>
         <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-          The <code>rmbg</code> CLI is easy for coding agents to work with. Agents can understand
-          folder structure quickly, run repeatable commands, and automate background removal across
-          multiple images, folders, and larger batch workflows while keeping everything local.
-          Average execution is about 1.2 - 1.5 seconds per image.
+          Most buyers should start with the app. If you also want repeat batches, scripts, or coding-agent workflows, the <code>rmbg</code> CLI gives you a local command-line option that fits automated image cleanup.
         </p>
       </div>
 

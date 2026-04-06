@@ -44,7 +44,7 @@ export function buildPageMetadata({
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: "Private background remover for creators",
+          alt: "Local Background Remover for private background cleanup on Mac",
         },
       ],
     },

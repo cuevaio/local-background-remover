@@ -26,9 +26,9 @@ const PRIVACY_BLOCKS = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Privacy",
+  title: "Private Background Removal on Your Mac",
   description:
-    "Plain-language privacy overview for Local Background Remover and its local-first processing model.",
+    "Plain-language privacy overview for Local Background Remover and how images stay on your Mac during everyday processing.",
   path: "/privacy",
 });
 
@@ -41,9 +41,7 @@ export default function PrivacyPage() {
         </Badge>
         <h1 className="display-title md:text-5xl">Privacy, in plain language</h1>
         <p className="section-copy md:text-lg">
-          Local Background Remover is designed so independent builders can keep image workflows
-          private and controlled. This page summarizes how the product handles data in practical
-          terms.
+          Local Background Remover is designed so your everyday image work can stay on your Mac. This page explains the product's privacy model in plain language.
         </p>
       </section>
 

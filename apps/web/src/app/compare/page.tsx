@@ -1,22 +1,46 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { FlagValues } from "flags/react";
 
+import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { COMPARE_PAGES } from "@/content/compare-pages";
+import {
+  evaluateCompareAssignments,
+  toFlagValues,
+} from "@/lib/experiments/flags";
+import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Background Removal Alternatives and Compare Pages",
+  title: "Background Remover Alternatives",
   description:
-    "Browse side-by-side compare pages for remove.bg alternatives and other tools, focused on private local workflows and one-time pricing.",
+    "Compare Local Background Remover with remove.bg alternatives and other tools for private, local background removal on your Mac.",
   path: "/compare",
 });
 
-export default function CompareIndexPage() {
+const COMPARE_PRIMARY_CTA: Record<string, { primaryHref: string; primaryLabel: string; secondaryHref: string; secondaryLabel: string }> = {
+  control: {
+    primaryHref: "/pricing",
+    primaryLabel: "View one-time pricing",
+    secondaryHref: "/downloads",
+    secondaryLabel: "Install anytime",
+  },
+  pricing_first: {
+    primaryHref: "/pricing",
+    primaryLabel: "Compare plans",
+    secondaryHref: "/gallery",
+    secondaryLabel: "See examples",
+  },
+};
+
+export default async function CompareIndexPage() {
+  const assignments = await evaluateCompareAssignments();
+  const cta = COMPARE_PRIMARY_CTA[assignments.comparePrimaryCta];
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -55,22 +79,39 @@ export default function CompareIndexPage() {
       <Script id="compare-index-itemlist-jsonld" type="application/ld+json">
         {serializeJsonLd(itemListJsonLd)}
       </Script>
+      <FlagValues values={toFlagValues(assignments)} />
+      <ExperimentExposureTracker
+        exposures={[
+          {
+            experimentKey: "compare-primary-cta",
+            variant: assignments.comparePrimaryCta,
+            page: EXPERIMENT_PAGE.COMPARE,
+            slot: "compare.hero.primary_cta",
+          },
+          {
+            experimentKey: "sticky-cta-copy",
+            variant: assignments.stickyCtaCopy,
+            page: EXPERIMENT_PAGE.COMPARE,
+            slot: "compare.sticky_cta",
+          },
+        ]}
+      />
 
       <main className="site-frame">
         <section className="section-block flex flex-col gap-5">
           <Badge variant="outline" className="w-fit bg-card">
             Compare tools
           </Badge>
-          <h1 className="display-title md:text-5xl">Pick your background removal option</h1>
+          <h1 className="display-title md:text-5xl">Compare private, local alternatives to upload-first tools</h1>
           <p className="section-copy md:text-lg">
-            Side-by-side comparisons for builders who want private processing and one-time pricing.
+            See when Local Background Remover makes more sense than browser-based tools, especially if you want private processing, one-time pricing, and a Mac app.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild>
-              <ExpLink href="/downloads">Download Local</ExpLink>
+              <ExpLink href={cta.primaryHref}>{cta.primaryLabel}</ExpLink>
             </Button>
             <Button asChild variant="outline">
-              <ExpLink href="/pricing">View one-time pricing</ExpLink>
+              <ExpLink href={cta.secondaryHref}>{cta.secondaryLabel}</ExpLink>
             </Button>
           </div>
         </section>
@@ -96,12 +137,12 @@ export default function CompareIndexPage() {
       </main>
 
       <StickyCta
-        title="Want private cutouts?"
-        description="Install Local and process images privately."
-        primaryLabel="Open downloads"
-        primaryHref="/downloads"
-        secondaryLabel="See pricing"
-        secondaryHref="/pricing"
+        title="Want a simpler local option?"
+        description="Start with pricing, then install when you are ready."
+        primaryLabel={cta.primaryLabel}
+        primaryHref={cta.primaryHref}
+        secondaryLabel={cta.secondaryLabel}
+        secondaryHref={cta.secondaryHref}
       />
     </>
   );

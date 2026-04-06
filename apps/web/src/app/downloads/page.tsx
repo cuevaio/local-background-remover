@@ -36,9 +36,9 @@ import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Downloads and Install Guide",
+  title: "Install Local Background Remover",
   description:
-    "Download the desktop app or command-line tool and start processing in minutes.",
+    "Install the Mac app or optional CLI. Compare plans first if you are still deciding what to buy.",
   path: "/downloads",
 });
 
@@ -50,26 +50,21 @@ type DownloadsPageProps = {
 
 const DOWNLOADS_HERO_COPY: Record<string, { title: string; description: string }> = {
   control: {
-    title: "Install first, unlock when you are ready.",
+    title: "Install anytime. Choose a plan when you are ready.",
     description:
-      "Pick desktop or command line, install, then activate your purchase to start processing.",
+      "This page is here when you need install steps. If you are still deciding, pricing is the better place to start.",
   },
-  install_minutes: {
-    title: "Install in minutes. Activate when ready.",
+  support_page: {
+    title: "Use this page for install steps, not for choosing a plan.",
     description:
-      "Choose desktop or CLI and get set up quickly, then unlock paid processing with your key.",
-  },
-  download_then_buy: {
-    title: "Download now, purchase only when you need processing.",
-    description:
-      "Get installed first, test your setup, and buy the plan that fits when you are ready to process.",
+      "The app is the easiest place to start. The CLI is available too if you want scripts, batches, or coding-agent automation.",
   },
 };
 
 const DOWNLOADS_STICKY_LABELS: Record<string, { primary: string; secondary: string }> = {
   control: { primary: "Compare pricing", secondary: "Home" },
-  compare_install: { primary: "Compare plans", secondary: "Install first" },
-  buy_get: { primary: "Buy once", secondary: "Get installer" },
+  plans_first: { primary: "Compare plans", secondary: "Home" },
+  pricing_docs: { primary: "View pricing", secondary: "CLI docs" },
 };
 
 export default async function DownloadsPage({ searchParams }: DownloadsPageProps) {
@@ -126,32 +121,32 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
       <main className="site-frame flex flex-col gap-0 pb-36">
         <section className="section-block flex flex-col gap-4">
           <Badge variant="outline" className="w-fit bg-card">
-            Download and get started
+            Install and setup
           </Badge>
           <h1 className="display-title md:text-5xl">{heroCopy.title}</h1>
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <ExpLink href="/docs">Open CLI docs</ExpLink>
+              <ExpLink href="/pricing">Compare plans first</ExpLink>
             </Button>
             <Button asChild variant="outline">
-              <ExpLink href="/pricing">Need a key?</ExpLink>
+              <ExpLink href="/docs">CLI docs</ExpLink>
             </Button>
           </div>
         </section>
 
         <section className="section-block section-divider">
-          <Tabs defaultValue="cli" className="w-full">
+          <Tabs defaultValue="desktop" className="w-full">
             <TabsList>
-              <TabsTrigger value="cli">CLI install</TabsTrigger>
               <TabsTrigger value="desktop">Desktop install</TabsTrigger>
+              <TabsTrigger value="cli">CLI install</TabsTrigger>
             </TabsList>
 
             <TabsContent value="cli">
               <Card>
                 <CardHeader>
-                  <CardTitle>CLI download and install (macOS)</CardTitle>
-                  <CardDescription>Install globally, then verify the binary.</CardDescription>
+                  <CardTitle>CLI install for developers</CardTitle>
+                  <CardDescription>Use this if you want scripts, batches, or coding-agent automation.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
@@ -163,7 +158,7 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
                   <Alert>
                     <AlertTitle>Unlock before processing</AlertTitle>
                     <AlertDescription>
-                      Activate your CLI purchase before running `model ensure` or `remove`.
+                      Activate your CLI purchase before running background removal commands.
                     </AlertDescription>
                   </Alert>
                   <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
@@ -182,17 +177,17 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
             <TabsContent value="desktop">
               <Card>
                 <CardHeader>
-                  <CardTitle>Desktop app download</CardTitle>
-                  <CardDescription>Install, then unlock inside the app.</CardDescription>
+                  <CardTitle>Desktop app for most buyers</CardTitle>
+                  <CardDescription>Install the Mac app, then unlock it after purchase.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <p className="text-sm text-muted-foreground">
-                    Install the desktop app, open the license screen, and paste your App key.
+                    Install the app, open the license screen, and paste your App key when you are ready to start processing.
                   </p>
                   <Alert>
                     <AlertTitle>Bundle reminder</AlertTitle>
                     <AlertDescription>
-                      If you bought App + CLI, activate both parts to use the full bundle workflow.
+                      If you bought App + CLI, you will receive one app key and one CLI key.
                     </AlertDescription>
                   </Alert>
                 </CardContent>
@@ -208,8 +203,8 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
             </CardHeader>
             <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
               <p>1. Get your key from your purchase email.</p>
-              <p>2. Activate in desktop or command line.</p>
-              <p>3. Run your first image.</p>
+              <p>2. Activate the app or the CLI, depending on your plan.</p>
+              <p>3. Run your first image when you are ready.</p>
               <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
                 {CLI_MODEL_ENSURE_CMD}
               </pre>
@@ -224,7 +219,7 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <p className="text-sm text-muted-foreground">
-                Compare App, CLI, and Bundle plans before activation.
+                Start with pricing if you are still deciding between the app, the CLI, or the bundle.
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild>
@@ -241,11 +236,11 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
 
       <StickyCta
         title="Have the installer?"
-        description="Choose your plan and unlock your workflow when ready."
+        description="Choose your plan first, then come back here when you want install steps."
         primaryLabel={stickyLabels.primary}
         primaryHref="/pricing"
         secondaryLabel={stickyLabels.secondary}
-        secondaryHref="/"
+        secondaryHref={assignments.stickyCtaCopy === "pricing_docs" ? "/docs" : "/"}
       />
     </>
   );

@@ -18,19 +18,18 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Product",
     links: [
-      { label: "Desktop App", href: "/downloads" },
-      { label: "CLI", href: "/docs" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Install Guide", href: "/downloads" },
+      { label: "Install", href: "/downloads" },
+      { label: "CLI Docs", href: "/docs" },
+      { label: "Gallery", href: "/gallery" },
     ],
   },
   {
     title: "Resources",
     links: [
       { label: "CLI Docs", href: "/docs" },
-      { label: "Getting started", href: "/thank-you" },
       { label: "FAQ", href: "/faq" },
-      { label: "Direct install link", href: "/install" },
+      { label: "Compare tools", href: "/compare" },
       { label: "Downloads", href: "/downloads" },
     ],
   },
@@ -94,10 +93,10 @@ export default function SiteFooter() {
 
         <div className="relative section-block flex flex-col items-center gap-6 py-20 text-center">
           <h2 className="font-display text-balance text-4xl font-medium tracking-tight md:text-6xl">
-            Ship polished visuals. Pay once.
+            Clean backgrounds privately. Pay once.
           </h2>
           <p className="max-w-2xl text-base text-white/70 md:text-2xl md:leading-8">
-            Local, reliable background removal for indie builders who care about craft and control.
+            A Mac app for everyday image cleanup, plus an optional CLI for scripts and coding agents.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -110,7 +109,7 @@ export default function SiteFooter() {
               variant="outline"
               className="border-white/25 bg-white/8 text-white hover:bg-white/14 hover:text-white"
             >
-              <ExpLink href="/downloads">Open downloads</ExpLink>
+              <ExpLink href="/downloads">Install anytime</ExpLink>
             </Button>
           </div>
 
@@ -144,7 +143,7 @@ export default function SiteFooter() {
                 />
               </ExpLink>
               <p className="max-w-xs text-sm text-muted-foreground">
-                Download in minutes. Process images privately. Keep your workflow simple.
+                Private background removal on your Mac, with one-time pricing and optional command-line automation.
               </p>
               <div className="flex items-center gap-2">
                 {SOCIAL_LINKS.map((item) => (
@@ -184,9 +183,7 @@ export default function SiteFooter() {
                 Product built by cueva.io
               </p>
               <p className="max-w-2xl text-sm text-muted-foreground">
-                I build Local Background Remover as an indie product focused on private,
-                local-first workflows. Crafted by Anthony to stay simple, fast, and useful for
-                people who ship with intention.
+                Local Background Remover is built by Anthony Cueva to help sellers, creators, and small teams clean up images privately on their own Mac, without subscriptions or upload-first workflows.
               </p>
             </div>
             <Button asChild variant="outline" size="sm" className="w-fit">

@@ -41,8 +41,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
           Thanks for your Local Background Remover purchase.
         </h1>
         <p className="section-copy md:text-lg">
-          You’ll receive an email with your license keys after purchase. Install your preferred
-          workflow, activate your purchase, and start processing.
+          You’ll receive an email with your license keys after purchase. Start with the Mac app if you want the simplest path, or use the CLI if you bought it for scripts or coding agents.
         </p>
       </section>
 
@@ -50,7 +49,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
         <Alert>
           <AlertTitle>Bundle reminder</AlertTitle>
           <AlertDescription>
-            If you purchased App + CLI, activate both parts to use the full bundle workflow.
+            If you purchased App + CLI, you will receive one app key and one CLI key.
           </AlertDescription>
         </Alert>
       </section>
@@ -61,16 +60,16 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
             <CardTitle>Next steps checklist</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
-            <p>1. Install CLI:</p>
+            <p>1. Install the app or the CLI, depending on what you bought.</p>
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
               {CLI_INSTALL_CMD}
             </pre>
             <p>2. Get your license keys from your purchase email.</p>
-            <p>3. Activate command-line access:</p>
+            <p>3. Activate CLI access if you bought it:</p>
             <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm text-foreground">
               {CLI_ACTIVATE_CMD}
             </pre>
-            <p>4. Activate desktop access in the app license screen.</p>
+            <p>4. Activate desktop access inside the app if you bought the app or bundle.</p>
           </CardContent>
         </Card>
       </section>

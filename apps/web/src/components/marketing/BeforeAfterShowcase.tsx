@@ -22,7 +22,7 @@ export default function BeforeAfterShowcase({ className }: BeforeAfterShowcasePr
           Before / after examples
         </Badge>
         <h2 className="section-title">
-          See how quickly messy backgrounds become ship-ready assets
+          See how quickly cluttered photos become clean product images
         </h2>
       </div>
 

@@ -8,31 +8,31 @@ import { buildPageMetadata } from "@/lib/seo";
 
 const CUSTOMER_SEGMENTS = [
   {
-    title: "Indie hackers",
+    title: "Online sellers",
     detail:
-      "Ship visual updates fast with repeatable local workflows and no subscription overhead.",
+      "Clean up listing images and product photos without sending inventory shots through upload-first tools.",
   },
   {
-    title: "Solo designers",
+    title: "Freelance designers",
     detail:
       "Prepare client-ready visuals with control over quality, style consistency, and private files.",
   },
   {
-    title: "Bootstrapped founders",
+    title: "Creators and marketers",
     detail:
-      "Keep image workflows lean with one-time pricing and practical tools you can run yourself.",
+      "Keep image cleanup fast and affordable with one-time pricing and a workflow you can manage yourself.",
   },
   {
     title: "Small creative studios",
     detail:
-      "Combine desktop review and command-line automation for faster weekly shipping.",
+      "Use the app for visual checks and add the CLI later if your team needs repeatable automation.",
   },
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Customers",
+  title: "Who Uses Local Background Remover",
   description:
-    "See how indie builders, designers, and small studios use Local Background Remover for private local workflows.",
+    "See how sellers, designers, creators, and small studios use Local Background Remover for private image cleanup on Mac.",
   path: "/customers",
 });
 
@@ -41,12 +41,11 @@ export default function CustomersPage() {
     <main className="site-frame pb-28">
       <section className="section-block flex flex-col gap-5">
         <Badge variant="outline" className="w-fit bg-card">
-          Indie profiles
+          Customer profiles
         </Badge>
-        <h1 className="display-title md:text-5xl">Built for indie shippers</h1>
+        <h1 className="display-title md:text-5xl">Built for people who need cleaner images fast</h1>
         <p className="section-copy md:text-lg">
-          Local Background Remover is for independent makers who want speed, privacy, and ownership
-          over their image workflow.
+          Local Background Remover fits people who want private image cleanup on their Mac, clear one-time pricing, and an optional CLI when automation becomes useful.
         </p>
       </section>
 

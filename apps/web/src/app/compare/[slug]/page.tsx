@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 import { notFound } from "next/navigation";
+import { FlagValues } from "flags/react";
 import { ArrowRightIcon, ShieldCheckIcon, SparklesIcon, TerminalIcon } from "lucide-react";
 
+import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -15,6 +17,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { COMPARE_SLUGS, getComparePageBySlug } from "@/content/compare-pages";
 import { LANDING_TESTIMONIALS } from "@/content/testimonials";
+import {
+  evaluateCompareAssignments,
+  toFlagValues,
+} from "@/lib/experiments/flags";
+import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 type ComparePageProps = {
@@ -61,6 +68,21 @@ export async function generateMetadata({ params }: ComparePageProps): Promise<Me
 export default async function CompareDetailPage({ params }: ComparePageProps) {
   const { slug } = await params;
   const comparePage = getComparePageBySlug(slug);
+  const assignments = await evaluateCompareAssignments();
+  const cta =
+    assignments.comparePrimaryCta === "pricing_first"
+      ? {
+          primaryHref: "/pricing",
+          primaryLabel: "Compare plans",
+          secondaryHref: "/gallery",
+          secondaryLabel: "See examples",
+        }
+      : {
+          primaryHref: "/pricing",
+          primaryLabel: "View one-time pricing",
+          secondaryHref: "/downloads",
+          secondaryLabel: "Install anytime",
+        };
 
   if (!comparePage) {
     notFound();
@@ -114,6 +136,23 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
       <Script id={`compare-${comparePage.slug}-faq-jsonld`} type="application/ld+json">
         {serializeJsonLd(faqJsonLd)}
       </Script>
+      <FlagValues values={toFlagValues(assignments)} />
+      <ExperimentExposureTracker
+        exposures={[
+          {
+            experimentKey: "compare-primary-cta",
+            variant: assignments.comparePrimaryCta,
+            page: EXPERIMENT_PAGE.COMPARE,
+            slot: `compare.${comparePage.slug}.hero.primary_cta`,
+          },
+          {
+            experimentKey: "sticky-cta-copy",
+            variant: assignments.stickyCtaCopy,
+            page: EXPERIMENT_PAGE.COMPARE,
+            slot: `compare.${comparePage.slug}.sticky_cta`,
+          },
+        ]}
+      />
 
       <main className="site-frame">
         <section className="section-block relative overflow-hidden border-b border-border bg-gradient-to-br from-background via-background to-secondary/30">
@@ -152,10 +191,10 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
 
               <div className="flex flex-wrap items-center gap-3">
                 <Button asChild>
-                  <ExpLink href="/downloads">Download Local</ExpLink>
+                  <ExpLink href={cta.primaryHref}>{cta.primaryLabel}</ExpLink>
                 </Button>
                 <Button asChild variant="outline">
-                  <ExpLink href="/pricing">See one-time pricing</ExpLink>
+                  <ExpLink href={cta.secondaryHref}>{cta.secondaryLabel}</ExpLink>
                 </Button>
                 <Button asChild variant="ghost">
                   <Link href={comparePage.competitorUrl} target="_blank" rel="noreferrer">
@@ -182,9 +221,9 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
                 </div>
                 <div className="flex items-start gap-2">
                   <TerminalIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
-                  <p>
-                    You get clear desktop and command-line options for repeatable weekly shipping.
-                  </p>
+                    <p>
+                     You can start with the Mac app and add the CLI later if you need automation.
+                    </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <ArrowRightIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
@@ -307,10 +346,9 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
 
         <section className="section-block section-divider flex flex-col gap-4">
           <h2 className="section-title md:text-4xl">Quick side-by-side</h2>
-          <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-            Practical product-fit view, not a universal ranking. Local is highlighted where privacy,
-            repeatability, and one-time pricing matter most.
-          </p>
+              <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
+            Practical product-fit view, not a universal ranking. Local is strongest when privacy, one-time pricing, and on-device work matter most.
+              </p>
           <Table>
             <TableHeader>
               <TableRow>
@@ -369,12 +407,12 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
       </main>
 
       <StickyCta
-        title="Ready to ship local?"
-        description="Install now and process images privately."
-        primaryLabel="Open downloads"
-        primaryHref="/downloads"
-        secondaryLabel="View pricing"
-        secondaryHref="/pricing"
+        title="Want the simple local option?"
+        description="Start with pricing, then install when you are ready."
+        primaryLabel={cta.primaryLabel}
+        primaryHref={cta.primaryHref}
+        secondaryLabel={cta.secondaryLabel}
+        secondaryHref={cta.secondaryHref}
       />
     </>
   );

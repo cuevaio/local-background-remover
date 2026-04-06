@@ -62,9 +62,9 @@ const FAQS: Faq[] = [
 ];
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Local Background Removal for Indie Builders",
+  title: "Offline Background Remover for Mac",
   description:
-    "Clean image cutouts on-device with one-time pricing. Use desktop app, CLI, or both for private, reliable shipping.",
+    "Remove backgrounds privately on your Mac with one-time pricing. Great for product photos, portraits, and optional CLI automation.",
   path: "/",
 });
 
@@ -75,21 +75,21 @@ type HomePageProps = {
 };
 
 const HOME_HERO_TITLE: Record<string, string> = {
-  control: "Clean cutouts in seconds.",
-  outcome: "Launch-ready product images in minutes.",
-  privacy: "Private background removal for builders who move fast.",
+  control: "Remove backgrounds privately on your Mac.",
+  mac_app: "A simple Mac app for fast, clean cutouts.",
+  product_photos: "Turn rough product photos into clean listing images.",
 };
 
 const HOME_PRIMARY_CTA_LABEL: Record<string, string> = {
-  control: "Try it now",
-  download_free: "Download free installer",
-  start_downloads: "Start with downloads",
+  pricing_first: "See plans",
+  see_plans: "Compare plans",
+  buy_once: "Buy once",
 };
 
 const HOME_STICKY_LABELS: Record<string, { primary: string; secondary: string }> = {
-  control: { primary: "View pricing", secondary: "Open downloads" },
-  compare_install: { primary: "Compare plans", secondary: "Install first" },
-  buy_get: { primary: "Buy once", secondary: "Get installer" },
+  control: { primary: "View pricing", secondary: "See install steps" },
+  plans_first: { primary: "Compare plans", secondary: "Install later" },
+  pricing_docs: { primary: "View pricing", secondary: "CLI docs" },
 };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
@@ -101,6 +101,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const heroTitle = HOME_HERO_TITLE[assignments.homeHeroHeadline];
   const primaryCtaLabel = HOME_PRIMARY_CTA_LABEL[assignments.homePrimaryCta];
   const stickyLabels = HOME_STICKY_LABELS[assignments.stickyCtaCopy];
+  const cliSectionTitle =
+    assignments.homeCliEmphasis === "advanced_tool"
+      ? "Need scripts or coding agents? Use the CLI."
+      : "Optional CLI for scripts and coding agents";
+  const cliSectionDescription =
+    assignments.homeCliEmphasis === "advanced_tool"
+      ? "The app is the easiest way to get started. When you need repeat batches or agent-driven automation, the local CLI is ready for that too."
+      : "Most people should start with the app. If you also want local automation, the CLI works with scripts and coding agents.";
 
   const softwareApplicationJsonLd = {
     "@context": "https://schema.org",
@@ -115,7 +123,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       highPrice: "9.99",
     },
     description:
-      "Local, private background remover for independent builders using desktop and CLI workflows with one-time pricing.",
+      "Private background remover for Mac with one-time pricing, a simple app for most buyers, and an optional CLI for automation.",
   };
 
   const faqJsonLd = {
@@ -155,6 +163,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             slot: "home.hero.primary_cta",
           },
           {
+            experimentKey: "home-cli-emphasis",
+            variant: assignments.homeCliEmphasis,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.cli.section",
+          },
+          {
             experimentKey: "sticky-cta-copy",
             variant: assignments.stickyCtaCopy,
             page: EXPERIMENT_PAGE.HOME,
@@ -169,32 +183,31 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <section className="section-block pt-6 md:pt-8">
           <div className="flex flex-col gap-5">
             <Badge variant="outline" className="w-fit bg-card">
-              Local-first cutouts
+              Local and private
             </Badge>
             <div className="flex flex-col gap-4">
               <h1 className="display-title">{heroTitle}</h1>
               <p className="section-copy">
-                Build cleaner product shots, profile photos, and launch assets with local
-                workflows made for independent makers.
+                Clean up product photos, portraits, and marketing images without upload-first tools. Start with the Mac app, and use the CLI only if you want advanced automation.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <ExpLink href="/downloads">{primaryCtaLabel}</ExpLink>
+                <ExpLink href="/pricing">{primaryCtaLabel}</ExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <ExpLink href="/pricing">See pricing</ExpLink>
+                <ExpLink href="/gallery">See examples</ExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <ExpLink href="/docs">CLI docs</ExpLink>
+                <ExpLink href="/downloads">Install anytime</ExpLink>
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <Badge variant="outline" className="bg-card">
-                  Works with people + products
+                  Great for product photos and portraits
                 </Badge>
                 <Badge variant="outline" className="bg-card">
-                  Batch-friendly
+                  One-time pricing
                 </Badge>
                 <Badge variant="outline" className="bg-card">
                   Private on your device
@@ -208,28 +221,28 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <InputOptionsSection />
 
         <section className="section-block section-divider flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <h2 className="section-title">Pick the workflow that matches your pace</h2>
-            <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-              Go app-only, CLI-only, or both for scriptable output plus quick visual QA.
-            </p>
-          </div>
+            <div className="flex flex-col gap-2">
+              <h2 className="section-title">Choose the version that fits how you work</h2>
+              <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+                The app is the easiest place to start. The CLI is there if you want scripts, batches, or coding-agent automation.
+              </p>
+            </div>
           <WorkflowComparison />
         </section>
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2 className="section-title">Command-line quickstart</h2>
+            <h2 className="section-title">{cliSectionTitle}</h2>
             <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-              Run one command, get a clean JSON response back, and check the cutout right away.
+              {cliSectionDescription}
             </p>
           </div>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
             <Card className="bg-card/95">
               <CardHeader>
-                <CardTitle>Try one image</CardTitle>
+                <CardTitle>Example CLI command</CardTitle>
                 <CardDescription>
-                  A simple command to process an image and return a friendly machine-readable result.
+                  A quick example for developers who want a machine-readable local workflow.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
@@ -249,7 +262,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
           <div>
             <Button asChild variant="outline">
-              <ExpLink href="/docs">Open full command docs</ExpLink>
+              <ExpLink href="/docs">Open CLI docs</ExpLink>
             </Button>
           </div>
         </section>
@@ -268,12 +281,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </main>
 
       <StickyCta
-        title="Ship clean visuals faster."
-        description="Buy once. Run local in desktop + CLI."
+        title="Ready to clean up images without upload-first tools?"
+        description="Start with pricing, then install when you are ready."
         primaryLabel={stickyLabels.primary}
         primaryHref="/pricing"
         secondaryLabel={stickyLabels.secondary}
-        secondaryHref="/downloads"
+        secondaryHref={assignments.stickyCtaCopy === "pricing_docs" ? "/docs" : "/downloads"}
       />
     </>
   );

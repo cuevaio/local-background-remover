@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import Script from "next/script";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { VercelToolbar } from "@vercel/toolbar/next";
@@ -9,7 +10,7 @@ import { BrandLogo } from "@/components/marketing/BrandLogo";
 import SiteFooter from "@/components/marketing/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { BRAND_NAME, SITE_URL } from "@/lib/seo";
+import { BRAND_NAME, SITE_URL, serializeJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -21,13 +22,13 @@ const display = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Local Background Remover for App and CLI",
-    template: "%s | Local Background Remover",
-  },
-  description:
-    "Private background removal for indie builders. Use the desktop app or command line tool with simple one-time pricing.",
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: "Local Background Remover for Mac",
+      template: "%s | Local Background Remover",
+    },
+    description:
+      "Remove backgrounds privately on your Mac with one-time pricing. Use the app for everyday work or the CLI for scripts and coding agents.",
   alternates: {
     canonical: "/",
   },
@@ -43,23 +44,23 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: BRAND_NAME,
-    title: "Local Background Remover for App and CLI",
-    description:
-      "Private local background removal for independent creators using desktop and terminal workflows with one-time pricing.",
+      title: "Local Background Remover for Mac",
+      description:
+        "Private background removal on your Mac with one-time pricing. Desktop app for most buyers, optional CLI for scripts and coding agents.",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Local background remover for private, on-device workflows",
+        alt: "Local background remover for Mac with private on-device processing",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Local Background Remover for App and CLI",
+    title: "Local Background Remover for Mac",
     description:
-      "Private local background removal for independent creators using desktop and terminal workflows with one-time pricing.",
+      "Private background removal on your Mac with one-time pricing. App first, CLI available for scripts and coding agents.",
     images: ["/twitter-image"],
   },
 };
@@ -70,6 +71,30 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   const shouldInjectToolbar = process.env.NODE_ENV === "development";
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: BRAND_NAME,
+    url: SITE_URL,
+    description:
+      "Private background removal on your Mac with one-time pricing and an optional CLI for scripts and coding agents.",
+  };
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "cueva.io",
+    url: SITE_URL,
+    brand: BRAND_NAME,
+    founder: {
+      "@type": "Person",
+      name: "Anthony Cueva",
+    },
+    sameAs: [
+      "https://x.com/cuevaio",
+      "https://linkedin.com/in/cuevaio",
+      "https://instagram.com/cueva.io",
+    ],
+  };
 
   return (
     <html
@@ -77,6 +102,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={cn("font-sans", geist.variable, geistMono.variable, display.variable)}
     >
       <body>
+        <Script id="website-jsonld" type="application/ld+json">
+          {serializeJsonLd(websiteJsonLd)}
+        </Script>
+        <Script id="organization-jsonld" type="application/ld+json">
+          {serializeJsonLd(organizationJsonLd)}
+        </Script>
         <header className="sticky top-0 z-50 border-b border-border bg-background/88 backdrop-blur-md supports-[backdrop-filter]:bg-background/74">
           <div className="site-frame flex min-h-16 items-center justify-between gap-4 px-5 md:px-10">
             <ExpLink href="/" className="inline-flex items-center">
@@ -84,16 +115,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </ExpLink>
             <nav className="flex items-center gap-2 md:gap-3">
               <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
-                <ExpLink href="/docs">Docs</ExpLink>
+                <ExpLink href="/docs">CLI Docs</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
                 <ExpLink href="/compare">Compare</ExpLink>
+              </Button>
+              <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
+                <ExpLink href="/gallery">Gallery</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
                 <ExpLink href="/pricing">Pricing</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
-                <ExpLink href="/downloads">Downloads</ExpLink>
+                <ExpLink href="/downloads">Install</ExpLink>
               </Button>
               <Button asChild size="sm" variant="outline" className="sm:hidden">
                 <ExpLink href="/pricing">Plans</ExpLink>

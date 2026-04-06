@@ -23,9 +23,9 @@ import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 import PricingClient from "./PricingClient";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "One-Time Pricing for Local Background Remover",
+  title: "Background Remover Pricing for Mac",
   description:
-    "Compare one-time plans for desktop, command-line, or both.",
+    "Compare one-time plans for the Mac app, the CLI, or both. Start with the app if you want the simplest path.",
   path: "/pricing",
 });
 
@@ -37,26 +37,26 @@ type PricingPageProps = {
 
 const PRICING_HERO_COPY: Record<string, { title: string; description: string }> = {
   control: {
-    title: "Pick what you need now and add more later.",
+    title: "Choose the plan that fits how you want to work.",
     description:
-      "Choose desktop, command-line, or both. Start simple, then expand when your workflow grows.",
+      "Most people should start with the Mac app. Pick the CLI only if you want scripts, batches, or coding-agent automation.",
   },
-  one_payment: {
-    title: "One payment. Lifetime access.",
+  one_time_mac: {
+    title: "One payment. Your Mac app is ready when you are.",
     description:
-      "Choose desktop, command-line, or both and keep your workflow local with one-time pricing.",
+      "Get private background removal on your Mac with one-time pricing, then add the CLI later if you need automation.",
   },
-  upgrade_later: {
-    title: "Start with one plan. Upgrade when your workflow grows.",
+  app_first: {
+    title: "Start simple with the app. Add the CLI only if you need it.",
     description:
-      "Begin with App or CLI today, then unlock the bundle whenever you need both surfaces.",
+      "The app is the easiest way to get great results. The CLI is there for developers, scripts, and coding agents.",
   },
 };
 
 const PRICING_STICKY_LABELS: Record<string, { primary: string; secondary: string }> = {
-  control: { primary: "Buy now", secondary: "Download first" },
-  compare_install: { primary: "Compare plans", secondary: "Install first" },
-  buy_get: { primary: "Buy once", secondary: "Get installer" },
+  control: { primary: "Buy now", secondary: "See install steps" },
+  plans_first: { primary: "Compare plans", secondary: "Install later" },
+  pricing_docs: { primary: "Buy once", secondary: "CLI docs" },
 };
 
 export default async function PricingPage({ searchParams }: PricingPageProps) {
@@ -125,10 +125,10 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
-              <ExpLink href="/docs">Read CLI docs</ExpLink>
+              <ExpLink href="/docs">CLI docs</ExpLink>
             </Button>
             <Button asChild>
-              <ExpLink href="/downloads">Open downloads</ExpLink>
+              <ExpLink href="/downloads">See install steps</ExpLink>
             </Button>
           </div>
         </section>
@@ -144,7 +144,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Best for visual editing and quick export checks.
+                Best for most buyers who want the simplest Mac app workflow.
               </p>
             </CardContent>
           </Card>
@@ -154,7 +154,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Best for repeat batches and script-driven image processing.
+                Best for developers who want scripts, repeat batches, and coding agents.
               </p>
             </CardContent>
           </Card>
@@ -164,7 +164,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Best when you want both visual review and command-line speed.
+                Best if you want the app for day-to-day work and the CLI for automation.
               </p>
             </CardContent>
           </Card>
@@ -177,11 +177,11 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
 
       <StickyCta
         title="Need a plan decision?"
-        description="Start with one plan, upgrade anytime."
+        description="Choose a plan first, then install whenever you are ready."
         primaryLabel={stickyLabels.primary}
         primaryHref="/pricing"
         secondaryLabel={stickyLabels.secondary}
-        secondaryHref="/downloads"
+        secondaryHref={assignments.stickyCtaCopy === "pricing_docs" ? "/docs" : "/downloads"}
       />
     </>
   );

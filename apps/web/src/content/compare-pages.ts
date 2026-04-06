@@ -69,18 +69,18 @@ function createComparePage(input: CompareInput): ComparePage {
     heroDescription,
     heroHighlights: [
       "Private local processing on your device",
-      "Desktop app + command-line options",
-      `Quick indie fit check vs ${competitorName}`,
+      "Mac app first, CLI optional",
+      `Quick fit check vs ${competitorName}`,
     ],
     seoTitle: `${competitorName} Alternative for Private Local Background Removal`,
-    seoDescription: `Compare Local Background Remover with ${competitorName} for private local processing, one-time pricing, and automation workflows.`,
+    seoDescription: `Compare Local Background Remover with ${competitorName} for private local background removal on Mac, one-time pricing, and optional CLI automation.`,
     switchQuote: {
       quote: `I still use ${competitorName} for occasional browser edits, but Local is my default for repeatable shipping where privacy and reliability matter most.`,
       source: "Workflow feedback from an indie ecommerce builder",
     },
     localBestFor: [
-      "Indie builders who want local processing",
-      "Workflows that blend desktop review and CLI automation",
+      "People who want background removal on their own Mac",
+      "Teams that want the app first and optional CLI automation later",
       "One-time pricing over recurring seats",
     ],
     competitorBestFor,
@@ -130,7 +130,7 @@ function createComparePage(input: CompareInput): ComparePage {
       {
         question: "Can I test Local before purchasing?",
         answer:
-          "Yes. You can download first at /downloads and unlock processing when you are ready.",
+          "Yes. You can install anytime, but pricing is the best place to choose the right plan before you start.",
       },
     ],
     sources,

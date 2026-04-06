@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { FlagValues } from "flags/react";
 
+import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import ExpLink from "@/components/experiments/ExpLink";
 import CommandBlock from "@/components/marketing/CommandBlock";
 import StickyCta from "@/components/marketing/StickyCta";
@@ -20,18 +22,38 @@ import {
   CLI_STATUS_CMD,
   CLI_VERSION_CMD,
 } from "@/content/cli-docs";
+import {
+  evaluateDocsAssignments,
+  toFlagValues,
+} from "@/lib/experiments/flags";
+import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 const CLI_REMOVE_HELP_CMD = "rmbg remove --help";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "CLI Docs: Install, Activate, and Command Reference",
+  title: "CLI Docs for Scripts and Coding Agents",
   description:
-    "Practical CLI docs for Local Background Remover: installation, activation, first-run commands, agent-friendly automation, and command reference.",
+    "CLI docs for Local Background Remover: installation, activation, command reference, and local automation for scripts and coding agents.",
   path: "/docs",
 });
 
-export default function DocsPage() {
+const DOCS_HERO_COPY: Record<string, { title: string; description: string }> = {
+  control: {
+    title: "CLI docs for developers, scripts, and repeat batches.",
+    description:
+      "This page is for advanced users who want local command-line background removal. Most buyers should start with pricing or the app.",
+  },
+  agents_and_batches: {
+    title: "Use the CLI when you want scripts, batches, or coding agents.",
+    description:
+      "The app is the simplest way to get started. The CLI is here when you need automated local image cleanup for repeat work.",
+  },
+};
+
+export default async function DocsPage() {
+  const assignments = await evaluateDocsAssignments();
+  const heroCopy = DOCS_HERO_COPY[assignments.docsHeroFraming];
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -94,27 +116,37 @@ export default function DocsPage() {
       <Script id="docs-howto-jsonld" type="application/ld+json">
         {serializeJsonLd(howToJsonLd)}
       </Script>
+      <FlagValues values={toFlagValues(assignments)} />
+      <ExperimentExposureTracker
+        exposures={[
+          {
+            experimentKey: "docs-hero-framing",
+            variant: assignments.docsHeroFraming,
+            page: EXPERIMENT_PAGE.DOCS,
+            slot: "docs.hero.copy",
+          },
+          {
+            experimentKey: "sticky-cta-copy",
+            variant: assignments.stickyCtaCopy,
+            page: EXPERIMENT_PAGE.DOCS,
+            slot: "docs.sticky_cta",
+          },
+        ]}
+      />
 
       <main className="site-frame flex flex-col gap-0 pb-36">
         <section className="section-block flex flex-col gap-5">
           <Badge variant="outline" className="w-fit bg-card">
-            CLI docs
+            Developer docs
           </Badge>
-          <h1 className="display-title md:text-5xl">
-            Install, activate, and run the CLI with confidence.
-          </h1>
-          <p className="section-copy md:text-lg">
-            Follow this guide in order: install, activate, verify, then run your first image.
-            The <code>rmbg</code> CLI is agent-friendly, so tools like Claude Code and OpenCode
-            can understand your project structure and automate removals across single images,
-            folders, and larger batches with average execution around 1.2 - 1.5 seconds per image.
-          </p>
+          <h1 className="display-title md:text-5xl">{heroCopy.title}</h1>
+          <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <ExpLink href="/downloads">Open downloads</ExpLink>
+              <ExpLink href="/pricing">View pricing</ExpLink>
             </Button>
             <Button asChild variant="outline">
-              <ExpLink href="/pricing">Get CLI license</ExpLink>
+              <ExpLink href="/downloads">Install anytime</ExpLink>
             </Button>
           </div>
         </section>
@@ -180,16 +212,16 @@ export default function DocsPage() {
             <CardHeader>
               <CardTitle>Desktop + CLI workflow</CardTitle>
               <CardDescription>
-                For bundle workflows, require both surfaces before processing.
+                For the bundle, you will receive one app key and one CLI key.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <Alert>
                 <AlertTitle>Use both licenses for bundle workflows</AlertTitle>
-                <AlertDescription>
-                  Require desktop and CLI surfaces when your automation depends on both.
-                </AlertDescription>
-              </Alert>
+                  <AlertDescription>
+                   Use both keys if you want the app for visual checks and the CLI for automation.
+                  </AlertDescription>
+                </Alert>
               <CommandBlock command={CLI_REMOVE_WITH_DESKTOP_REQUIREMENT_CMD} />
             </CardContent>
           </Card>
@@ -226,11 +258,11 @@ export default function DocsPage() {
 
       <StickyCta
         title="Ready to run your first command?"
-        description="Install the CLI, activate your key, and process your first image locally."
-        primaryLabel="Open downloads"
-        primaryHref="/downloads"
-        secondaryLabel="View pricing"
-        secondaryHref="/pricing"
+        description="Use pricing to pick the right plan, then come back here when you are ready for CLI setup."
+        primaryLabel={assignments.stickyCtaCopy === "pricing_docs" ? "View pricing" : "Compare plans"}
+        primaryHref="/pricing"
+        secondaryLabel={assignments.stickyCtaCopy === "pricing_docs" ? "Install anytime" : "CLI docs"}
+        secondaryHref={assignments.stickyCtaCopy === "pricing_docs" ? "/downloads" : "/docs"}
       />
     </>
   );
