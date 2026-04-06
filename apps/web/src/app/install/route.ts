@@ -8,6 +8,8 @@ RELEASE_BASE_URL="\${RMBG_RELEASE_BASE_URL:-https://local.backgroundrm.com/relea
 RELEASE_METADATA_URL="\${RMBG_RELEASE_METADATA_URL:-https://local.backgroundrm.com/api/releases/latest}"
 INSTALL_BIN_DIR="\${RMBG_INSTALL_BIN_DIR:-\$HOME/.local/bin}"
 INSTALL_BASE_DIR="\${RMBG_INSTALL_BASE_DIR:-\$HOME/.local/share/rmbg}"
+DOWNLOAD_ATTEMPTS="\${RMBG_DOWNLOAD_ATTEMPTS:-6}"
+DOWNLOAD_RETRY_DELAY_SECONDS="\${RMBG_DOWNLOAD_RETRY_DELAY_SECONDS:-5}"
 TAG_SOURCE=""
 
 fail() {
@@ -100,6 +102,28 @@ verify_checksum() {
   [[ "\$expected" == "\$actual" ]] || fail "checksum verification failed"
 }
 
+download_file_with_retry() {
+  local url path label attempt
+  url="\$1"
+  path="\$2"
+  label="\$3"
+  attempt=1
+
+  while true; do
+    if curl -fsSL "\$url" -o "\$path"; then
+      return 0
+    fi
+
+    if [[ "\$attempt" -ge "\$DOWNLOAD_ATTEMPTS" ]]; then
+      return 1
+    fi
+
+    printf "Release asset %s not ready yet, retrying (%s/%s)\\n" "\$label" "\$attempt" "\$DOWNLOAD_ATTEMPTS" >&2
+    sleep "\$DOWNLOAD_RETRY_DELAY_SECONDS"
+    attempt=$((attempt + 1))
+  done
+}
+
 download_release_assets() {
   local primary_base fallback_base archive_name archive_path checksums_path
   primary_base="\$1"
@@ -108,16 +132,16 @@ download_release_assets() {
   archive_path="\$4"
   checksums_path="\$5"
 
-  if curl -fsSL "\${primary_base}/\${archive_name}" -o "\$archive_path" && \
-    curl -fsSL "\${primary_base}/checksums.txt" -o "\$checksums_path"; then
+  if download_file_with_retry "\${primary_base}/\${archive_name}" "\$archive_path" "\$archive_name" && \
+    download_file_with_retry "\${primary_base}/checksums.txt" "\$checksums_path" "checksums.txt"; then
     return
   fi
 
   if [[ -n "\$fallback_base" && "\$fallback_base" != "\$primary_base" ]]; then
     printf "Primary release source unavailable, falling back to GitHub assets\\n" >&2
-    curl -fsSL "\${fallback_base}/\${archive_name}" -o "\$archive_path" ||
+    download_file_with_retry "\${fallback_base}/\${archive_name}" "\$archive_path" "\$archive_name" ||
       fail "failed to download archive from fallback release source. For private repos, set RMBG_GITHUB_TOKEN in web env or set RMBG_RELEASE_BASE_URL to a public mirror"
-    curl -fsSL "\${fallback_base}/checksums.txt" -o "\$checksums_path" ||
+    download_file_with_retry "\${fallback_base}/checksums.txt" "\$checksums_path" "checksums.txt" ||
       fail "failed to download checksums from fallback release source. For private repos, set RMBG_GITHUB_TOKEN in web env or set RMBG_RELEASE_BASE_URL to a public mirror"
     return
   fi
