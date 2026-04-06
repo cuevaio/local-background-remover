@@ -173,6 +173,50 @@ const BEFORE_AFTER_BY_VARIANT: Record<HomeBeforeAfterCopyVariant, HomePageCopy["
       },
     ],
   },
+  listing_outcomes: {
+    badge: "Listing outcomes",
+    title: "From messy originals to polished cutouts for listings, launches, and promos",
+    ctaLabel: "View all examples",
+    examples: [
+      {
+        id: "watch-product",
+        title: "Product: polished listing shot",
+        context: "For PDPs, paid social, and cleaner catalog assets",
+      },
+      {
+        id: "car-shot",
+        title: "Vehicle: launch campaign asset",
+        context: "For compare pages, launch teasers, and promo graphics",
+      },
+      {
+        id: "pet-portrait",
+        title: "Pet: merch-ready portrait",
+        context: "For creator shops, social posts, and print-ready assets",
+      },
+    ],
+  },
+  category_mix: {
+    badge: "Across categories",
+    title: "Product shots, vehicles, and portraits cleaned up in the same local workflow",
+    ctaLabel: "See the full gallery",
+    examples: [
+      {
+        id: "watch-product",
+        title: "Retail: hero-ready product cutout",
+        context: "For listings, launch cards, and ad variations",
+      },
+      {
+        id: "car-shot",
+        title: "Automotive: compare-page cutout",
+        context: "For launch pages, comparison graphics, and promo banners",
+      },
+      {
+        id: "pet-portrait",
+        title: "Portrait: social-ready cleanup",
+        context: "For creator brands, profile art, and merch mockups",
+      },
+    ],
+  },
 };
 
 const INPUT_OPTIONS_BY_VARIANT: Record<HomeInputOptionsCopyVariant, HomePageCopy["inputOptions"]> = {
@@ -237,6 +281,68 @@ const INPUT_OPTIONS_BY_VARIANT: Record<HomeInputOptionsCopyVariant, HomePageCopy
     mediaCardTitle: "The import-to-export flow",
     mediaCardDescription: "Watch the local app pull in an image, process it automatically, surface earlier results, and hand the selected cutout to the next step.",
     mediaBadge: "Mac workflow",
+  },
+  auto_cleanup: {
+    badge: "Automatic cleanup",
+    title: "Drop in the next file and let cleanup start automatically",
+    description:
+      "The Mac app is built for quick local throughput. Add a file, URL, or clipboard image, let cleanup kick off automatically, then move through prior results without breaking your flow.",
+    options: [
+      {
+        title: "Start from your current source",
+        eyebrow: "File / URL / Cmd+V",
+        description: "Bring in whatever asset you already have without reshaping your workflow around the tool.",
+      },
+      {
+        title: "Cleanup begins on import",
+        eyebrow: "Automatic start",
+        description: "As soon as the image lands, background removal starts automatically so there is less waiting around between steps.",
+      },
+      {
+        title: "Keep prior cutouts close",
+        eyebrow: "Gallery recall",
+        description: "Move through earlier results whenever you want to compare, review, or reuse something you already processed.",
+      },
+      {
+        title: "Copy and keep moving",
+        eyebrow: "Clipboard ready",
+        description: "Grab the selected PNG and send it straight into the next tool in your stack.",
+      },
+    ],
+    mediaCardTitle: "Cleanup starts on import",
+    mediaCardDescription: "Watch the app accept an input, process it automatically, keep prior results accessible, and hand off the selected cutout.",
+    mediaBadge: "Auto start",
+  },
+  handoff_ready: {
+    badge: "Handoff-ready",
+    title: "Bring in the asset, clean it up, and hand it off without extra steps",
+    description:
+      "This flow keeps the work local from import through export. Pull in a file, URL, or clipboard image, let the app process it, then copy the result into Canva, Photoshop, Illustrator, or wherever it needs to go next.",
+    options: [
+      {
+        title: "Import the next asset",
+        eyebrow: "Local or pasted",
+        description: "Start with files on disk, pasted URLs, or something already in your clipboard.",
+      },
+      {
+        title: "Watch cleanup finish fast",
+        eyebrow: "Fast local run",
+        description: "Processing usually completes in around 1.2 - 1.5 seconds per image once it is imported.",
+      },
+      {
+        title: "Review before exporting",
+        eyebrow: "Previous results",
+        description: "Step through earlier cutouts and spot-check what you want to keep before handing off the output.",
+      },
+      {
+        title: "Paste into the next app",
+        eyebrow: "Cmd+C",
+        description: "Copy the selected cutout directly into the next design or production tool without a detour.",
+      },
+    ],
+    mediaCardTitle: "From import to handoff",
+    mediaCardDescription: "See how the local app keeps the path from source asset to downstream tool short and predictable.",
+    mediaBadge: "Ready to paste",
   },
 };
 
@@ -321,6 +427,86 @@ const WORKFLOW_COMPARISON_BY_VARIANT: Record<HomeWorkflowComparisonCopyVariant, 
       },
     ],
   },
+  role_based: {
+    title: "Choose the setup that matches your role",
+    description: "Use the app for hands-on cleanup, the CLI for developer workflows, or both if your team needs review plus automation.",
+    workflows: [
+      {
+        key: "app",
+        name: "For creators",
+        summary: "A Mac app workflow for designers, marketers, and founders who want to clean up assets visually and move on.",
+        bullets: [
+          "Best for manual review and quick fixes",
+          "Fits product photos, portraits, and marketing assets",
+          "Low-friction setup for solo users",
+        ],
+        cta: "See App plan",
+      },
+      {
+        key: "cli",
+        name: "For developers",
+        summary: "A command-line workflow for engineers, operators, and anyone who wants repeatable local jobs.",
+        bullets: [
+          "Fits scripts, terminal workflows, and agents",
+          "Good for repeat batches and predictable output",
+          "Easy to slot into existing automation",
+        ],
+        cta: "See CLI plan",
+      },
+      {
+        key: "both",
+        name: "For hybrid teams",
+        summary: "A combined setup for teams that want visual review in the app and repeatability from the CLI.",
+        badge: "Team fit",
+        bullets: [
+          "Use the app for review and approval",
+          "Use the CLI for batches and automation",
+          "Best when multiple people touch the workflow",
+        ],
+        cta: "See Bundle",
+      },
+    ],
+  },
+  speed_to_scale: {
+    title: "Start simple, scale up when your cleanup volume grows",
+    description: "The app gets you moving fast. The CLI takes over when you need scripts, batches, or agent-driven jobs at a larger pace.",
+    workflows: [
+      {
+        key: "app",
+        name: "Start with the app",
+        summary: "A simple local workflow for getting images cleaned up quickly without any scripting overhead.",
+        bullets: [
+          "Fastest path to the first result",
+          "Great for low-volume or visual work",
+          "Built for everyday manual cleanup",
+        ],
+        cta: "Start with App",
+      },
+      {
+        key: "cli",
+        name: "Scale with CLI",
+        summary: "A local command-line path for when volume, repeatability, or automation matters more.",
+        bullets: [
+          "Useful for higher-volume repeat work",
+          "Fits scripts and coding agents",
+          "Built for predictable local output",
+        ],
+        cta: "Scale with CLI",
+      },
+      {
+        key: "both",
+        name: "Use both",
+        summary: "Keep the app for quick checks and use the CLI when the workflow needs more throughput.",
+        badge: "Scale path",
+        bullets: [
+          "Manual review plus batch automation",
+          "Useful when the workflow evolves over time",
+          "Best for power users and growing teams",
+        ],
+        cta: "Use Both",
+      },
+    ],
+  },
 };
 
 const CLI_QUICKSTART_BY_VARIANT: Record<HomeCliQuickstartCopyVariant, HomePageCopy["cliQuickstart"]> = {
@@ -341,6 +527,24 @@ const CLI_QUICKSTART_BY_VARIANT: Record<HomeCliQuickstartCopyVariant, HomePageCo
     resultTitle: "Example JSON response",
     sliderTitle: "Compare the generated PNG",
     sliderDescription: "Drag the slider to see the original image against the cleaned local PNG output.",
+  },
+  batch_ready: {
+    sectionTitle: "Need repeat batches? The CLI is ready for local throughput",
+    sectionDescription: "The app is still the fastest place to start. When cleanup turns into repeat jobs, the CLI gives you a local path that fits batch processing and predictable output.",
+    commandCardTitle: "Batch-ready command",
+    commandCardDescription: "A local command example for developers who want repeat runs and machine-readable output.",
+    resultTitle: "Structured output",
+    sliderTitle: "See one batch result",
+    sliderDescription: "Use the slider to compare the original file against one processed local output from the batch workflow.",
+  },
+  agent_terminal: {
+    sectionTitle: "For terminals and coding agents, the local CLI keeps the workflow scriptable",
+    sectionDescription: "Start with the app for hands-on cleanup. Reach for the CLI when you want agent prompts, terminal commands, or repeatable jobs that stay local.",
+    commandCardTitle: "Agent-friendly CLI command",
+    commandCardDescription: "A terminal example for workflows that need local commands, structured output, and repeatable runs.",
+    resultTitle: "Machine-readable result",
+    sliderTitle: "Compare the terminal output result",
+    sliderDescription: "Drag the slider to compare the source asset against the cleaned PNG produced by the local command.",
   },
 };
 
@@ -381,6 +585,42 @@ const AUTOMATION_CHATS_BY_VARIANT: Record<HomeAutomationChatsCopyVariant, HomePa
       },
     ],
   },
+  repeat_batches: {
+    badge: "Repeat batches",
+    title: "Use the CLI when the same cleanup job needs to run again and again",
+    description: "The app handles one-off visual cleanup well. For recurring jobs, prompts, or repeat runs, the CLI gives you a local workflow that is easier to repeat and automate.",
+    promptLabel: "Batch prompt",
+    examples: [
+      {
+        tool: "Claude Code",
+        title: "Claude Code batch run",
+        description: "Repeatable prompt with local CLI output",
+      },
+      {
+        tool: "OpenCode",
+        title: "OpenCode batch run",
+        description: "Repeatable prompt with local CLI output",
+      },
+    ],
+  },
+  prompt_to_output: {
+    badge: "Prompt to output",
+    title: "From one prompt to a local folder of cleaned outputs",
+    description: "If your workflow starts with an agent prompt and ends with processed assets on disk, the CLI gives you a clean local bridge between the two.",
+    promptLabel: "Prompt",
+    examples: [
+      {
+        tool: "Claude Code",
+        title: "Claude Code prompt-to-output",
+        description: "Prompt in, local outputs out",
+      },
+      {
+        tool: "OpenCode",
+        title: "OpenCode prompt-to-output",
+        description: "Prompt in, local outputs out",
+      },
+    ],
+  },
 };
 
 const QUOTE_BY_VARIANT: Record<HomeQuoteCopyVariant, HomePageCopy["quote"]> = {
@@ -395,6 +635,18 @@ const QUOTE_BY_VARIANT: Record<HomeQuoteCopyVariant, HomePageCopy["quote"]> = {
     quote: "The cutout matters.\nThe handoff matters more.",
     supportingLine: "Local Background Remover gives you desktop review, command-line repeatability, and offline reliability in one tighter workflow.",
     footerLine: "Clean inputs. Clean outputs. Built for teams that sweat the details.",
+  },
+  private_pipeline: {
+    badge: "Private pipeline",
+    quote: "Keep the cleanup local.\nKeep the workflow moving.",
+    supportingLine: "Local Background Remover keeps review, repeatability, and offline work in one private on-device pipeline.",
+    footerLine: "Private. Predictable. Built for workflows that should stay on your machine.",
+  },
+  ship_cleaner: {
+    badge: "Ship cleaner",
+    quote: "Better cutouts help.\nCleaner shipping wins.",
+    supportingLine: "Use the app for confidence, the CLI for repeatability, and the offline workflow when timing matters.",
+    footerLine: "Built for small teams who need cleaner assets without a slower pipeline.",
   },
 };
 
@@ -416,6 +668,32 @@ const TESTIMONIALS_BY_VARIANT: Record<HomeTestimonialsCopyVariant, HomePageCopy[
       "Weekly batches": "Weekly batches",
       "Fast setup": "Fast setup",
       "Hybrid flow": "Hybrid workflow",
+    },
+  },
+  operator_proof: {
+    badge: "Operator proof",
+    title: "Proof from founders, operators, and creatives already using it in production",
+    description: "Real workflows from people using local cleanup for launches, field edits, client work, and repeat asset generation.",
+    workflowLabels: {
+      "Desktop polish": "Client polish",
+      "CLI shipping": "Automation proof",
+      "Offline workflow": "Field-ready flow",
+      "Weekly batches": "Ops cadence",
+      "Fast setup": "Simple buying",
+      "Hybrid flow": "Combined workflow",
+    },
+  },
+  hybrid_teams: {
+    badge: "Hybrid teams",
+    title: "Teams using the app and CLI together to keep image work moving",
+    description: "Examples from founders, designers, and indie teams combining visual review with local automation.",
+    workflowLabels: {
+      "Desktop polish": "Visual review",
+      "CLI shipping": "CLI workflow",
+      "Offline workflow": "Offline edits",
+      "Weekly batches": "Batch ops",
+      "Fast setup": "Quick onboarding",
+      "Hybrid flow": "App + CLI",
     },
   },
 };
@@ -497,6 +775,82 @@ const PRICING_FAQ_BY_VARIANT: Record<HomePricingFaqCopyVariant, HomePageCopy["pr
       },
     ],
   },
+  one_time_terms: {
+    sectionTitle: "One-time pricing, offline use, and bundle details at a glance",
+    purchaseBadge: "One-time terms",
+    purchaseTitle: "The purchase terms in plain language",
+    purchaseAlerts: [
+      {
+        title: "Buy once",
+        description: "Core usage is a one-time purchase rather than a recurring plan.",
+      },
+      {
+        title: "App, CLI, or both",
+        description: "Choose the workflow that matches how manual or automated you need the cleanup to be.",
+      },
+      {
+        title: "Offline after activation",
+        description: "Keep processing when your internet connection is weak or unavailable.",
+      },
+    ],
+    faqTitle: "Key purchase questions",
+    faqs: [
+      {
+        question: "Is the installer public?",
+        answer: "Yes. Anyone can download it. Most buyers compare plans first, then install afterward.",
+      },
+      {
+        question: "What does the bundle include?",
+        answer: "App + CLI includes both the Mac app and the command-line workflow in one purchase.",
+      },
+      {
+        question: "Can I keep using it offline?",
+        answer: "Yes. After activation, you can continue processing without needing constant network access.",
+      },
+      {
+        question: "Can I move up to a bigger plan later?",
+        answer: "Yes. You can start with one workflow and add the other later if you need both.",
+      },
+    ],
+  },
+  plan_fit: {
+    sectionTitle: "Figure out which plan fits before you check out",
+    purchaseBadge: "Plan fit",
+    purchaseTitle: "Pick the right setup for your workflow",
+    purchaseAlerts: [
+      {
+        title: "App for simple visual work",
+        description: "A good fit when you want the easiest local workflow for product photos and quick edits.",
+      },
+      {
+        title: "CLI for repeatable automation",
+        description: "A better fit when you need scripts, batches, or coding-agent workflows.",
+      },
+      {
+        title: "Bundle for both",
+        description: "Choose the bundle when you want visual review in the app and repeatability from the CLI.",
+      },
+    ],
+    faqTitle: "Plan choice questions",
+    faqs: [
+      {
+        question: "Should I pick App or CLI first?",
+        answer: "Start with the app for simple manual cleanup, or choose the CLI if scripts and batch jobs are the primary need.",
+      },
+      {
+        question: "When is App + CLI worth it?",
+        answer: "It is a good fit when you want both hands-on visual review and automated local runs.",
+      },
+      {
+        question: "Do installs stay public?",
+        answer: "Yes. The installer is public even though paid features only unlock after activation.",
+      },
+      {
+        question: "Can I upgrade later if my workflow changes?",
+        answer: "Yes. You can start smaller and add the other workflow later when it becomes useful.",
+      },
+    ],
+  },
 };
 
 const STICKY_CTA_BY_VARIANT = {
@@ -533,6 +887,26 @@ const FOOTER_BY_VARIANT: Record<HomeFooterCopyVariant, HomePageCopy["footer"]> =
       resources: "Learn the workflow",
       company: "About the maker",
       compare: "Compare options",
+    },
+  },
+  mac_to_cli: {
+    title: "Start on your Mac, scale up with the CLI when you need it",
+    description: "Use the app for everyday cleanup, then bring in the CLI when scripts, agents, or repeat batches become part of the workflow.",
+    columnTitles: {
+      product: "Start here",
+      resources: "Learn and automate",
+      company: "Who built it",
+      compare: "Compare workflows",
+    },
+  },
+  one_purchase_stack: {
+    title: "One purchase for a cleaner local image workflow",
+    description: "A private Mac app for everyday cleanup, with CLI support when your workflow needs repeatability and automation.",
+    columnTitles: {
+      product: "Product paths",
+      resources: "Helpful docs",
+      company: "Maker and company",
+      compare: "Alternatives",
     },
   },
 };
