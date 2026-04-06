@@ -26,10 +26,6 @@ import {
 } from "@/content/cli-docs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  mergeExperimentToken,
-  readSingleParam,
-} from "@/lib/experiments/attribution";
-import {
   evaluateDownloadsAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
@@ -42,12 +38,6 @@ export const metadata: Metadata = buildPageMetadata({
     "Install the Mac app or optional CLI. Compare plans first if you are still deciding what to buy.",
   path: "/downloads",
 });
-
-type DownloadsPageProps = {
-  searchParams?: Promise<{
-    exp?: string | string[];
-  }>;
-};
 
 const DOWNLOADS_HERO_COPY: Record<string, { title: string; description: string }> = {
   control: {
@@ -68,11 +58,8 @@ const DOWNLOADS_STICKY_LABELS: Record<string, { primary: string; secondary: stri
   pricing_docs: { primary: "View pricing", secondary: "CLI docs" },
 };
 
-export default async function DownloadsPage({ searchParams }: DownloadsPageProps) {
+export default async function DownloadsPage() {
   const assignments = await evaluateDownloadsAssignments();
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const incomingExp = readSingleParam(resolvedSearchParams?.exp);
-  const exp = mergeExperimentToken(incomingExp, assignments);
 
   const heroCopy = DOWNLOADS_HERO_COPY[assignments.downloadsHeroCopy];
   const stickyLabels = DOWNLOADS_STICKY_LABELS[assignments.stickyCtaCopy];

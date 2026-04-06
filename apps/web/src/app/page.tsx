@@ -18,10 +18,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  mergeExperimentToken,
-  readSingleParam,
-} from "@/lib/experiments/attribution";
-import {
   evaluateHomeAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
@@ -68,12 +64,6 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/",
 });
 
-type HomePageProps = {
-  searchParams?: Promise<{
-    exp?: string | string[];
-  }>;
-};
-
 const HOME_HERO_TITLE: Record<string, string> = {
   control: "Remove backgrounds privately on your Mac.",
   mac_app: "A simple Mac app for fast, clean cutouts.",
@@ -92,11 +82,8 @@ const HOME_STICKY_LABELS: Record<string, { primary: string; secondary: string }>
   pricing_docs: { primary: "View pricing", secondary: "CLI docs" },
 };
 
-export default async function HomePage({ searchParams }: HomePageProps) {
+export default async function HomePage() {
   const assignments = await evaluateHomeAssignments();
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const incomingExp = readSingleParam(resolvedSearchParams?.exp);
-  const exp = mergeExperimentToken(incomingExp, assignments);
 
   const heroTitle = HOME_HERO_TITLE[assignments.homeHeroHeadline];
   const primaryCtaLabel = HOME_PRIMARY_CTA_LABEL[assignments.homePrimaryCta];
