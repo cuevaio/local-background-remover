@@ -140,12 +140,6 @@ export default async function HomePage() {
             slot: "home.hero.primary_cta",
           },
           {
-            experimentKey: "home-cli-emphasis",
-            variant: assignments.homeCliEmphasis,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.cli.section",
-          },
-          {
             experimentKey: "sticky-cta-copy",
             variant: assignments.stickyCtaCopy,
             page: EXPERIMENT_PAGE.HOME,

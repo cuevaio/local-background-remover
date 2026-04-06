@@ -2,7 +2,6 @@ import type {
   HomeAutomationChatsCopyVariant,
   HomeBeforeAfterCopyVariant,
   HomeCliQuickstartCopyVariant,
-  HomeCliEmphasisVariant,
   HomeFooterCopyVariant,
   HomeInputOptionsCopyVariant,
   HomePricingFaqCopyVariant,
@@ -195,28 +194,6 @@ const BEFORE_AFTER_BY_VARIANT: Record<HomeBeforeAfterCopyVariant, HomePageCopy["
       },
     ],
   },
-  category_mix: {
-    badge: "Across categories",
-    title: "Product shots, vehicles, and portraits cleaned up in the same local workflow",
-    ctaLabel: "See the full gallery",
-    examples: [
-      {
-        id: "watch-product",
-        title: "Retail: hero-ready product cutout",
-        context: "For listings, launch cards, and ad variations",
-      },
-      {
-        id: "car-shot",
-        title: "Automotive: compare-page cutout",
-        context: "For launch pages, comparison graphics, and promo banners",
-      },
-      {
-        id: "pet-portrait",
-        title: "Portrait: social-ready cleanup",
-        context: "For creator brands, profile art, and merch mockups",
-      },
-    ],
-  },
 };
 
 const INPUT_OPTIONS_BY_VARIANT: Record<HomeInputOptionsCopyVariant, HomePageCopy["inputOptions"]> = {
@@ -281,37 +258,6 @@ const INPUT_OPTIONS_BY_VARIANT: Record<HomeInputOptionsCopyVariant, HomePageCopy
     mediaCardTitle: "The import-to-export flow",
     mediaCardDescription: "Watch the local app pull in an image, process it automatically, surface earlier results, and hand the selected cutout to the next step.",
     mediaBadge: "Mac workflow",
-  },
-  auto_cleanup: {
-    badge: "Automatic cleanup",
-    title: "Drop in the next file and let cleanup start automatically",
-    description:
-      "The Mac app is built for quick local throughput. Add a file, URL, or clipboard image, let cleanup kick off automatically, then move through prior results without breaking your flow.",
-    options: [
-      {
-        title: "Start from your current source",
-        eyebrow: "File / URL / Cmd+V",
-        description: "Bring in whatever asset you already have without reshaping your workflow around the tool.",
-      },
-      {
-        title: "Cleanup begins on import",
-        eyebrow: "Automatic start",
-        description: "As soon as the image lands, background removal starts automatically so there is less waiting around between steps.",
-      },
-      {
-        title: "Keep prior cutouts close",
-        eyebrow: "Gallery recall",
-        description: "Move through earlier results whenever you want to compare, review, or reuse something you already processed.",
-      },
-      {
-        title: "Copy and keep moving",
-        eyebrow: "Clipboard ready",
-        description: "Grab the selected PNG and send it straight into the next tool in your stack.",
-      },
-    ],
-    mediaCardTitle: "Cleanup starts on import",
-    mediaCardDescription: "Watch the app accept an input, process it automatically, keep prior results accessible, and hand off the selected cutout.",
-    mediaBadge: "Auto start",
   },
   handoff_ready: {
     badge: "Handoff-ready",
@@ -467,46 +413,6 @@ const WORKFLOW_COMPARISON_BY_VARIANT: Record<HomeWorkflowComparisonCopyVariant, 
       },
     ],
   },
-  speed_to_scale: {
-    title: "Start simple, scale up when your cleanup volume grows",
-    description: "The app gets you moving fast. The CLI takes over when you need scripts, batches, or agent-driven jobs at a larger pace.",
-    workflows: [
-      {
-        key: "app",
-        name: "Start with the app",
-        summary: "A simple local workflow for getting images cleaned up quickly without any scripting overhead.",
-        bullets: [
-          "Fastest path to the first result",
-          "Great for low-volume or visual work",
-          "Built for everyday manual cleanup",
-        ],
-        cta: "Start with App",
-      },
-      {
-        key: "cli",
-        name: "Scale with CLI",
-        summary: "A local command-line path for when volume, repeatability, or automation matters more.",
-        bullets: [
-          "Useful for higher-volume repeat work",
-          "Fits scripts and coding agents",
-          "Built for predictable local output",
-        ],
-        cta: "Scale with CLI",
-      },
-      {
-        key: "both",
-        name: "Use both",
-        summary: "Keep the app for quick checks and use the CLI when the workflow needs more throughput.",
-        badge: "Scale path",
-        bullets: [
-          "Manual review plus batch automation",
-          "Useful when the workflow evolves over time",
-          "Best for power users and growing teams",
-        ],
-        cta: "Use Both",
-      },
-    ],
-  },
 };
 
 const CLI_QUICKSTART_BY_VARIANT: Record<HomeCliQuickstartCopyVariant, HomePageCopy["cliQuickstart"]> = {
@@ -527,15 +433,6 @@ const CLI_QUICKSTART_BY_VARIANT: Record<HomeCliQuickstartCopyVariant, HomePageCo
     resultTitle: "Example JSON response",
     sliderTitle: "Compare the generated PNG",
     sliderDescription: "Drag the slider to see the original image against the cleaned local PNG output.",
-  },
-  batch_ready: {
-    sectionTitle: "Need repeat batches? The CLI is ready for local throughput",
-    sectionDescription: "The app is still the fastest place to start. When cleanup turns into repeat jobs, the CLI gives you a local path that fits batch processing and predictable output.",
-    commandCardTitle: "Batch-ready command",
-    commandCardDescription: "A local command example for developers who want repeat runs and machine-readable output.",
-    resultTitle: "Structured output",
-    sliderTitle: "See one batch result",
-    sliderDescription: "Use the slider to compare the original file against one processed local output from the batch workflow.",
   },
   agent_terminal: {
     sectionTitle: "For terminals and coding agents, the local CLI keeps the workflow scriptable",
@@ -603,24 +500,6 @@ const AUTOMATION_CHATS_BY_VARIANT: Record<HomeAutomationChatsCopyVariant, HomePa
       },
     ],
   },
-  prompt_to_output: {
-    badge: "Prompt to output",
-    title: "From one prompt to a local folder of cleaned outputs",
-    description: "If your workflow starts with an agent prompt and ends with processed assets on disk, the CLI gives you a clean local bridge between the two.",
-    promptLabel: "Prompt",
-    examples: [
-      {
-        tool: "Claude Code",
-        title: "Claude Code prompt-to-output",
-        description: "Prompt in, local outputs out",
-      },
-      {
-        tool: "OpenCode",
-        title: "OpenCode prompt-to-output",
-        description: "Prompt in, local outputs out",
-      },
-    ],
-  },
 };
 
 const QUOTE_BY_VARIANT: Record<HomeQuoteCopyVariant, HomePageCopy["quote"]> = {
@@ -642,12 +521,6 @@ const QUOTE_BY_VARIANT: Record<HomeQuoteCopyVariant, HomePageCopy["quote"]> = {
     supportingLine: "Local Background Remover keeps review, repeatability, and offline work in one private on-device pipeline.",
     footerLine: "Private. Predictable. Built for workflows that should stay on your machine.",
   },
-  ship_cleaner: {
-    badge: "Ship cleaner",
-    quote: "Better cutouts help.\nCleaner shipping wins.",
-    supportingLine: "Use the app for confidence, the CLI for repeatability, and the offline workflow when timing matters.",
-    footerLine: "Built for small teams who need cleaner assets without a slower pipeline.",
-  },
 };
 
 const TESTIMONIALS_BY_VARIANT: Record<HomeTestimonialsCopyVariant, HomePageCopy["testimonials"]> = {
@@ -668,19 +541,6 @@ const TESTIMONIALS_BY_VARIANT: Record<HomeTestimonialsCopyVariant, HomePageCopy[
       "Weekly batches": "Weekly batches",
       "Fast setup": "Fast setup",
       "Hybrid flow": "Hybrid workflow",
-    },
-  },
-  operator_proof: {
-    badge: "Operator proof",
-    title: "Proof from founders, operators, and creatives already using it in production",
-    description: "Real workflows from people using local cleanup for launches, field edits, client work, and repeat asset generation.",
-    workflowLabels: {
-      "Desktop polish": "Client polish",
-      "CLI shipping": "Automation proof",
-      "Offline workflow": "Field-ready flow",
-      "Weekly batches": "Ops cadence",
-      "Fast setup": "Simple buying",
-      "Hybrid flow": "Combined workflow",
     },
   },
   hybrid_teams: {
@@ -775,44 +635,6 @@ const PRICING_FAQ_BY_VARIANT: Record<HomePricingFaqCopyVariant, HomePageCopy["pr
       },
     ],
   },
-  one_time_terms: {
-    sectionTitle: "One-time pricing, offline use, and bundle details at a glance",
-    purchaseBadge: "One-time terms",
-    purchaseTitle: "The purchase terms in plain language",
-    purchaseAlerts: [
-      {
-        title: "Buy once",
-        description: "Core usage is a one-time purchase rather than a recurring plan.",
-      },
-      {
-        title: "App, CLI, or both",
-        description: "Choose the workflow that matches how manual or automated you need the cleanup to be.",
-      },
-      {
-        title: "Offline after activation",
-        description: "Keep processing when your internet connection is weak or unavailable.",
-      },
-    ],
-    faqTitle: "Key purchase questions",
-    faqs: [
-      {
-        question: "Is the installer public?",
-        answer: "Yes. Anyone can download it. Most buyers compare plans first, then install afterward.",
-      },
-      {
-        question: "What does the bundle include?",
-        answer: "App + CLI includes both the Mac app and the command-line workflow in one purchase.",
-      },
-      {
-        question: "Can I keep using it offline?",
-        answer: "Yes. After activation, you can continue processing without needing constant network access.",
-      },
-      {
-        question: "Can I move up to a bigger plan later?",
-        answer: "Yes. You can start with one workflow and add the other later if you need both.",
-      },
-    ],
-  },
   plan_fit: {
     sectionTitle: "Figure out which plan fits before you check out",
     purchaseBadge: "Plan fit",
@@ -899,21 +721,10 @@ const FOOTER_BY_VARIANT: Record<HomeFooterCopyVariant, HomePageCopy["footer"]> =
       compare: "Compare workflows",
     },
   },
-  one_purchase_stack: {
-    title: "One purchase for a cleaner local image workflow",
-    description: "A private Mac app for everyday cleanup, with CLI support when your workflow needs repeatability and automation.",
-    columnTitles: {
-      product: "Product paths",
-      resources: "Helpful docs",
-      company: "Maker and company",
-      compare: "Alternatives",
-    },
-  },
 };
 
 export type HomeHeadingCopyAssignments = {
   homeHeroHeadline: keyof typeof HERO_BY_VARIANT;
-  homeCliEmphasis: HomeCliEmphasisVariant;
   stickyCtaCopy: keyof typeof STICKY_CTA_BY_VARIANT;
   homeBeforeAfterCopy: HomeBeforeAfterCopyVariant;
   homeInputOptionsCopy: HomeInputOptionsCopyVariant;

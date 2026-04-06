@@ -12,7 +12,6 @@ import type {
   HomeAutomationChatsCopyVariant,
   HomeBeforeAfterCopyVariant,
   HomeCliQuickstartCopyVariant,
-  HomeCliEmphasisVariant,
   HomeFooterCopyVariant,
   HomeHeroHeadlineVariant,
   HomeInputOptionsCopyVariant,
@@ -23,7 +22,6 @@ import type {
   HomeWorkflowComparisonCopyVariant,
   PricingHeroCopyVariant,
   PricingPlanCtaVariant,
-  PricingPlanFramingVariant,
   StickyCtaCopyVariant,
 } from "@/lib/experiments/types";
 
@@ -96,17 +94,6 @@ export const homePrimaryCtaFlag: Flag<HomePrimaryCtaVariant, FlagEntities> = fla
   ],
 });
 
-export const homeCliEmphasisFlag: Flag<HomeCliEmphasisVariant, FlagEntities> = flag<HomeCliEmphasisVariant, FlagEntities>({
-  key: "home-cli-emphasis",
-  adapter: getAdapter<HomeCliEmphasisVariant>(),
-  identify,
-  description: "Homepage CLI section emphasis variant",
-  options: [
-    { value: "control", label: "Control" },
-    { value: "advanced_tool", label: "Advanced Tool" },
-  ],
-});
-
 export const homeBeforeAfterCopyFlag: Flag<HomeBeforeAfterCopyVariant, FlagEntities> = flag<HomeBeforeAfterCopyVariant, FlagEntities>({
   key: "home-before-after-copy",
   adapter: getAdapter<HomeBeforeAfterCopyVariant>(),
@@ -116,7 +103,6 @@ export const homeBeforeAfterCopyFlag: Flag<HomeBeforeAfterCopyVariant, FlagEntit
     { value: "control", label: "Control" },
     { value: "speed_examples", label: "Speed Examples" },
     { value: "listing_outcomes", label: "Listing Outcomes" },
-    { value: "category_mix", label: "Category Mix" },
   ],
 });
 
@@ -128,7 +114,6 @@ export const homeInputOptionsCopyFlag: Flag<HomeInputOptionsCopyVariant, FlagEnt
   options: [
     { value: "control", label: "Control" },
     { value: "import_flow", label: "Import Flow" },
-    { value: "auto_cleanup", label: "Auto Cleanup" },
     { value: "handoff_ready", label: "Handoff Ready" },
   ],
 });
@@ -142,7 +127,6 @@ export const homeWorkflowComparisonCopyFlag: Flag<HomeWorkflowComparisonCopyVari
     { value: "control", label: "Control" },
     { value: "workflow_fit", label: "Workflow Fit" },
     { value: "role_based", label: "Role Based" },
-    { value: "speed_to_scale", label: "Speed To Scale" },
   ],
 });
 
@@ -154,7 +138,6 @@ export const homeCliQuickstartCopyFlag: Flag<HomeCliQuickstartCopyVariant, FlagE
   options: [
     { value: "control", label: "Control" },
     { value: "local_json", label: "Local JSON" },
-    { value: "batch_ready", label: "Batch Ready" },
     { value: "agent_terminal", label: "Agent Terminal" },
   ],
 });
@@ -168,7 +151,6 @@ export const homeAutomationChatsCopyFlag: Flag<HomeAutomationChatsCopyVariant, F
     { value: "control", label: "Control" },
     { value: "agent_handoff", label: "Agent Handoff" },
     { value: "repeat_batches", label: "Repeat Batches" },
-    { value: "prompt_to_output", label: "Prompt To Output" },
   ],
 });
 
@@ -181,7 +163,6 @@ export const homeQuoteCopyFlag: Flag<HomeQuoteCopyVariant, FlagEntities> = flag<
     { value: "control", label: "Control" },
     { value: "craft_handoff", label: "Craft Handoff" },
     { value: "private_pipeline", label: "Private Pipeline" },
-    { value: "ship_cleaner", label: "Ship Cleaner" },
   ],
 });
 
@@ -193,7 +174,6 @@ export const homeTestimonialsCopyFlag: Flag<HomeTestimonialsCopyVariant, FlagEnt
   options: [
     { value: "control", label: "Control" },
     { value: "weekly_shippers", label: "Weekly Shippers" },
-    { value: "operator_proof", label: "Operator Proof" },
     { value: "hybrid_teams", label: "Hybrid Teams" },
   ],
 });
@@ -206,7 +186,6 @@ export const homePricingFaqCopyFlag: Flag<HomePricingFaqCopyVariant, FlagEntitie
   options: [
     { value: "control", label: "Control" },
     { value: "buying_clarity", label: "Buying Clarity" },
-    { value: "one_time_terms", label: "One Time Terms" },
     { value: "plan_fit", label: "Plan Fit" },
   ],
 });
@@ -220,7 +199,6 @@ export const homeFooterCopyFlag: Flag<HomeFooterCopyVariant, FlagEntities> = fla
     { value: "control", label: "Control" },
     { value: "private_pay_once", label: "Private Pay Once" },
     { value: "mac_to_cli", label: "Mac To CLI" },
-    { value: "one_purchase_stack", label: "One Purchase Stack" },
   ],
 });
 
@@ -245,17 +223,6 @@ export const pricingPlanCtaFlag: Flag<PricingPlanCtaVariant, FlagEntities> = fla
     { value: "control", label: "Control" },
     { value: "get_access", label: "Get Access" },
     { value: "unlock", label: "Unlock" },
-  ],
-});
-
-export const pricingPlanFramingFlag: Flag<PricingPlanFramingVariant, FlagEntities> = flag<PricingPlanFramingVariant, FlagEntities>({
-  key: "pricing-plan-framing",
-  adapter: getAdapter<PricingPlanFramingVariant>(),
-  identify,
-  description: "Pricing plan framing variant",
-  options: [
-    { value: "control", label: "Control" },
-    { value: "buyer_labels", label: "Buyer Labels" },
   ],
 });
 
@@ -318,7 +285,6 @@ export const galleryHeroIntentFlag: Flag<GalleryHeroIntentVariant, FlagEntities>
 export const flagDefinitions = {
   homeHeroHeadlineFlag,
   homePrimaryCtaFlag,
-  homeCliEmphasisFlag,
   homeBeforeAfterCopyFlag,
   homeInputOptionsCopyFlag,
   homeWorkflowComparisonCopyFlag,
@@ -330,7 +296,6 @@ export const flagDefinitions = {
   homeFooterCopyFlag,
   pricingHeroCopyFlag,
   pricingPlanCtaFlag,
-  pricingPlanFramingFlag,
   stickyCtaCopyFlag,
   downloadsHeroCopyFlag,
   comparePrimaryCtaFlag,
@@ -343,7 +308,6 @@ export async function evaluateHomeAssignments(): Promise<
     ExperimentAssignments,
     | "homeHeroHeadline"
     | "homePrimaryCta"
-    | "homeCliEmphasis"
     | "homeBeforeAfterCopy"
     | "homeInputOptionsCopy"
     | "homeWorkflowComparisonCopy"
@@ -359,7 +323,6 @@ export async function evaluateHomeAssignments(): Promise<
   const [
     homeHeroHeadline,
     homePrimaryCta,
-    homeCliEmphasis,
     homeBeforeAfterCopy,
     homeInputOptionsCopy,
     homeWorkflowComparisonCopy,
@@ -373,7 +336,6 @@ export async function evaluateHomeAssignments(): Promise<
   ] = await Promise.all([
     homeHeroHeadlineFlag(),
     homePrimaryCtaFlag(),
-    homeCliEmphasisFlag(),
     homeBeforeAfterCopyFlag(),
     homeInputOptionsCopyFlag(),
     homeWorkflowComparisonCopyFlag(),
@@ -389,7 +351,6 @@ export async function evaluateHomeAssignments(): Promise<
   return {
     homeHeroHeadline,
     homePrimaryCta,
-    homeCliEmphasis,
     homeBeforeAfterCopy,
     homeInputOptionsCopy,
     homeWorkflowComparisonCopy,
@@ -404,16 +365,15 @@ export async function evaluateHomeAssignments(): Promise<
 }
 
 export async function evaluatePricingAssignments(): Promise<
-  Pick<ExperimentAssignments, "pricingHeroCopy" | "pricingPlanCta" | "pricingPlanFraming" | "stickyCtaCopy">
+  Pick<ExperimentAssignments, "pricingHeroCopy" | "pricingPlanCta" | "stickyCtaCopy">
 > {
-  const [pricingHeroCopy, pricingPlanCta, pricingPlanFraming, stickyCtaCopy] = await Promise.all([
+  const [pricingHeroCopy, pricingPlanCta, stickyCtaCopy] = await Promise.all([
     pricingHeroCopyFlag(),
     pricingPlanCtaFlag(),
-    pricingPlanFramingFlag(),
     stickyCtaCopyFlag(),
   ]);
 
-  return { pricingHeroCopy, pricingPlanCta, pricingPlanFraming, stickyCtaCopy };
+  return { pricingHeroCopy, pricingPlanCta, stickyCtaCopy };
 }
 
 export async function evaluateDownloadsAssignments(): Promise<
@@ -454,10 +414,6 @@ export function toFlagValues(assignments: Partial<ExperimentAssignments>): Recor
 
   if (assignments.homePrimaryCta) {
     values["home-primary-cta"] = assignments.homePrimaryCta;
-  }
-
-  if (assignments.homeCliEmphasis) {
-    values["home-cli-emphasis"] = assignments.homeCliEmphasis;
   }
 
   if (assignments.homeBeforeAfterCopy) {
@@ -502,10 +458,6 @@ export function toFlagValues(assignments: Partial<ExperimentAssignments>): Recor
 
   if (assignments.pricingPlanCta) {
     values["pricing-plan-cta"] = assignments.pricingPlanCta;
-  }
-
-  if (assignments.pricingPlanFraming) {
-    values["pricing-plan-framing"] = assignments.pricingPlanFraming;
   }
 
   if (assignments.stickyCtaCopy) {
