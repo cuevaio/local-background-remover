@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { BRAND_NAME, SITE_URL, serializeJsonLd } from "@/lib/seo";
 import "./globals.css";
 
+const GOOGLE_ADS_ID = "AW-18069206526";
+
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 const display = Space_Grotesk({
@@ -102,6 +104,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={cn("font-sans", geist.variable, geistMono.variable, display.variable)}
     >
       <body>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ADS_ID}');
+          `}
+        </Script>
         <Script id="website-jsonld" type="application/ld+json">
           {serializeJsonLd(websiteJsonLd)}
         </Script>
