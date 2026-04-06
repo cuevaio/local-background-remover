@@ -1,17 +1,21 @@
 import { Badge } from "@/components/ui/badge";
+import type { HomePageCopy } from "@/content/home/heading-copy";
 import { LANDING_TESTIMONIALS } from "@/content/testimonials";
 
-export default function TestimonialMosaic() {
+type TestimonialMosaicProps = {
+  copy: HomePageCopy["testimonials"];
+};
+
+export default function TestimonialMosaic({ copy }: TestimonialMosaicProps) {
   return (
     <section className="section-block section-divider flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <Badge variant="outline" className="w-fit bg-card">
-          Customer stories
+          {copy.badge}
         </Badge>
-        <h2 className="section-title">Trusted by makers who ship every week</h2>
+        <h2 className="section-title">{copy.title}</h2>
         <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-          Independent designers, founders, and builders using local background removal for daily
-          creative output.
+          {copy.description}
         </p>
       </div>
 
@@ -21,7 +25,7 @@ export default function TestimonialMosaic() {
             <article key={item.id} className="flex min-h-[230px] flex-col justify-between gap-6 bg-card p-6">
               <div className="flex flex-col gap-3">
                 <span className="inline-flex w-fit items-center rounded-md border border-border bg-secondary px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                  {item.workflow}
+                  {copy.workflowLabels[item.workflow] ?? item.workflow}
                 </span>
                 <p className="text-pretty text-lg leading-[1.4] text-foreground">“{item.quote}”</p>
               </div>

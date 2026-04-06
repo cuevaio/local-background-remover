@@ -1,6 +1,15 @@
 export type HomeHeroHeadlineVariant = "control" | "mac_app" | "product_photos";
 export type HomePrimaryCtaVariant = "pricing_first" | "see_plans" | "buy_once";
 export type HomeCliEmphasisVariant = "control" | "advanced_tool";
+export type HomeBeforeAfterCopyVariant = "control" | "speed_examples";
+export type HomeInputOptionsCopyVariant = "control" | "import_flow";
+export type HomeWorkflowComparisonCopyVariant = "control" | "workflow_fit";
+export type HomeCliQuickstartCopyVariant = "control" | "local_json";
+export type HomeAutomationChatsCopyVariant = "control" | "agent_handoff";
+export type HomeQuoteCopyVariant = "control" | "craft_handoff";
+export type HomeTestimonialsCopyVariant = "control" | "weekly_shippers";
+export type HomePricingFaqCopyVariant = "control" | "buying_clarity";
+export type HomeFooterCopyVariant = "control" | "private_pay_once";
 export type PricingHeroCopyVariant = "control" | "one_time_mac" | "app_first";
 export type PricingPlanCtaVariant = "control" | "get_access" | "unlock";
 export type PricingPlanFramingVariant = "control" | "buyer_labels";
@@ -14,6 +23,15 @@ export type ExperimentAssignments = {
   homeHeroHeadline: HomeHeroHeadlineVariant;
   homePrimaryCta: HomePrimaryCtaVariant;
   homeCliEmphasis: HomeCliEmphasisVariant;
+  homeBeforeAfterCopy: HomeBeforeAfterCopyVariant;
+  homeInputOptionsCopy: HomeInputOptionsCopyVariant;
+  homeWorkflowComparisonCopy: HomeWorkflowComparisonCopyVariant;
+  homeCliQuickstartCopy: HomeCliQuickstartCopyVariant;
+  homeAutomationChatsCopy: HomeAutomationChatsCopyVariant;
+  homeQuoteCopy: HomeQuoteCopyVariant;
+  homeTestimonialsCopy: HomeTestimonialsCopyVariant;
+  homePricingFaqCopy: HomePricingFaqCopyVariant;
+  homeFooterCopy: HomeFooterCopyVariant;
   pricingHeroCopy: PricingHeroCopyVariant;
   pricingPlanCta: PricingPlanCtaVariant;
   pricingPlanFraming: PricingPlanFramingVariant;
@@ -30,6 +48,15 @@ export const EXPERIMENT_TOKEN_KEYS: Record<ExperimentAssignmentKey, string> = {
   homeHeroHeadline: "hhh",
   homePrimaryCta: "hpc",
   homeCliEmphasis: "hce",
+  homeBeforeAfterCopy: "hba",
+  homeInputOptionsCopy: "hio",
+  homeWorkflowComparisonCopy: "hwc",
+  homeCliQuickstartCopy: "hcq",
+  homeAutomationChatsCopy: "hac",
+  homeQuoteCopy: "hqc",
+  homeTestimonialsCopy: "htm",
+  homePricingFaqCopy: "hpf",
+  homeFooterCopy: "hfc",
   pricingHeroCopy: "phc",
   pricingPlanCta: "ppc",
   pricingPlanFraming: "ppf",

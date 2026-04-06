@@ -1,13 +1,20 @@
 import type { CSSProperties } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import type { HomePageCopy } from "@/content/home/heading-copy";
 
 const DOT_GRID_STYLE: CSSProperties = {
   backgroundImage: "radial-gradient(circle at center, rgb(212 212 212 / 0.78) 1px, transparent 1.2px)",
   backgroundSize: "12px 12px",
 };
 
-export default function QuoteSection() {
+type QuoteSectionProps = {
+  copy: HomePageCopy["quote"];
+};
+
+export default function QuoteSection({ copy }: QuoteSectionProps) {
+  const quoteLines = copy.quote.split("\n");
+
   return (
     <section className="section-block section-divider">
       <div className="relative overflow-hidden rounded-[20px] border border-border bg-card px-6 py-12 md:px-12 md:py-16">
@@ -29,24 +36,22 @@ export default function QuoteSection() {
 
         <div className="relative mx-auto flex w-full max-w-3xl flex-col gap-5">
           <Badge variant="outline" className="w-fit bg-card">
-            A clearer workflow
+            {copy.badge}
           </Badge>
 
           <blockquote className="space-y-6 text-balance font-display text-[clamp(1.9rem,4.2vw,3.35rem)] leading-[1.13] tracking-tight">
             <p>
-              “Clean edges are easy.
+              “{quoteLines[0]}
               <br className="hidden md:block" />
-              Clean handoffs win.”
+              {quoteLines[1]}”
             </p>
 
             <p className="text-[0.78em] text-foreground">
-              Local Background Remover combines <span className="text-warning">desktop review</span>,{" "}
-              <span className="text-success">command-line speed</span>, and{" "}
-              <span className="text-info">offline reliability</span> in one lean stack.
+              {copy.supportingLine}
             </p>
 
             <p className="text-[0.75em] text-muted-foreground">
-              Fast. Private. Repeatable. Built for people who care about craft.
+              {copy.footerLine}
             </p>
           </blockquote>
         </div>

@@ -6,8 +6,10 @@ import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { HomePageCopy } from "@/content/home/heading-copy";
 
 type FooterColumn = {
+  id: "product" | "resources" | "company" | "compare";
   title: string;
   links: Array<{
     label: string;
@@ -17,6 +19,7 @@ type FooterColumn = {
 
 const FOOTER_COLUMNS: FooterColumn[] = [
   {
+    id: "product",
     title: "Product",
     links: [
       { label: "Pricing", href: "/pricing" },
@@ -26,6 +29,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     ],
   },
   {
+    id: "resources",
     title: "Resources",
     links: [
       { label: "Blog", href: "/blog" },
@@ -35,6 +39,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     ],
   },
   {
+    id: "company",
     title: "Company",
     links: [
       { label: "About", href: "/about" },
@@ -44,6 +49,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     ],
   },
   {
+    id: "compare",
     title: "Compare",
     links: [
       { label: "All compare pages", href: "/compare" },
@@ -77,7 +83,11 @@ const REVIEW_ITEMS = [
   { source: "Capterra", score: "4.9" },
 ];
 
-export default function SiteFooter() {
+type SiteFooterProps = {
+  copy?: HomePageCopy["footer"];
+};
+
+export default function SiteFooter({ copy }: SiteFooterProps) {
   return (
     <footer className="section-divider">
       <div className="relative overflow-hidden border-b border-border bg-[#0b0c12] text-white">
@@ -94,10 +104,10 @@ export default function SiteFooter() {
 
         <div className="relative section-block flex flex-col items-center gap-6 py-20 text-center">
           <h2 className="font-display text-balance text-4xl font-medium tracking-tight md:text-6xl">
-            Clean backgrounds privately. Pay once.
+            {copy?.title ?? "Clean backgrounds privately. Pay once."}
           </h2>
           <p className="max-w-2xl text-base text-white/70 md:text-2xl md:leading-8">
-            A Mac app for everyday image cleanup, plus an optional CLI for scripts and coding agents.
+            {copy?.description ?? "A Mac app for everyday image cleanup, plus an optional CLI for scripts and coding agents."}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -168,7 +178,7 @@ export default function SiteFooter() {
 
             {FOOTER_COLUMNS.map((column) => (
               <div key={column.title} className="space-y-3">
-                <p className="text-sm font-semibold text-foreground">{column.title}</p>
+                <p className="text-sm font-semibold text-foreground">{copy?.columnTitles[column.id] ?? column.title}</p>
                 <ul className="space-y-2.5 text-sm text-muted-foreground">
                   {column.links.map((item) => (
                     <li key={`${column.title}-${item.label}`}>

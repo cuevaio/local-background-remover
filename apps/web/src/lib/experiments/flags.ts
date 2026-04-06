@@ -9,9 +9,18 @@ import type {
   DownloadsHeroCopyVariant,
   ExperimentAssignments,
   GalleryHeroIntentVariant,
+  HomeAutomationChatsCopyVariant,
+  HomeBeforeAfterCopyVariant,
+  HomeCliQuickstartCopyVariant,
   HomeCliEmphasisVariant,
+  HomeFooterCopyVariant,
   HomeHeroHeadlineVariant,
+  HomeInputOptionsCopyVariant,
   HomePrimaryCtaVariant,
+  HomePricingFaqCopyVariant,
+  HomeQuoteCopyVariant,
+  HomeTestimonialsCopyVariant,
+  HomeWorkflowComparisonCopyVariant,
   PricingHeroCopyVariant,
   PricingPlanCtaVariant,
   PricingPlanFramingVariant,
@@ -95,6 +104,105 @@ export const homeCliEmphasisFlag: Flag<HomeCliEmphasisVariant, FlagEntities> = f
   options: [
     { value: "control", label: "Control" },
     { value: "advanced_tool", label: "Advanced Tool" },
+  ],
+});
+
+export const homeBeforeAfterCopyFlag: Flag<HomeBeforeAfterCopyVariant, FlagEntities> = flag<HomeBeforeAfterCopyVariant, FlagEntities>({
+  key: "home-before-after-copy",
+  adapter: getAdapter<HomeBeforeAfterCopyVariant>(),
+  identify,
+  description: "Homepage before and after section heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "speed_examples", label: "Speed Examples" },
+  ],
+});
+
+export const homeInputOptionsCopyFlag: Flag<HomeInputOptionsCopyVariant, FlagEntities> = flag<HomeInputOptionsCopyVariant, FlagEntities>({
+  key: "home-input-options-copy",
+  adapter: getAdapter<HomeInputOptionsCopyVariant>(),
+  identify,
+  description: "Homepage input options heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "import_flow", label: "Import Flow" },
+  ],
+});
+
+export const homeWorkflowComparisonCopyFlag: Flag<HomeWorkflowComparisonCopyVariant, FlagEntities> = flag<HomeWorkflowComparisonCopyVariant, FlagEntities>({
+  key: "home-workflow-comparison-copy",
+  adapter: getAdapter<HomeWorkflowComparisonCopyVariant>(),
+  identify,
+  description: "Homepage workflow comparison heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "workflow_fit", label: "Workflow Fit" },
+  ],
+});
+
+export const homeCliQuickstartCopyFlag: Flag<HomeCliQuickstartCopyVariant, FlagEntities> = flag<HomeCliQuickstartCopyVariant, FlagEntities>({
+  key: "home-cli-quickstart-copy",
+  adapter: getAdapter<HomeCliQuickstartCopyVariant>(),
+  identify,
+  description: "Homepage CLI quickstart heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "local_json", label: "Local JSON" },
+  ],
+});
+
+export const homeAutomationChatsCopyFlag: Flag<HomeAutomationChatsCopyVariant, FlagEntities> = flag<HomeAutomationChatsCopyVariant, FlagEntities>({
+  key: "home-automation-chats-copy",
+  adapter: getAdapter<HomeAutomationChatsCopyVariant>(),
+  identify,
+  description: "Homepage automation chats heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "agent_handoff", label: "Agent Handoff" },
+  ],
+});
+
+export const homeQuoteCopyFlag: Flag<HomeQuoteCopyVariant, FlagEntities> = flag<HomeQuoteCopyVariant, FlagEntities>({
+  key: "home-quote-copy",
+  adapter: getAdapter<HomeQuoteCopyVariant>(),
+  identify,
+  description: "Homepage quote section heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "craft_handoff", label: "Craft Handoff" },
+  ],
+});
+
+export const homeTestimonialsCopyFlag: Flag<HomeTestimonialsCopyVariant, FlagEntities> = flag<HomeTestimonialsCopyVariant, FlagEntities>({
+  key: "home-testimonials-copy",
+  adapter: getAdapter<HomeTestimonialsCopyVariant>(),
+  identify,
+  description: "Homepage testimonials heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "weekly_shippers", label: "Weekly Shippers" },
+  ],
+});
+
+export const homePricingFaqCopyFlag: Flag<HomePricingFaqCopyVariant, FlagEntities> = flag<HomePricingFaqCopyVariant, FlagEntities>({
+  key: "home-pricing-faq-copy",
+  adapter: getAdapter<HomePricingFaqCopyVariant>(),
+  identify,
+  description: "Homepage pricing faq heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "buying_clarity", label: "Buying Clarity" },
+  ],
+});
+
+export const homeFooterCopyFlag: Flag<HomeFooterCopyVariant, FlagEntities> = flag<HomeFooterCopyVariant, FlagEntities>({
+  key: "home-footer-copy",
+  adapter: getAdapter<HomeFooterCopyVariant>(),
+  identify,
+  description: "Homepage footer heading bundle",
+  options: [
+    { value: "control", label: "Control" },
+    { value: "private_pay_once", label: "Private Pay Once" },
   ],
 });
 
@@ -193,6 +301,15 @@ export const flagDefinitions = {
   homeHeroHeadlineFlag,
   homePrimaryCtaFlag,
   homeCliEmphasisFlag,
+  homeBeforeAfterCopyFlag,
+  homeInputOptionsCopyFlag,
+  homeWorkflowComparisonCopyFlag,
+  homeCliQuickstartCopyFlag,
+  homeAutomationChatsCopyFlag,
+  homeQuoteCopyFlag,
+  homeTestimonialsCopyFlag,
+  homePricingFaqCopyFlag,
+  homeFooterCopyFlag,
   pricingHeroCopyFlag,
   pricingPlanCtaFlag,
   pricingPlanFramingFlag,
@@ -204,16 +321,68 @@ export const flagDefinitions = {
 };
 
 export async function evaluateHomeAssignments(): Promise<
-  Pick<ExperimentAssignments, "homeHeroHeadline" | "homePrimaryCta" | "homeCliEmphasis" | "stickyCtaCopy">
+  Pick<
+    ExperimentAssignments,
+    | "homeHeroHeadline"
+    | "homePrimaryCta"
+    | "homeCliEmphasis"
+    | "homeBeforeAfterCopy"
+    | "homeInputOptionsCopy"
+    | "homeWorkflowComparisonCopy"
+    | "homeCliQuickstartCopy"
+    | "homeAutomationChatsCopy"
+    | "homeQuoteCopy"
+    | "homeTestimonialsCopy"
+    | "homePricingFaqCopy"
+    | "homeFooterCopy"
+    | "stickyCtaCopy"
+  >
 > {
-  const [homeHeroHeadline, homePrimaryCta, homeCliEmphasis, stickyCtaCopy] = await Promise.all([
+  const [
+    homeHeroHeadline,
+    homePrimaryCta,
+    homeCliEmphasis,
+    homeBeforeAfterCopy,
+    homeInputOptionsCopy,
+    homeWorkflowComparisonCopy,
+    homeCliQuickstartCopy,
+    homeAutomationChatsCopy,
+    homeQuoteCopy,
+    homeTestimonialsCopy,
+    homePricingFaqCopy,
+    homeFooterCopy,
+    stickyCtaCopy,
+  ] = await Promise.all([
     homeHeroHeadlineFlag(),
     homePrimaryCtaFlag(),
     homeCliEmphasisFlag(),
+    homeBeforeAfterCopyFlag(),
+    homeInputOptionsCopyFlag(),
+    homeWorkflowComparisonCopyFlag(),
+    homeCliQuickstartCopyFlag(),
+    homeAutomationChatsCopyFlag(),
+    homeQuoteCopyFlag(),
+    homeTestimonialsCopyFlag(),
+    homePricingFaqCopyFlag(),
+    homeFooterCopyFlag(),
     stickyCtaCopyFlag(),
   ]);
 
-  return { homeHeroHeadline, homePrimaryCta, homeCliEmphasis, stickyCtaCopy };
+  return {
+    homeHeroHeadline,
+    homePrimaryCta,
+    homeCliEmphasis,
+    homeBeforeAfterCopy,
+    homeInputOptionsCopy,
+    homeWorkflowComparisonCopy,
+    homeCliQuickstartCopy,
+    homeAutomationChatsCopy,
+    homeQuoteCopy,
+    homeTestimonialsCopy,
+    homePricingFaqCopy,
+    homeFooterCopy,
+    stickyCtaCopy,
+  };
 }
 
 export async function evaluatePricingAssignments(): Promise<
@@ -271,6 +440,42 @@ export function toFlagValues(assignments: Partial<ExperimentAssignments>): Recor
 
   if (assignments.homeCliEmphasis) {
     values["home-cli-emphasis"] = assignments.homeCliEmphasis;
+  }
+
+  if (assignments.homeBeforeAfterCopy) {
+    values["home-before-after-copy"] = assignments.homeBeforeAfterCopy;
+  }
+
+  if (assignments.homeInputOptionsCopy) {
+    values["home-input-options-copy"] = assignments.homeInputOptionsCopy;
+  }
+
+  if (assignments.homeWorkflowComparisonCopy) {
+    values["home-workflow-comparison-copy"] = assignments.homeWorkflowComparisonCopy;
+  }
+
+  if (assignments.homeCliQuickstartCopy) {
+    values["home-cli-quickstart-copy"] = assignments.homeCliQuickstartCopy;
+  }
+
+  if (assignments.homeAutomationChatsCopy) {
+    values["home-automation-chats-copy"] = assignments.homeAutomationChatsCopy;
+  }
+
+  if (assignments.homeQuoteCopy) {
+    values["home-quote-copy"] = assignments.homeQuoteCopy;
+  }
+
+  if (assignments.homeTestimonialsCopy) {
+    values["home-testimonials-copy"] = assignments.homeTestimonialsCopy;
+  }
+
+  if (assignments.homePricingFaqCopy) {
+    values["home-pricing-faq-copy"] = assignments.homePricingFaqCopy;
+  }
+
+  if (assignments.homeFooterCopy) {
+    values["home-footer-copy"] = assignments.homeFooterCopy;
   }
 
   if (assignments.pricingHeroCopy) {

@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { HomePageCopy } from "@/content/home/heading-copy";
 
 type ChatExample = {
   tool: string;
@@ -34,32 +35,34 @@ const CHAT_EXAMPLES: ChatExample[] = [
   },
 ];
 
-export default function AutomationChats() {
+type AutomationChatsProps = {
+  copy: HomePageCopy["automationChats"];
+};
+
+export default function AutomationChats({ copy }: AutomationChatsProps) {
   return (
     <section className="section-block section-divider flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <Badge variant="outline" className="w-fit bg-card">
-          Advanced automation
+          {copy.badge}
         </Badge>
-        <h2 className="section-title">
-          Need scripts or coding agents? The CLI is ready.
-        </h2>
+        <h2 className="section-title">{copy.title}</h2>
         <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-          Most buyers should start with the app. If you also want repeat batches, scripts, or coding-agent workflows, the <code>rmbg</code> CLI gives you a local command-line option that fits automated image cleanup.
+          {copy.description}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {CHAT_EXAMPLES.map((example) => (
+        {CHAT_EXAMPLES.map((example, index) => (
           <Card key={example.tool} className="bg-card/95">
             <CardHeader>
-              <CardTitle>{example.tool}</CardTitle>
-              <CardDescription>Same prompt, local CLI execution</CardDescription>
+              <CardTitle>{copy.examples[index]?.title ?? example.tool}</CardTitle>
+              <CardDescription>{copy.examples[index]?.description ?? "Same prompt, local CLI execution"}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <div className="rounded-lg border border-border bg-secondary/45 p-3 text-sm">
                 <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Prompt
+                  {copy.promptLabel}
                 </p>
                 <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-foreground">
                   {AGENT_PROMPT}

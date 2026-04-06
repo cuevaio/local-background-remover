@@ -14,13 +14,16 @@ import QuoteSection from "@/components/marketing/QuoteSection";
 import StickyCta from "@/components/marketing/StickyCta";
 import TestimonialMosaic from "@/components/marketing/TestimonialMosaic";
 import WorkflowComparison from "@/components/marketing/WorkflowComparison";
+import SiteFooter from "@/components/marketing/SiteFooter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getHomePageCopy } from "@/content/home/heading-copy";
 import {
   evaluateHomeAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
+import { serializeExperimentToken, withExpParam } from "@/lib/experiments/attribution";
 import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
@@ -64,12 +67,6 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/",
 });
 
-const HOME_HERO_TITLE: Record<string, string> = {
-  control: "Remove backgrounds privately on your Mac.",
-  mac_app: "A simple Mac app for fast, clean cutouts.",
-  product_photos: "Turn rough product photos into clean listing images.",
-};
-
 const HOME_PRIMARY_CTA_LABEL: Record<string, string> = {
   pricing_first: "See plans",
   see_plans: "Compare plans",
@@ -84,18 +81,11 @@ const HOME_STICKY_LABELS: Record<string, { primary: string; secondary: string }>
 
 export default async function HomePage() {
   const assignments = await evaluateHomeAssignments();
+  const pageCopy = getHomePageCopy(assignments);
+  const exp = serializeExperimentToken(assignments);
 
-  const heroTitle = HOME_HERO_TITLE[assignments.homeHeroHeadline];
   const primaryCtaLabel = HOME_PRIMARY_CTA_LABEL[assignments.homePrimaryCta];
   const stickyLabels = HOME_STICKY_LABELS[assignments.stickyCtaCopy];
-  const cliSectionTitle =
-    assignments.homeCliEmphasis === "advanced_tool"
-      ? "Need scripts or coding agents? Use the CLI."
-      : "Optional CLI for scripts and coding agents";
-  const cliSectionDescription =
-    assignments.homeCliEmphasis === "advanced_tool"
-      ? "The app is the easiest way to get started. When you need repeat batches or agent-driven automation, the local CLI is ready for that too."
-      : "Most people should start with the app. If you also want local automation, the CLI works with scripts and coding agents.";
 
   const softwareApplicationJsonLd = {
     "@context": "https://schema.org",
@@ -161,36 +151,88 @@ export default async function HomePage() {
             page: EXPERIMENT_PAGE.HOME,
             slot: "home.sticky_cta",
           },
+          {
+            experimentKey: "home-before-after-copy",
+            variant: assignments.homeBeforeAfterCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.before_after",
+          },
+          {
+            experimentKey: "home-input-options-copy",
+            variant: assignments.homeInputOptionsCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.input_options",
+          },
+          {
+            experimentKey: "home-workflow-comparison-copy",
+            variant: assignments.homeWorkflowComparisonCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.workflow_comparison",
+          },
+          {
+            experimentKey: "home-cli-quickstart-copy",
+            variant: assignments.homeCliQuickstartCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.cli_quickstart",
+          },
+          {
+            experimentKey: "home-automation-chats-copy",
+            variant: assignments.homeAutomationChatsCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.automation_chats",
+          },
+          {
+            experimentKey: "home-quote-copy",
+            variant: assignments.homeQuoteCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.quote",
+          },
+          {
+            experimentKey: "home-testimonials-copy",
+            variant: assignments.homeTestimonialsCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.testimonials",
+          },
+          {
+            experimentKey: "home-pricing-faq-copy",
+            variant: assignments.homePricingFaqCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.pricing_faq",
+          },
+          {
+            experimentKey: "home-footer-copy",
+            variant: assignments.homeFooterCopy,
+            page: EXPERIMENT_PAGE.HOME,
+            slot: "home.footer",
+          },
         ]}
       />
 
       <main className="site-frame">
-        <BeforeAfterShowcase className="pb-6 md:pb-8" />
+        <BeforeAfterShowcase className="pb-6 md:pb-8" copy={pageCopy.beforeAfter} />
 
         <section className="section-block pt-6 md:pt-8">
           <div className="flex flex-col gap-5">
             <Badge variant="outline" className="w-fit bg-card">
-              Local and private
+              {pageCopy.hero.badge}
             </Badge>
             <div className="flex flex-col gap-4">
-              <h1 className="display-title">{heroTitle}</h1>
-              <p className="section-copy">
-                Clean up product photos, portraits, and marketing images without upload-first tools. Start with the Mac app, and use the CLI only if you want advanced automation.
-              </p>
+              <h1 className="display-title">{pageCopy.hero.title}</h1>
+              <p className="section-copy">{pageCopy.hero.description}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <TrackedExpLink href="/pricing" slot="home.hero.primary" label={primaryCtaLabel}>
+                <TrackedExpLink href={withExpParam("/pricing", exp)} slot="home.hero.primary" label={primaryCtaLabel}>
                   {primaryCtaLabel}
                 </TrackedExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <TrackedExpLink href="/gallery" slot="home.hero.examples" label="See examples">
+                <TrackedExpLink href={withExpParam("/gallery", exp)} slot="home.hero.examples" label="See examples">
                   See examples
                 </TrackedExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <TrackedExpLink href="/downloads" slot="home.hero.install" label="Install anytime">
+                <TrackedExpLink href={withExpParam("/downloads", exp)} slot="home.hero.install" label="Install anytime">
                   Install anytime
                 </TrackedExpLink>
               </Button>
@@ -211,39 +253,37 @@ export default async function HomePage() {
 
         <ProofStrip />
 
-        <InputOptionsSection />
+        <InputOptionsSection copy={pageCopy.inputOptions} />
 
         <section className="section-block section-divider flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="section-title">Choose the version that fits how you work</h2>
-              <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-                The app is the easiest place to start. The CLI is there if you want scripts, batches, or coding-agent automation.
-              </p>
-            </div>
-          <WorkflowComparison />
+          <div className="flex flex-col gap-2">
+            <h2 className="section-title">{pageCopy.workflowComparison.title}</h2>
+            <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+              {pageCopy.workflowComparison.description}
+            </p>
+          </div>
+          <WorkflowComparison copy={pageCopy.workflowComparison} />
         </section>
 
         <section className="section-block section-divider flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2 className="section-title">{cliSectionTitle}</h2>
+            <h2 className="section-title">{pageCopy.cliQuickstart.sectionTitle}</h2>
             <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-              {cliSectionDescription}
+              {pageCopy.cliQuickstart.sectionDescription}
             </p>
           </div>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
             <Card className="bg-card/95">
               <CardHeader>
-                <CardTitle>Example CLI command</CardTitle>
-                <CardDescription>
-                  A quick example for developers who want a machine-readable local workflow.
-                </CardDescription>
+                <CardTitle>{pageCopy.cliQuickstart.commandCardTitle}</CardTitle>
+                <CardDescription>{pageCopy.cliQuickstart.commandCardDescription}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
                   {QUICKSTART_COMMAND}
                 </pre>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-foreground">What comes back</p>
+                  <p className="text-sm font-medium text-foreground">{pageCopy.cliQuickstart.resultTitle}</p>
                   <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs leading-6 text-foreground whitespace-pre-wrap break-all">
                     {JSON.stringify(QUICKSTART_RESULT, null, 2)}
                   </pre>
@@ -251,37 +291,41 @@ export default async function HomePage() {
               </CardContent>
             </Card>
 
-            <QuickstartComparison />
+            <QuickstartComparison copy={pageCopy.cliQuickstart} />
           </div>
           <div>
             <Button asChild variant="outline">
-              <TrackedExpLink href="/docs" slot="home.cli.docs" label="Open CLI docs">
+              <TrackedExpLink href={withExpParam("/docs", exp)} slot="home.cli.docs" label="Open CLI docs">
                 Open CLI docs
               </TrackedExpLink>
             </Button>
           </div>
         </section>
 
-        <AutomationChats />
+        <AutomationChats copy={pageCopy.automationChats} />
 
-        <QuoteSection />
+        <QuoteSection copy={pageCopy.quote} />
 
-        <TestimonialMosaic />
+        <TestimonialMosaic copy={pageCopy.testimonials} />
 
         <section className="section-block section-divider flex flex-col gap-6">
-          <h2 className="section-title">Questions before checkout</h2>
-          <PricingPolicyFaq />
+          <h2 className="section-title">{pageCopy.pricingFaq.sectionTitle}</h2>
+          <PricingPolicyFaq copy={pageCopy.pricingFaq} />
         </section>
 
       </main>
 
+      <div className="site-frame">
+        <SiteFooter copy={pageCopy.footer} />
+      </div>
+
       <StickyCta
-        title="Ready to clean up images without upload-first tools?"
-        description="Start with pricing, then install when you are ready."
+        title={pageCopy.stickyCta.title}
+        description={pageCopy.stickyCta.description}
         primaryLabel={stickyLabels.primary}
-        primaryHref="/pricing"
+        primaryHref={withExpParam("/pricing", exp)}
         secondaryLabel={stickyLabels.secondary}
-        secondaryHref={assignments.stickyCtaCopy === "pricing_docs" ? "/docs" : "/downloads"}
+        secondaryHref={withExpParam(assignments.stickyCtaCopy === "pricing_docs" ? "/docs" : "/downloads", exp)}
       />
     </>
   );

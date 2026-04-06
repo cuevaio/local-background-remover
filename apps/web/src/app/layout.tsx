@@ -8,7 +8,6 @@ import { VercelToolbar } from "@vercel/toolbar/next";
 import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
-import SiteFooter from "@/components/marketing/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BRAND_NAME, SITE_URL, serializeJsonLd } from "@/lib/seo";
@@ -145,9 +144,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
         </header>
         {children}
-        <div className="site-frame">
-          <SiteFooter />
-        </div>
         <Analytics />
         {shouldInjectToolbar ? <VercelToolbar /> : null}
       </body>

@@ -4,12 +4,17 @@ import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { HomePageCopy } from "@/content/home/heading-copy";
 
 function clamp(value: number): number {
   return Math.min(100, Math.max(0, value));
 }
 
-export default function QuickstartComparison() {
+type QuickstartComparisonProps = {
+  copy: HomePageCopy["cliQuickstart"];
+};
+
+export default function QuickstartComparison({ copy }: QuickstartComparisonProps) {
   const [position, setPosition] = useState(50);
 
   function updateFromPointer(clientX: number, element: HTMLDivElement) {
@@ -21,10 +26,8 @@ export default function QuickstartComparison() {
   return (
     <Card className="bg-card/95">
       <CardHeader>
-        <CardTitle>See the result</CardTitle>
-        <CardDescription>
-          Drag the slider to compare the original photo with the generated PNG.
-        </CardDescription>
+        <CardTitle>{copy.sliderTitle}</CardTitle>
+        <CardDescription>{copy.sliderDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-border bg-secondary/60">
@@ -39,13 +42,13 @@ export default function QuickstartComparison() {
           />
           <img
             src="/images/examples/after/elon.png"
-            alt="Elon image after background removal"
+            alt="Elon after background removal"
             className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
           />
           <img
             src="/images/examples/before/elon.webp"
-            alt="Elon image before background removal"
+            alt="Elon before background removal"
             className="absolute inset-0 h-full w-full object-cover"
             style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
             loading="lazy"

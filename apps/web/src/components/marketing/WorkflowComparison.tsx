@@ -10,65 +10,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { HomePageCopy } from "@/content/home/heading-copy";
 
-type Workflow = {
-  key: "app" | "cli" | "both";
-  name: string;
-  summary: string;
-  badge?: string;
-  bullets: string[];
-  cta: string;
+type WorkflowComparisonProps = {
+  copy: HomePageCopy["workflowComparison"];
 };
 
-const WORKFLOWS: Workflow[] = [
-  {
-    key: "app",
-    name: "Desktop App",
-    summary: "Best for most people who want a simple Mac app for product photos, portraits, and quick edits.",
-    bullets: [
-      "Simple app workflow on your Mac",
-      "Great for visual checks before export",
-      "Best choice for everyday image cleanup",
-    ],
-    cta: "See App plan",
-  },
-  {
-    key: "cli",
-    name: "CLI",
-    summary: "For developers who want scripts, batches, and coding-agent automation.",
-    bullets: [
-      "Runs from the command line",
-      "Great for repeat batches and scripts",
-      "Works well with coding agents",
-    ],
-    cta: "See CLI plan",
-  },
-  {
-    key: "both",
-    name: "App + CLI",
-    summary: "For teams or power users who want both a simple app and command-line automation.",
-    badge: "Best value",
-    bullets: [
-      "Includes the app and the CLI",
-      "Useful when you want visual checks plus batch jobs",
-      "Best if you know you will use both",
-    ],
-    cta: "See Bundle",
-  },
-];
-
-export default function WorkflowComparison() {
+export default function WorkflowComparison({ copy }: WorkflowComparisonProps) {
   return (
     <Tabs defaultValue="app" className="w-full">
       <TabsList className="w-full justify-start md:w-fit">
-        {WORKFLOWS.map((workflow) => (
+        {copy.workflows.map((workflow) => (
           <TabsTrigger key={workflow.key} value={workflow.key}>
             {workflow.name}
           </TabsTrigger>
         ))}
       </TabsList>
 
-      {WORKFLOWS.map((workflow) => (
+      {copy.workflows.map((workflow) => (
         <TabsContent key={workflow.key} value={workflow.key}>
           <Card className="bg-card/95">
             <CardHeader>
