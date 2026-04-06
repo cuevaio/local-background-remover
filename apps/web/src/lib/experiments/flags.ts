@@ -1,6 +1,6 @@
 import { vercelAdapter } from "@flags-sdk/vercel";
 import type { Adapter } from "flags";
-import { flag, type Flag } from "flags/next";
+import { dedupe, flag, type Flag } from "flags/next";
 
 import { getFlagsEnv } from "@/env";
 import type {
@@ -12,6 +12,14 @@ import type {
   PricingPlanCtaVariant,
   StickyCtaCopyVariant,
 } from "@/lib/experiments/types";
+
+type FlagEntities = {
+  user?: {
+    id: string;
+  };
+};
+
+const VISITOR_ID_COOKIE = "rmbg_visitor_id";
 
 let hasValidatedFlagsEnv = false;
 
@@ -36,9 +44,24 @@ function getAdapter<V, E = any>(): Adapter<V, E> {
   return vercelAdapter<V, E>();
 }
 
-export const homeHeroHeadlineFlag: Flag<HomeHeroHeadlineVariant> = flag<HomeHeroHeadlineVariant>({
+const identify = dedupe(async ({ cookies }: { cookies: { get(name: string): { value: string } | undefined } }) => {
+  const visitorId = cookies.get(VISITOR_ID_COOKIE)?.value;
+
+  if (!visitorId) {
+    return {} satisfies FlagEntities;
+  }
+
+  return {
+    user: {
+      id: visitorId,
+    },
+  } satisfies FlagEntities;
+});
+
+export const homeHeroHeadlineFlag: Flag<HomeHeroHeadlineVariant, FlagEntities> = flag<HomeHeroHeadlineVariant, FlagEntities>({
   key: "home-hero-headline",
   adapter: getAdapter<HomeHeroHeadlineVariant>(),
+  identify,
   description: "Homepage hero headline copy variant",
   options: [
     { value: "control", label: "Control" },
@@ -47,9 +70,10 @@ export const homeHeroHeadlineFlag: Flag<HomeHeroHeadlineVariant> = flag<HomeHero
   ],
 });
 
-export const homePrimaryCtaFlag: Flag<HomePrimaryCtaVariant> = flag<HomePrimaryCtaVariant>({
+export const homePrimaryCtaFlag: Flag<HomePrimaryCtaVariant, FlagEntities> = flag<HomePrimaryCtaVariant, FlagEntities>({
   key: "home-primary-cta",
   adapter: getAdapter<HomePrimaryCtaVariant>(),
+  identify,
   description: "Homepage primary CTA label variant",
   options: [
     { value: "control", label: "Control" },
@@ -58,9 +82,10 @@ export const homePrimaryCtaFlag: Flag<HomePrimaryCtaVariant> = flag<HomePrimaryC
   ],
 });
 
-export const pricingHeroCopyFlag: Flag<PricingHeroCopyVariant> = flag<PricingHeroCopyVariant>({
+export const pricingHeroCopyFlag: Flag<PricingHeroCopyVariant, FlagEntities> = flag<PricingHeroCopyVariant, FlagEntities>({
   key: "pricing-hero-copy",
   adapter: getAdapter<PricingHeroCopyVariant>(),
+  identify,
   description: "Pricing hero title and subtitle variant",
   options: [
     { value: "control", label: "Control" },
@@ -69,9 +94,10 @@ export const pricingHeroCopyFlag: Flag<PricingHeroCopyVariant> = flag<PricingHer
   ],
 });
 
-export const pricingPlanCtaFlag: Flag<PricingPlanCtaVariant> = flag<PricingPlanCtaVariant>({
+export const pricingPlanCtaFlag: Flag<PricingPlanCtaVariant, FlagEntities> = flag<PricingPlanCtaVariant, FlagEntities>({
   key: "pricing-plan-cta",
   adapter: getAdapter<PricingPlanCtaVariant>(),
+  identify,
   description: "Pricing plan card CTA copy variant",
   options: [
     { value: "control", label: "Control" },
@@ -80,9 +106,10 @@ export const pricingPlanCtaFlag: Flag<PricingPlanCtaVariant> = flag<PricingPlanC
   ],
 });
 
-export const stickyCtaCopyFlag: Flag<StickyCtaCopyVariant> = flag<StickyCtaCopyVariant>({
+export const stickyCtaCopyFlag: Flag<StickyCtaCopyVariant, FlagEntities> = flag<StickyCtaCopyVariant, FlagEntities>({
   key: "sticky-cta-copy",
   adapter: getAdapter<StickyCtaCopyVariant>(),
+  identify,
   description: "Sticky CTA labels variant",
   options: [
     { value: "control", label: "Control" },
@@ -91,9 +118,10 @@ export const stickyCtaCopyFlag: Flag<StickyCtaCopyVariant> = flag<StickyCtaCopyV
   ],
 });
 
-export const downloadsHeroCopyFlag: Flag<DownloadsHeroCopyVariant> = flag<DownloadsHeroCopyVariant>({
+export const downloadsHeroCopyFlag: Flag<DownloadsHeroCopyVariant, FlagEntities> = flag<DownloadsHeroCopyVariant, FlagEntities>({
   key: "downloads-hero-copy",
   adapter: getAdapter<DownloadsHeroCopyVariant>(),
+  identify,
   description: "Downloads hero copy variant",
   options: [
     { value: "control", label: "Control" },
