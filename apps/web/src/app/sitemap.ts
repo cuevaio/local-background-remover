@@ -1,9 +1,31 @@
 import type { MetadataRoute } from "next";
 
+import { getAllBlogPosts, getBlogSlugs, getLatestBlogUpdate } from "@/content/blog";
 import { COMPARE_PAGES, COMPARE_SLUGS } from "@/content/compare-pages";
 import { SITE_URL } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const latestBlogUpdate = await getLatestBlogUpdate();
+  const blogPosts = await getAllBlogPosts();
+  const blogSlugs = await getBlogSlugs();
+  const blogPostBySlug = new Map(blogPosts.map((post) => [post.slug, post]));
+  const blogEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/blog`,
+      changeFrequency: "weekly",
+      priority: 0.84,
+      lastModified: new Date(latestBlogUpdate),
+    },
+    ...blogSlugs.map((slug) => {
+      const blogPost = blogPostBySlug.get(slug);
+      return {
+        url: `${SITE_URL}/blog/${slug}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.76,
+        lastModified: blogPost ? new Date(blogPost.updatedAt) : undefined,
+      };
+    }),
+  ];
   const comparePageBySlug = new Map(COMPARE_PAGES.map((page) => [page.slug, page]));
   const compareEntries: MetadataRoute.Sitemap = [
     {
@@ -60,6 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.74,
       lastModified: new Date("2026-04-06"),
     },
+    ...blogEntries,
     {
       url: `${SITE_URL}/about`,
       changeFrequency: "monthly",
