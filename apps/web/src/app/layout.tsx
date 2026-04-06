@@ -5,6 +5,7 @@ import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { VercelToolbar } from "@vercel/toolbar/next";
 
+import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import SiteFooter from "@/components/marketing/SiteFooter";
@@ -121,6 +122,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <ExpLink href="/compare">Compare</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
+                <ExpLink href="/blog">Blog</ExpLink>
+              </Button>
+              <Button asChild size="sm" variant="ghost" className="hidden md:inline-flex">
                 <ExpLink href="/gallery">Gallery</ExpLink>
               </Button>
               <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
@@ -133,7 +137,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <ExpLink href="/pricing">Plans</ExpLink>
               </Button>
               <Button asChild size="sm" className="inline-flex">
-                <ExpLink href="/pricing">Buy once</ExpLink>
+                <TrackedExpLink href="/pricing" slot="header.buy_once" label="Buy once">
+                  Buy once
+                </TrackedExpLink>
               </Button>
             </nav>
           </div>

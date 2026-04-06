@@ -3,7 +3,7 @@ import Script from "next/script";
 import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
-import ExpLink from "@/components/experiments/ExpLink";
+import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import CommandBlock from "@/components/marketing/CommandBlock";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -143,10 +143,14 @@ export default async function DocsPage() {
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <ExpLink href="/pricing">View pricing</ExpLink>
+              <TrackedExpLink href="/pricing" slot="docs.hero.pricing" label="View pricing">
+                View pricing
+              </TrackedExpLink>
             </Button>
             <Button asChild variant="outline">
-              <ExpLink href="/downloads">Install anytime</ExpLink>
+              <TrackedExpLink href="/downloads" slot="docs.hero.install" label="Install anytime">
+                Install anytime
+              </TrackedExpLink>
             </Button>
           </div>
         </section>
@@ -158,8 +162,8 @@ export default async function DocsPage() {
               <CardDescription>Run installer and verify the binary.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <CommandBlock command={CLI_INSTALL_CMD} />
-              <CommandBlock command={CLI_VERSION_CMD} />
+              <CommandBlock command={CLI_INSTALL_CMD} commandId="cli_install" />
+              <CommandBlock command={CLI_VERSION_CMD} commandId="cli_version" />
             </CardContent>
           </Card>
 
@@ -169,8 +173,8 @@ export default async function DocsPage() {
               <CardDescription>Activate your CLI key on this machine.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <CommandBlock command={CLI_ACTIVATE_CMD} />
-              <CommandBlock command={CLI_STATUS_CMD} />
+              <CommandBlock command={CLI_ACTIVATE_CMD} commandId="cli_activate" />
+              <CommandBlock command={CLI_STATUS_CMD} commandId="cli_status" />
             </CardContent>
           </Card>
 
@@ -180,8 +184,8 @@ export default async function DocsPage() {
               <CardDescription>Ensure model files, then process an input image.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <CommandBlock command={CLI_MODEL_ENSURE_CMD} />
-              <CommandBlock command={CLI_REMOVE_CMD} />
+              <CommandBlock command={CLI_MODEL_ENSURE_CMD} commandId="cli_model_ensure" />
+              <CommandBlock command={CLI_REMOVE_CMD} commandId="cli_remove" />
             </CardContent>
           </Card>
         </section>
@@ -201,7 +205,7 @@ export default async function DocsPage() {
                 <CardDescription>{entry.notes}</CardDescription>
               </CardHeader>
               <CardContent>
-                <CommandBlock command={entry.command} />
+                <CommandBlock command={entry.command} commandId={entry.id} />
               </CardContent>
             </Card>
           ))}
@@ -219,10 +223,13 @@ export default async function DocsPage() {
               <Alert>
                 <AlertTitle>Use both licenses for bundle workflows</AlertTitle>
                   <AlertDescription>
-                   Use both keys if you want the app for visual checks and the CLI for automation.
+                    Use both keys if you want the app for visual checks and the CLI for automation.
                   </AlertDescription>
                 </Alert>
-              <CommandBlock command={CLI_REMOVE_WITH_DESKTOP_REQUIREMENT_CMD} />
+              <CommandBlock
+                command={CLI_REMOVE_WITH_DESKTOP_REQUIREMENT_CMD}
+                commandId="cli_bundle_remove"
+              />
             </CardContent>
           </Card>
         </section>
@@ -249,8 +256,8 @@ export default async function DocsPage() {
               <CardDescription>See every flag directly from the CLI.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <CommandBlock command={CLI_HELP_CMD} />
-              <CommandBlock command={CLI_REMOVE_HELP_CMD} />
+              <CommandBlock command={CLI_HELP_CMD} commandId="cli_help" />
+              <CommandBlock command={CLI_REMOVE_HELP_CMD} commandId="cli_remove_help" />
             </CardContent>
           </Card>
         </section>

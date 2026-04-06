@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { StarIcon } from "lucide-react";
 
+import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import { Badge } from "@/components/ui/badge";
@@ -27,10 +28,10 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Resources",
     links: [
+      { label: "Blog", href: "/blog" },
       { label: "CLI Docs", href: "/docs" },
       { label: "FAQ", href: "/faq" },
       { label: "Compare tools", href: "/compare" },
-      { label: "Downloads", href: "/downloads" },
     ],
   },
   {
@@ -101,7 +102,9 @@ export default function SiteFooter() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" variant="secondary" className="bg-white text-black hover:bg-white/90">
-              <ExpLink href="/pricing">View one-time pricing</ExpLink>
+              <TrackedExpLink href="/pricing" slot="footer.primary" label="View one-time pricing">
+                View one-time pricing
+              </TrackedExpLink>
             </Button>
             <Button
               asChild
@@ -109,7 +112,9 @@ export default function SiteFooter() {
               variant="outline"
               className="border-white/25 bg-white/8 text-white hover:bg-white/14 hover:text-white"
             >
-              <ExpLink href="/downloads">Install anytime</ExpLink>
+              <TrackedExpLink href="/downloads" slot="footer.secondary" label="Install anytime">
+                Install anytime
+              </TrackedExpLink>
             </Button>
           </div>
 
@@ -187,7 +192,9 @@ export default function SiteFooter() {
               </p>
             </div>
             <Button asChild variant="outline" size="sm" className="w-fit">
-              <ExpLink href="/about">Read the indie story</ExpLink>
+              <TrackedExpLink href="/about" slot="footer.story" label="Read the indie story">
+                Read the indie story
+              </TrackedExpLink>
             </Button>
           </div>
 

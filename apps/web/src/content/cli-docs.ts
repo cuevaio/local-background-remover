@@ -14,7 +14,19 @@ export const CLI_REMOVE_CMD =
 export const CLI_REMOVE_WITH_DESKTOP_REQUIREMENT_CMD =
   "rmbg remove --surface cli --require-surface desktop --input ./input.jpg --output ./input_rmbg.png --format json";
 
+export type CliCommandId =
+  | "cli_install"
+  | "cli_version"
+  | "cli_help"
+  | "cli_activate"
+  | "cli_status"
+  | "cli_model_ensure"
+  | "cli_remove"
+  | "cli_bundle_remove"
+  | "cli_remove_help";
+
 type CliCommandReference = {
+  id: CliCommandId;
   command: string;
   purpose: string;
   notes: string;
@@ -22,31 +34,37 @@ type CliCommandReference = {
 
 export const CLI_COMMAND_REFERENCE: CliCommandReference[] = [
   {
+    id: "cli_install",
     command: CLI_INSTALL_CMD,
     purpose: "Download and install the latest macOS CLI build",
     notes: "Creates an rmbg symlink in ~/.local/bin by default.",
   },
   {
+    id: "cli_activate",
     command: CLI_ACTIVATE_CMD,
     purpose: "Activate your CLI entitlement on this machine",
     notes: "Required before running model ensure or remove.",
   },
   {
+    id: "cli_status",
     command: CLI_STATUS_CMD,
     purpose: "Read local activation state for the CLI surface",
     notes: "Useful for health checks in scripts and CI.",
   },
   {
+    id: "cli_model_ensure",
     command: CLI_MODEL_ENSURE_CMD,
     purpose: "Bootstrap the local model if files are missing",
     notes: "Defaults to ~/.cache/background-removal/models/birefnet.",
   },
   {
+    id: "cli_remove",
     command: CLI_REMOVE_CMD,
     purpose: "Remove a background from one image",
     notes: "Input accepts local paths and http/https image URLs.",
   },
   {
+    id: "cli_help",
     command: CLI_HELP_CMD,
     purpose: "Show top-level command help",
     notes: "Use rmbg <command> --help for command-specific docs.",

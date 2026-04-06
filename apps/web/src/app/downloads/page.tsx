@@ -3,7 +3,8 @@ import Script from "next/script";
 import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
-import ExpLink from "@/components/experiments/ExpLink";
+import TrackedExpLink from "@/components/analytics/TrackedExpLink";
+import CommandBlock from "@/components/marketing/CommandBlock";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -127,10 +128,14 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild>
-              <ExpLink href="/pricing">Compare plans first</ExpLink>
+              <TrackedExpLink href="/pricing" slot="downloads.hero.pricing" label="Compare plans first">
+                Compare plans first
+              </TrackedExpLink>
             </Button>
             <Button asChild variant="outline">
-              <ExpLink href="/docs">CLI docs</ExpLink>
+              <TrackedExpLink href="/docs" slot="downloads.hero.docs" label="CLI docs">
+                CLI docs
+              </TrackedExpLink>
             </Button>
           </div>
         </section>
@@ -149,26 +154,20 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
                   <CardDescription>Use this if you want scripts, batches, or coding-agent automation.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
-                    {CLI_INSTALL_CMD}
-                  </pre>
-                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
-                    {CLI_VERSION_CMD}
-                  </pre>
+                  <CommandBlock command={CLI_INSTALL_CMD} commandId="cli_install" />
+                  <CommandBlock command={CLI_VERSION_CMD} commandId="cli_version" />
                   <Alert>
                     <AlertTitle>Unlock before processing</AlertTitle>
                     <AlertDescription>
                       Activate your CLI purchase before running background removal commands.
                     </AlertDescription>
                   </Alert>
-                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
-                    {CLI_ACTIVATE_CMD}
-                  </pre>
-                  <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-sm">
-                    {CLI_STATUS_CMD}
-                  </pre>
+                  <CommandBlock command={CLI_ACTIVATE_CMD} commandId="cli_activate" />
+                  <CommandBlock command={CLI_STATUS_CMD} commandId="cli_status" />
                   <Button asChild variant="outline" className="w-fit">
-                    <ExpLink href="/docs">Read full CLI command docs</ExpLink>
+                    <TrackedExpLink href="/docs" slot="downloads.cli.docs" label="Read full CLI command docs">
+                      Read full CLI command docs
+                    </TrackedExpLink>
                   </Button>
                 </CardContent>
               </Card>
@@ -205,12 +204,8 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
               <p>1. Get your key from your purchase email.</p>
               <p>2. Activate the app or the CLI, depending on your plan.</p>
               <p>3. Run your first image when you are ready.</p>
-              <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
-                {CLI_MODEL_ENSURE_CMD}
-              </pre>
-              <pre className="overflow-x-auto rounded-lg border border-border bg-secondary/50 px-3 py-3 font-mono text-xs text-foreground">
-                {CLI_REMOVE_CMD}
-              </pre>
+              <CommandBlock command={CLI_MODEL_ENSURE_CMD} commandId="cli_model_ensure" />
+              <CommandBlock command={CLI_REMOVE_CMD} commandId="cli_remove" />
             </CardContent>
           </Card>
           <Card className="bg-card/95">
@@ -223,10 +218,14 @@ export default async function DownloadsPage({ searchParams }: DownloadsPageProps
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild>
-                  <ExpLink href="/pricing">Open pricing</ExpLink>
+                  <TrackedExpLink href="/pricing" slot="downloads.key_first.pricing" label="Open pricing">
+                    Open pricing
+                  </TrackedExpLink>
                 </Button>
                 <Button asChild variant="outline">
-                  <ExpLink href="/docs">CLI docs</ExpLink>
+                  <TrackedExpLink href="/docs" slot="downloads.key_first.docs" label="CLI docs">
+                    CLI docs
+                  </TrackedExpLink>
                 </Button>
               </div>
             </CardContent>

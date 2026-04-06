@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { trackCtaClicked } from "@/lib/analytics/events";
 import type { PricingPlanCtaVariant } from "@/lib/experiments/types";
 
 type PlanKind = "app" | "cli" | "both";
@@ -115,6 +116,17 @@ export default function PricingClient({ ctaVariant, exp }: PricingClientProps) {
   }));
 
   async function startCheckout(kind: PlanKind) {
+    const selectedPlan = plans.find((plan) => plan.kind === kind);
+    trackCtaClicked({
+      slot: `pricing.plan.${kind}`,
+      label: selectedPlan?.cta ?? "Open checkout",
+      kind,
+      href: "/api/checkout",
+      page_path: window.location.pathname,
+      exp,
+      has_exp: Boolean(exp),
+    });
+
     setBusyKind(kind);
     setMessage("");
 

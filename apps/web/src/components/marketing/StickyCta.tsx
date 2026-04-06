@@ -1,4 +1,4 @@
-import ExpLink from "@/components/experiments/ExpLink";
+import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import { Button } from "@/components/ui/button";
 
 type StickyCtaProps = {
@@ -27,10 +27,18 @@ export default function StickyCta({
         </div>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" variant="outline">
-            <ExpLink href={secondaryHref}>{secondaryLabel}</ExpLink>
+            <TrackedExpLink
+              href={secondaryHref}
+              slot="sticky.secondary"
+              label={secondaryLabel}
+            >
+              {secondaryLabel}
+            </TrackedExpLink>
           </Button>
           <Button asChild size="sm">
-            <ExpLink href={primaryHref}>{primaryLabel}</ExpLink>
+            <TrackedExpLink href={primaryHref} slot="sticky.primary" label={primaryLabel}>
+              {primaryLabel}
+            </TrackedExpLink>
           </Button>
         </div>
       </div>

@@ -4,14 +4,20 @@ import { useEffect, useState } from "react";
 import { CheckIcon, CopyIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { trackCommandCopied } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
 type CommandBlockProps = {
   command: string;
+  commandId: string;
   className?: string;
 };
 
-export default function CommandBlock({ command, className }: CommandBlockProps) {
+function readCurrentExp() {
+  return new URLSearchParams(window.location.search).get("exp") ?? "";
+}
+
+export default function CommandBlock({ command, commandId, className }: CommandBlockProps) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -31,6 +37,13 @@ export default function CommandBlock({ command, className }: CommandBlockProps) 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(command);
+      const exp = readCurrentExp();
+      trackCommandCopied({
+        command_id: commandId,
+        page_path: window.location.pathname,
+        exp,
+        has_exp: Boolean(exp),
+      });
       setCopied(true);
     } catch {
       setCopied(false);

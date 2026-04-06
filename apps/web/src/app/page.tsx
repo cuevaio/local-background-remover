@@ -3,7 +3,7 @@ import Script from "next/script";
 import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
-import ExpLink from "@/components/experiments/ExpLink";
+import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
 import InputOptionsSection from "@/components/marketing/InputOptionsSection";
@@ -193,13 +193,19 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <ExpLink href="/pricing">{primaryCtaLabel}</ExpLink>
+                <TrackedExpLink href="/pricing" slot="home.hero.primary" label={primaryCtaLabel}>
+                  {primaryCtaLabel}
+                </TrackedExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <ExpLink href="/gallery">See examples</ExpLink>
+                <TrackedExpLink href="/gallery" slot="home.hero.examples" label="See examples">
+                  See examples
+                </TrackedExpLink>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <ExpLink href="/downloads">Install anytime</ExpLink>
+                <TrackedExpLink href="/downloads" slot="home.hero.install" label="Install anytime">
+                  Install anytime
+                </TrackedExpLink>
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -262,7 +268,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
           <div>
             <Button asChild variant="outline">
-              <ExpLink href="/docs">Open CLI docs</ExpLink>
+              <TrackedExpLink href="/docs" slot="home.cli.docs" label="Open CLI docs">
+                Open CLI docs
+              </TrackedExpLink>
             </Button>
           </div>
         </section>
