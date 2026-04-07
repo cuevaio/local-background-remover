@@ -1123,6 +1123,68 @@ ipcMain.handle(
   },
 );
 
+function decodeImageBytes(input: unknown): Buffer {
+  if (input instanceof Uint8Array) {
+    return Buffer.from(input);
+  }
+  if (Array.isArray(input)) {
+    return Buffer.from(input as number[]);
+  }
+  if (input && typeof input === "object" && "byteLength" in (input as ArrayBuffer)) {
+    return Buffer.from(new Uint8Array(input as ArrayBuffer));
+  }
+  throw new Error("Image bytes payload is missing or unreadable.");
+}
+
+ipcMain.handle(
+  "save-image-bytes",
+  async (
+    _event: unknown,
+    payload: { bytes?: ArrayBuffer | Uint8Array | number[]; inputPath?: string; suffix?: string },
+  ) => {
+    const buffer = decodeImageBytes(payload?.bytes);
+    const inputPath = String(payload?.inputPath || "").trim();
+    if (!inputPath) {
+      throw new Error("inputPath is required");
+    }
+
+    const suffix = String(payload?.suffix || "text-behind").replace(/[^a-z0-9-_]/gi, "") || "edit";
+    const baseSuggested = defaultSuggestedSavePath(inputPath);
+    const parsed = path.parse(baseSuggested);
+    const suggested = path.join(parsed.dir, `${parsed.name}-${suffix}.png`);
+
+    const saveResult = await dialog.showSaveDialog({
+      defaultPath: suggested,
+      filters: [{ name: "PNG image", extensions: ["png"] }],
+      properties: ["showOverwriteConfirmation", "createDirectory"],
+    });
+
+    if (saveResult.canceled || !saveResult.filePath) {
+      return { ok: false, canceled: true };
+    }
+
+    const destinationPath = normalizeUserPath(saveResult.filePath);
+    await fs.promises.writeFile(destinationPath, buffer);
+    return {
+      ok: true,
+      output_path: destinationPath,
+    };
+  },
+);
+
+ipcMain.handle(
+  "copy-image-bytes",
+  async (_event: unknown, payload: { bytes?: ArrayBuffer | Uint8Array | number[] }) => {
+    const buffer = decodeImageBytes(payload?.bytes);
+    const image = nativeImage.createFromBuffer(buffer);
+    if (image.isEmpty()) {
+      throw new Error("Composed image could not be copied.");
+    }
+    clipboard.writeImage(image);
+    return { ok: true };
+  },
+);
+
 ipcMain.handle("copy-processed-image", async (_event: unknown, payload: { sourcePath?: string }) => {
   const sourcePath = normalizeUserPath(payload?.sourcePath);
   if (!fs.existsSync(sourcePath)) {
