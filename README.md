@@ -6,6 +6,14 @@ This repository is a Turborepo for Local Background Remover with three projects:
 - `apps/desktop`: Electron macOS desktop app that uses the CLI.
 - `apps/web`: Next.js landing/pricing site + Polar checkout and license endpoints.
 
+## Open Source
+
+Local Background Remover is now open source under the GNU Affero General Public License v3.0.
+
+- License: `AGPL-3.0-only`
+- Full text: see `LICENSE`
+- If you distribute modified versions or run modified versions as a network service, you must make the corresponding source available under the same license.
+
 ## Requirements
 
 - bun
@@ -81,4 +89,4 @@ Desktop processing requires both active keys:
 
 ## License
 
-This repository is proprietary and closed-source. See `LICENSE`.
+This repository is licensed under `AGPL-3.0-only`. See `LICENSE`.
