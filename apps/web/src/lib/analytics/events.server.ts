@@ -4,9 +4,11 @@ import {
   EVENT_CHECKOUT_FAILED,
   EVENT_CHECKOUT_STARTED,
   EVENT_LICENSE_API_USED,
+  EVENT_PURCHASE_COMPLETED,
   type CheckoutFailedEvent,
   type CheckoutStartedEvent,
   type LicenseApiUsedEvent,
+  type PurchaseCompletedEvent,
 } from "@/lib/analytics/events";
 
 type ServerTrackPayload = Parameters<typeof track>[1];
@@ -29,4 +31,8 @@ export async function trackCheckoutFailed(event: CheckoutFailedEvent): Promise<v
 
 export async function trackLicenseApiUsed(event: LicenseApiUsedEvent): Promise<void> {
   await safeTrack(EVENT_LICENSE_API_USED, event);
+}
+
+export async function trackPurchaseCompleted(event: PurchaseCompletedEvent): Promise<void> {
+  await safeTrack(EVENT_PURCHASE_COMPLETED, event);
 }

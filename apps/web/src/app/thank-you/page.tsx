@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 import ThankYouTracker from "@/components/analytics/ThankYouTracker";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CLI_ACTIVATE_CMD, CLI_INSTALL_CMD } from "@/content/cli-docs";
+import { parseAttributionCookie, toAnalyticsAttribution, withExperiment, ATTRIBUTION_COOKIE } from "@/lib/analytics/attribution";
 import { readSingleParam, withExpParam } from "@/lib/experiments/attribution";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -20,6 +22,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 type ThankYouPageProps = {
   searchParams?: Promise<{
+    checkout_id?: string | string[];
     kind?: string | string[];
     exp?: string | string[];
   }>;
@@ -29,10 +32,21 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const kind = readSingleParam(resolvedSearchParams?.kind) || "unknown";
   const exp = readSingleParam(resolvedSearchParams?.exp) || "";
+  const checkoutId = readSingleParam(resolvedSearchParams?.checkout_id) || "";
+  const cookieStore = await cookies();
+  const attribution = withExperiment(
+    parseAttributionCookie(cookieStore.get(ATTRIBUTION_COOKIE)?.value),
+    exp,
+  );
 
   return (
     <main className="site-frame flex flex-col gap-0 pb-20">
-      <ThankYouTracker kind={kind} exp={exp} />
+      <ThankYouTracker
+        kind={kind}
+        exp={exp}
+        checkoutId={checkoutId}
+        attribution={toAnalyticsAttribution(attribution)}
+      />
       <section className="section-block flex flex-col gap-4">
         <Badge variant="outline" className="w-fit bg-card">
           Purchase confirmed

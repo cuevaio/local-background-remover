@@ -320,89 +320,52 @@ export async function evaluateHomeAssignments(): Promise<
     | "stickyCtaCopy"
   >
 > {
-  const [
-    homeHeroHeadline,
-    homePrimaryCta,
-    homeBeforeAfterCopy,
-    homeInputOptionsCopy,
-    homeWorkflowComparisonCopy,
-    homeCliQuickstartCopy,
-    homeAutomationChatsCopy,
-    homeQuoteCopy,
-    homeTestimonialsCopy,
-    homePricingFaqCopy,
-    homeFooterCopy,
-    stickyCtaCopy,
-  ] = await Promise.all([
-    homeHeroHeadlineFlag(),
-    homePrimaryCtaFlag(),
-    homeBeforeAfterCopyFlag(),
-    homeInputOptionsCopyFlag(),
-    homeWorkflowComparisonCopyFlag(),
-    homeCliQuickstartCopyFlag(),
-    homeAutomationChatsCopyFlag(),
-    homeQuoteCopyFlag(),
-    homeTestimonialsCopyFlag(),
-    homePricingFaqCopyFlag(),
-    homeFooterCopyFlag(),
-    stickyCtaCopyFlag(),
-  ]);
+  const homeHeroHeadline = await homeHeroHeadlineFlag();
 
   return {
     homeHeroHeadline,
-    homePrimaryCta,
-    homeBeforeAfterCopy,
-    homeInputOptionsCopy,
-    homeWorkflowComparisonCopy,
-    homeCliQuickstartCopy,
-    homeAutomationChatsCopy,
-    homeQuoteCopy,
-    homeTestimonialsCopy,
-    homePricingFaqCopy,
-    homeFooterCopy,
-    stickyCtaCopy,
+    homePrimaryCta: "pricing_first",
+    homeBeforeAfterCopy: "control",
+    homeInputOptionsCopy: "control",
+    homeWorkflowComparisonCopy: "control",
+    homeCliQuickstartCopy: "control",
+    homeAutomationChatsCopy: "control",
+    homeQuoteCopy: "control",
+    homeTestimonialsCopy: "control",
+    homePricingFaqCopy: "control",
+    homeFooterCopy: "control",
+    stickyCtaCopy: "control",
   };
 }
 
 export async function evaluatePricingAssignments(): Promise<
   Pick<ExperimentAssignments, "pricingHeroCopy" | "pricingPlanCta" | "stickyCtaCopy">
 > {
-  const [pricingHeroCopy, pricingPlanCta, stickyCtaCopy] = await Promise.all([
-    pricingHeroCopyFlag(),
-    pricingPlanCtaFlag(),
-    stickyCtaCopyFlag(),
-  ]);
+  const pricingHeroCopy = await pricingHeroCopyFlag();
 
-  return { pricingHeroCopy, pricingPlanCta, stickyCtaCopy };
+  return {
+    pricingHeroCopy,
+    pricingPlanCta: "control",
+    stickyCtaCopy: "control",
+  };
 }
 
 export async function evaluateDownloadsAssignments(): Promise<
   Pick<ExperimentAssignments, "downloadsHeroCopy" | "stickyCtaCopy">
 > {
-  const [downloadsHeroCopy, stickyCtaCopy] = await Promise.all([
-    downloadsHeroCopyFlag(),
-    stickyCtaCopyFlag(),
-  ]);
-
-  return { downloadsHeroCopy, stickyCtaCopy };
+  return { downloadsHeroCopy: "control", stickyCtaCopy: "control" };
 }
 
 export async function evaluateDocsAssignments(): Promise<Pick<ExperimentAssignments, "docsHeroFraming" | "stickyCtaCopy">> {
-  const [docsHeroFraming, stickyCtaCopy] = await Promise.all([docsHeroFramingFlag(), stickyCtaCopyFlag()]);
-
-  return { docsHeroFraming, stickyCtaCopy };
+  return { docsHeroFraming: "control", stickyCtaCopy: "control" };
 }
 
 export async function evaluateCompareAssignments(): Promise<Pick<ExperimentAssignments, "comparePrimaryCta" | "stickyCtaCopy">> {
-  const [comparePrimaryCta, stickyCtaCopy] = await Promise.all([comparePrimaryCtaFlag(), stickyCtaCopyFlag()]);
-
-  return { comparePrimaryCta, stickyCtaCopy };
+  return { comparePrimaryCta: "control", stickyCtaCopy: "control" };
 }
 
 export async function evaluateGalleryAssignments(): Promise<Pick<ExperimentAssignments, "galleryHeroIntent" | "stickyCtaCopy">> {
-  const [galleryHeroIntent, stickyCtaCopy] = await Promise.all([galleryHeroIntentFlag(), stickyCtaCopyFlag()]);
-
-  return { galleryHeroIntent, stickyCtaCopy };
+  return { galleryHeroIntent: "control", stickyCtaCopy: "control" };
 }
 
 export function toFlagValues(assignments: Partial<ExperimentAssignments>): Record<string, string> {

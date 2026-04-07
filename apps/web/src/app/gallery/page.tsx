@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { FlagValues } from "flags/react";
 
-import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import ExpLink from "@/components/experiments/ExpLink";
 import ExampleComparisonGrid from "@/components/marketing/ExampleComparisonGrid";
 import { EXAMPLE_GALLERY } from "@/components/marketing/example-gallery";
@@ -11,7 +10,6 @@ import {
   evaluateGalleryAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
-import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -40,22 +38,6 @@ export default async function GalleryPage() {
   return (
     <>
       <FlagValues values={toFlagValues(assignments)} />
-      <ExperimentExposureTracker
-        exposures={[
-          {
-            experimentKey: "gallery-hero-intent",
-            variant: assignments.galleryHeroIntent,
-            page: EXPERIMENT_PAGE.GALLERY,
-            slot: "gallery.hero.copy",
-          },
-          {
-            experimentKey: "sticky-cta-copy",
-            variant: assignments.stickyCtaCopy,
-            page: EXPERIMENT_PAGE.GALLERY,
-            slot: "gallery.cta.row",
-          },
-        ]}
-      />
       <main className="site-frame pb-28">
         <section className="section-block flex flex-col gap-5">
           <Badge variant="outline" className="w-fit bg-card">

@@ -1,5 +1,6 @@
 import { track } from "@vercel/analytics";
 
+import type { AnalyticsAttribution } from "@/lib/analytics/attribution";
 import type { ExperimentPage } from "@/lib/experiments/types";
 
 export type AnalyticsPlanKind = "app" | "cli" | "both";
@@ -12,6 +13,7 @@ export const EVENT_CHECKOUT_STARTED = "checkout_started";
 export const EVENT_CHECKOUT_FAILED = "checkout_failed";
 export const EVENT_CHECKOUT_COMPLETED_PROXY = "checkout_completed_proxy";
 export const EVENT_LICENSE_API_USED = "license_api_used";
+export const EVENT_PURCHASE_COMPLETED = "purchase_completed";
 
 export type CtaClickedEvent = {
   slot: string;
@@ -37,14 +39,14 @@ export type ExperimentExposureEvent = {
   slot: string;
 };
 
-export type CheckoutStartedEvent = {
+export type CheckoutStartedEvent = AnalyticsAttribution & {
   kind: AnalyticsPlanKind;
   page: ExperimentPage;
   exp: string;
   has_exp: boolean;
 };
 
-export type CheckoutFailedEvent = {
+export type CheckoutFailedEvent = AnalyticsAttribution & {
   kind?: AnalyticsPlanKind;
   page: ExperimentPage;
   exp: string;
@@ -52,11 +54,23 @@ export type CheckoutFailedEvent = {
   reason: "invalid_kind" | "polar_error" | "unknown";
 };
 
-export type CheckoutCompletedProxyEvent = {
+export type CheckoutCompletedProxyEvent = AnalyticsAttribution & {
   kind: string;
   page: ExperimentPage;
   exp: string;
   has_exp: boolean;
+  checkout_id?: string;
+};
+
+export type PurchaseCompletedEvent = AnalyticsAttribution & {
+  kind?: string;
+  exp: string;
+  has_exp: boolean;
+  order_id?: string;
+  checkout_id?: string;
+  product_id?: string;
+  amount?: number;
+  currency?: string;
 };
 
 export type LicenseApiUsedEvent = {
@@ -82,4 +96,8 @@ export function trackExperimentExposure(event: ExperimentExposureEvent): void {
 
 export function trackCheckoutCompletedProxy(event: CheckoutCompletedProxyEvent): void {
   track(EVENT_CHECKOUT_COMPLETED_PROXY, event);
+}
+
+export function trackPurchaseCompleted(event: PurchaseCompletedEvent): void {
+  track(EVENT_PURCHASE_COMPLETED, event);
 }

@@ -63,7 +63,7 @@ const FAQS: Faq[] = [
 export const metadata: Metadata = buildPageMetadata({
   title: "Offline Background Remover for Mac",
   description:
-    "Remove backgrounds privately on your Mac with one-time pricing. Great for product photos, portraits, and optional CLI automation.",
+    "Remove image backgrounds on your Mac with private local processing, batch workflows, and one-time pricing. Great for product photos, portraits, and transparent PNG exports.",
   path: "/",
 });
 
@@ -82,7 +82,7 @@ const HOME_STICKY_LABELS: Record<string, { primary: string; secondary: string }>
 export default async function HomePage() {
   const assignments = await evaluateHomeAssignments();
   const pageCopy = getHomePageCopy(assignments);
-  const exp = serializeExperimentToken(assignments);
+  const exp = serializeExperimentToken({ homeHeroHeadline: assignments.homeHeroHeadline });
 
   const primaryCtaLabel = HOME_PRIMARY_CTA_LABEL[assignments.homePrimaryCta];
   const stickyLabels = HOME_STICKY_LABELS[assignments.stickyCtaCopy];
@@ -100,7 +100,7 @@ export default async function HomePage() {
       highPrice: "9.99",
     },
     description:
-      "Private background remover for Mac with one-time pricing, a simple app for most buyers, and an optional CLI for automation.",
+      "Offline background remover for Mac with one-time pricing, batch image cleanup, and private local processing for product photos, portraits, and transparent PNG exports.",
   };
 
   const faqJsonLd = {
@@ -132,73 +132,7 @@ export default async function HomePage() {
             variant: assignments.homeHeroHeadline,
             page: EXPERIMENT_PAGE.HOME,
             slot: "home.hero.title",
-          },
-          {
-            experimentKey: "home-primary-cta",
-            variant: assignments.homePrimaryCta,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.hero.primary_cta",
-          },
-          {
-            experimentKey: "sticky-cta-copy",
-            variant: assignments.stickyCtaCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.sticky_cta",
-          },
-          {
-            experimentKey: "home-before-after-copy",
-            variant: assignments.homeBeforeAfterCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.before_after",
-          },
-          {
-            experimentKey: "home-input-options-copy",
-            variant: assignments.homeInputOptionsCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.input_options",
-          },
-          {
-            experimentKey: "home-workflow-comparison-copy",
-            variant: assignments.homeWorkflowComparisonCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.workflow_comparison",
-          },
-          {
-            experimentKey: "home-cli-quickstart-copy",
-            variant: assignments.homeCliQuickstartCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.cli_quickstart",
-          },
-          {
-            experimentKey: "home-automation-chats-copy",
-            variant: assignments.homeAutomationChatsCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.automation_chats",
-          },
-          {
-            experimentKey: "home-quote-copy",
-            variant: assignments.homeQuoteCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.quote",
-          },
-          {
-            experimentKey: "home-testimonials-copy",
-            variant: assignments.homeTestimonialsCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.testimonials",
-          },
-          {
-            experimentKey: "home-pricing-faq-copy",
-            variant: assignments.homePricingFaqCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.pricing_faq",
-          },
-          {
-            experimentKey: "home-footer-copy",
-            variant: assignments.homeFooterCopy,
-            page: EXPERIMENT_PAGE.HOME,
-            slot: "home.footer",
-          },
+            },
         ]}
       />
 
@@ -239,7 +173,10 @@ export default async function HomePage() {
                   One-time pricing
                 </Badge>
                 <Badge variant="outline" className="bg-card">
-                  Private on your device
+                  Offline and private on your Mac
+                </Badge>
+                <Badge variant="outline" className="bg-card">
+                  Batch background removal
                 </Badge>
             </div>
           </div>

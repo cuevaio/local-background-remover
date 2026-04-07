@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { FlagValues } from "flags/react";
 import { ArrowRightIcon, ShieldCheckIcon, SparklesIcon, TerminalIcon } from "lucide-react";
 
-import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -21,7 +20,6 @@ import {
   evaluateCompareAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
-import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 type ComparePageProps = {
@@ -137,22 +135,6 @@ export default async function CompareDetailPage({ params }: ComparePageProps) {
         {serializeJsonLd(faqJsonLd)}
       </Script>
       <FlagValues values={toFlagValues(assignments)} />
-      <ExperimentExposureTracker
-        exposures={[
-          {
-            experimentKey: "compare-primary-cta",
-            variant: assignments.comparePrimaryCta,
-            page: EXPERIMENT_PAGE.COMPARE,
-            slot: `compare.${comparePage.slug}.hero.primary_cta`,
-          },
-          {
-            experimentKey: "sticky-cta-copy",
-            variant: assignments.stickyCtaCopy,
-            page: EXPERIMENT_PAGE.COMPARE,
-            slot: `compare.${comparePage.slug}.sticky_cta`,
-          },
-        ]}
-      />
 
       <main className="site-frame">
         <section className="section-block relative overflow-hidden border-b border-border bg-gradient-to-br from-background via-background to-secondary/30">

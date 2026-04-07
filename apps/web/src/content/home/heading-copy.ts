@@ -745,7 +745,7 @@ export function getHomePageCopy(assignments: HomeHeadingCopyAssignments): HomePa
       badge: "Local and private",
       title: HERO_BY_VARIANT[assignments.homeHeroHeadline].title,
       description:
-        "Clean up product photos, portraits, and marketing images without upload-first tools. Start with the Mac app, and use the CLI only if you want advanced automation.",
+        "Remove backgrounds offline on your Mac for product photos, portraits, and marketing images without upload-first tools. Start with the Mac app, and use the CLI only if you want batch automation.",
       workflowTitle: WORKFLOW_COMPARISON_BY_VARIANT[assignments.homeWorkflowComparisonCopy].title,
       workflowDescription:
         WORKFLOW_COMPARISON_BY_VARIANT[assignments.homeWorkflowComparisonCopy].description,

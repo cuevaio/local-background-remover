@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { FlagValues } from "flags/react";
 
-import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import TrackedExpLink from "@/components/analytics/TrackedExpLink";
 import CommandBlock from "@/components/marketing/CommandBlock";
 import StickyCta from "@/components/marketing/StickyCta";
@@ -29,7 +28,6 @@ import {
   evaluateDownloadsAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
-import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -89,22 +87,6 @@ export default async function DownloadsPage() {
         {serializeJsonLd(breadcrumbJsonLd)}
       </Script>
       <FlagValues values={toFlagValues(assignments)} />
-      <ExperimentExposureTracker
-        exposures={[
-          {
-            experimentKey: "downloads-hero-copy",
-            variant: assignments.downloadsHeroCopy,
-            page: EXPERIMENT_PAGE.DOWNLOADS,
-            slot: "downloads.hero.copy",
-          },
-          {
-            experimentKey: "sticky-cta-copy",
-            variant: assignments.stickyCtaCopy,
-            page: EXPERIMENT_PAGE.DOWNLOADS,
-            slot: "downloads.sticky_cta",
-          },
-        ]}
-      />
 
       <main className="site-frame flex flex-col gap-0 pb-36">
         <section className="section-block flex flex-col gap-4">

@@ -6,14 +6,13 @@ import { Analytics } from "@vercel/analytics/next";
 import { VercelToolbar } from "@vercel/toolbar/next";
 
 import TrackedExpLink from "@/components/analytics/TrackedExpLink";
+import { GOOGLE_ADS_ID } from "@/lib/analytics/google-ads";
 import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BRAND_NAME, SITE_URL, serializeJsonLd } from "@/lib/seo";
 import "./globals.css";
-
-const GOOGLE_ADS_ID = "AW-18069206526";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });

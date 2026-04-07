@@ -25,7 +25,7 @@ import PricingClient from "./PricingClient";
 export const metadata: Metadata = buildPageMetadata({
   title: "Background Remover Pricing for Mac",
   description:
-    "Compare one-time plans for the Mac app, the CLI, or both. Start with the app if you want the simplest path.",
+    "Compare one-time plans for an offline background remover for Mac, including private local processing and optional batch CLI automation.",
   path: "/pricing",
 });
 
@@ -63,7 +63,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
   const assignments = await evaluatePricingAssignments();
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const incomingExp = readSingleParam(resolvedSearchParams?.exp);
-  const exp = mergeExperimentToken(incomingExp, assignments);
+  const exp = mergeExperimentToken(incomingExp, { pricingHeroCopy: assignments.pricingHeroCopy });
 
   const heroCopy = PRICING_HERO_COPY[assignments.pricingHeroCopy];
   const stickyLabels = PRICING_STICKY_LABELS[assignments.stickyCtaCopy];
@@ -100,18 +100,6 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             variant: assignments.pricingHeroCopy,
             page: EXPERIMENT_PAGE.PRICING,
             slot: "pricing.hero.copy",
-          },
-          {
-            experimentKey: "pricing-plan-cta",
-            variant: assignments.pricingPlanCta,
-            page: EXPERIMENT_PAGE.PRICING,
-            slot: "pricing.plan.cta",
-          },
-          {
-            experimentKey: "sticky-cta-copy",
-            variant: assignments.stickyCtaCopy,
-            page: EXPERIMENT_PAGE.PRICING,
-            slot: "pricing.sticky_cta",
           },
         ]}
       />

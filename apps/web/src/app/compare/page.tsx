@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { FlagValues } from "flags/react";
 
-import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import ExpLink from "@/components/experiments/ExpLink";
 import StickyCta from "@/components/marketing/StickyCta";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +12,6 @@ import {
   evaluateCompareAssignments,
   toFlagValues,
 } from "@/lib/experiments/flags";
-import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -80,22 +78,6 @@ export default async function CompareIndexPage() {
         {serializeJsonLd(itemListJsonLd)}
       </Script>
       <FlagValues values={toFlagValues(assignments)} />
-      <ExperimentExposureTracker
-        exposures={[
-          {
-            experimentKey: "compare-primary-cta",
-            variant: assignments.comparePrimaryCta,
-            page: EXPERIMENT_PAGE.COMPARE,
-            slot: "compare.hero.primary_cta",
-          },
-          {
-            experimentKey: "sticky-cta-copy",
-            variant: assignments.stickyCtaCopy,
-            page: EXPERIMENT_PAGE.COMPARE,
-            slot: "compare.sticky_cta",
-          },
-        ]}
-      />
 
       <main className="site-frame">
         <section className="section-block flex flex-col gap-5">

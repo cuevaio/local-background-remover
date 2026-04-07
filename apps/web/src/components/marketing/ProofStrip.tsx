@@ -5,18 +5,18 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const TRUST_ITEMS = [
   {
-    label: "Local processing",
-    detail: "Your files stay on-device during background removal.",
+    label: "Local background removal",
+    detail: "Your files stay on-device while you remove backgrounds on your Mac.",
     Icon: LockIcon,
   },
   {
-    label: "Works with spotty internet",
-    detail: "Keep processing even if your connection drops.",
+    label: "Offline Mac workflow",
+    detail: "Keep processing product photos even if your connection drops.",
     Icon: WifiOffIcon,
   },
   {
     label: "One-time purchase",
-    detail: "No monthly subscription required for core usage.",
+    detail: "No monthly subscription for private, batch-friendly background cleanup.",
     Icon: CheckCircle2Icon,
   },
 ];
