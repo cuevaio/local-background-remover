@@ -4,7 +4,7 @@
   "version": "0.5.1",
   "description": "Local Background Remover desktop app",
   "author": "Background Remover",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "main": "dist/main/main.js",
   "scripts": {
     "dev": "tsc -p tsconfig.json && node ./scripts/copy-renderer-assets.mjs && electron .",

@@ -1,7 +1,7 @@
 {
   "name": "rmbg",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "uv run rmbg model status --json",
     "build": "uv run python -m py_compile rmbg_cli/cli.py rmbg_cli/model_manager.py rmbg_cli/inference.py",
