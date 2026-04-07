@@ -1,21 +1,19 @@
 # AGENTS.md
 
 ## Scope
-- Instructions for coding agents working in `apps/desktop`.
-- App is an Electron desktop client that calls `rmbg` via subprocess.
-
-## Core Rules
-- Keep renderer sandboxed; no direct Node access in renderer.
-- Expose a minimal API through preload + IPC.
-- Spawn CLI with `shell: false` and explicit args.
-- Treat all file paths as untrusted input and normalize paths in main process.
-- Surface clear error messages for CLI failures.
+- Instructions for `apps/desktop`.
+- `apps/rmbg` owns the actual CLI runtime, model logic, and license enforcement.
 
 ## Commands
 - Dev: `bun run dev`
-- Build placeholder: `bun run build`
+- Lint: `bun run lint`
+- Test: `bun run test`
+- Single test: `bun run build && node --test test/rmbg-runtime.test.cjs`
 
-## UI Guidance
-- Keep UI minimal and intentional.
-- Preserve a clear before/after comparison workflow.
-- Show explicit states: idle, processing, done, failed.
+## Gotchas
+- Keep the renderer sandboxed. Anything the UI needs should be exposed explicitly from `src/preload/preload.ts`.
+- Main-process runtime launches must stay `shell: false` with explicit argument arrays.
+- Runtime resolution order in `src/main/rmbg-runtime.ts`: `RMBG_DESKTOP_CLI_PATH` -> packaged installed `~/.local/bin/rmbg` -> `apps/rmbg/.venv/bin/rmbg` -> `uv run --project apps/rmbg rmbg`.
+- Packaged desktop auto-installs the matching `rmbg` version from `https://local.backgroundrm.com/install`.
+- Tests import built files from `dist/main/*.js`, so rebuild before running focused `node --test` commands after changing `src/main/**/*`.
+- Use the `desktop` surface in desktop-owned runtime/license calls. `app` is only the checkout product name on the web side.
