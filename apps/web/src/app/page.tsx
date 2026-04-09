@@ -25,6 +25,7 @@ import {
 } from "@/lib/experiments/flags";
 import { serializeExperimentToken, withExpParam } from "@/lib/experiments/attribution";
 import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
+import { getPricingRange } from "@/lib/pricing";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
 type Faq = {
@@ -86,6 +87,7 @@ export default async function HomePage() {
 
   const primaryCtaLabel = HOME_PRIMARY_CTA_LABEL[assignments.homePrimaryCta];
   const stickyLabels = HOME_STICKY_LABELS[assignments.stickyCtaCopy];
+  const pricingRange = getPricingRange();
 
   const softwareApplicationJsonLd = {
     "@context": "https://schema.org",
@@ -96,8 +98,8 @@ export default async function HomePage() {
     offers: {
       "@type": "Offer",
       priceCurrency: "USD",
-      lowPrice: "6.99",
-      highPrice: "9.99",
+      lowPrice: pricingRange.lowPriceUsd,
+      highPrice: pricingRange.highPriceUsd,
     },
     description:
       "Offline background remover for Mac with one-time pricing, batch image cleanup, and private local processing for product photos, portraits, and transparent PNG exports.",

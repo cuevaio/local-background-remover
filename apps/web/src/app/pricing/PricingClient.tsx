@@ -22,18 +22,7 @@ import {
 } from "@/components/ui/table";
 import { trackCtaClicked } from "@/lib/analytics/events";
 import type { PricingPlanCtaVariant } from "@/lib/experiments/types";
-
-type PlanKind = "app" | "cli" | "both";
-
-type Plan = {
-  kind: PlanKind;
-  title: string;
-  price: string;
-  access: string;
-  bullets: string[];
-  cta: string;
-  featured?: boolean;
-};
+import { PRICING_PLANS, PRICING_PROMO, type PlanKind, formatUsd } from "@/lib/pricing";
 
 type PricingClientProps = {
   ctaVariant: PricingPlanCtaVariant;
@@ -45,46 +34,6 @@ type CheckoutResponse = {
   url?: string;
   error?: string;
 };
-
-const PLANS: Plan[] = [
-  {
-    kind: "app",
-    title: "App",
-    price: "$6.99",
-    access: "Desktop access",
-    bullets: [
-      "Desktop visual workflow",
-      "Before/after compare controls",
-      "Quick setup in the app",
-    ],
-    cta: "Buy App License",
-  },
-  {
-    kind: "cli",
-    title: "CLI",
-    price: "$6.99",
-    access: "Command-line access",
-    bullets: [
-      "Batch processing in terminal",
-      "Great for repeat workflows",
-      "Quick setup in command line",
-    ],
-    cta: "Buy CLI License",
-  },
-  {
-    kind: "both",
-    title: "App + CLI",
-    price: "$9.99",
-    access: "Desktop + command-line access",
-    featured: true,
-    bullets: [
-      "Desktop + terminal workflows",
-      "Best value for frequent shippers",
-      "Best for mixed visual + batch workflows",
-    ],
-    cta: "Buy App + CLI Bundle",
-  },
-];
 
 const CTA_VARIANTS: Record<PricingPlanCtaVariant, Record<PlanKind, string>> = {
   control: {
@@ -110,7 +59,7 @@ export default function PricingClient({ ctaVariant, exp }: PricingClientProps) {
 
   const ctaMap = CTA_VARIANTS[ctaVariant];
 
-  const plans = PLANS.map((plan) => ({
+  const plans = PRICING_PLANS.map((plan) => ({
     ...plan,
     cta: ctaMap[plan.kind],
   }));
@@ -164,7 +113,17 @@ export default function PricingClient({ ctaVariant, exp }: PricingClientProps) {
               <CardDescription>{plan.access}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <p className="font-display text-4xl font-medium tracking-tight">{plan.price}</p>
+              <div className="flex items-end gap-3">
+                <p className="font-display text-4xl font-medium tracking-tight">
+                  {formatUsd(plan.currentPriceUsd)}
+                </p>
+                <p className="pb-1 text-base text-muted-foreground line-through">
+                  {formatUsd(plan.regularPriceUsd)}
+                </p>
+              </div>
+              <p className="text-sm font-medium text-foreground">
+                {PRICING_PROMO.discountLabel} through {PRICING_PROMO.endsLabel}
+              </p>
               <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
                 {plan.bullets.map((bullet) => (
                   <li key={bullet}>{bullet}</li>
@@ -202,10 +161,16 @@ export default function PricingClient({ ctaVariant, exp }: PricingClientProps) {
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>One-time price</TableCell>
-                <TableCell>$6.99</TableCell>
-                <TableCell>$6.99</TableCell>
-                <TableCell>$9.99</TableCell>
+                <TableCell>Sale price</TableCell>
+                <TableCell>{formatUsd(PRICING_PLANS[0].currentPriceUsd)}</TableCell>
+                <TableCell>{formatUsd(PRICING_PLANS[1].currentPriceUsd)}</TableCell>
+                <TableCell>{formatUsd(PRICING_PLANS[2].currentPriceUsd)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Regular price</TableCell>
+                <TableCell>{formatUsd(PRICING_PLANS[0].regularPriceUsd)}</TableCell>
+                <TableCell>{formatUsd(PRICING_PLANS[1].regularPriceUsd)}</TableCell>
+                <TableCell>{formatUsd(PRICING_PLANS[2].regularPriceUsd)}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Access included</TableCell>

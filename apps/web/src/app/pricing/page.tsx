@@ -18,8 +18,10 @@ import {
   toFlagValues,
 } from "@/lib/experiments/flags";
 import { EXPERIMENT_PAGE } from "@/lib/experiments/types";
+import { PRICING_PROMO } from "@/lib/pricing";
 import { buildPageMetadata, serializeJsonLd } from "@/lib/seo";
 
+import PromotionCountdown from "./PromotionCountdown";
 import PricingClient from "./PricingClient";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -111,6 +113,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
           </Badge>
           <h1 className="display-title md:text-5xl">{heroCopy.title}</h1>
           <p className="section-copy md:text-lg">{heroCopy.description}</p>
+          <PromotionCountdown />
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
               <ExpLink href="/docs">CLI docs</ExpLink>
@@ -132,7 +135,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Best for most buyers who want the simplest Mac app workflow.
+                Best for most buyers who want the simplest Mac app workflow at 50% off through {PRICING_PROMO.endsLabel}.
               </p>
             </CardContent>
           </Card>
@@ -142,7 +145,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Best for developers who want scripts, repeat batches, and coding agents.
+                Best for developers who want scripts, repeat batches, and coding agents while the sale is live.
               </p>
             </CardContent>
           </Card>
@@ -152,7 +155,7 @@ export default async function PricingPage({ searchParams }: PricingPageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Best if you want the app for day-to-day work and the CLI for automation.
+                Best if you want the app for day-to-day work and the CLI for automation, with the deepest discount during the April sale.
               </p>
             </CardContent>
           </Card>
