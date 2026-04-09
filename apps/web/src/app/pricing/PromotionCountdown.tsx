@@ -63,7 +63,7 @@ export default function PromotionCountdown() {
           <div className="space-y-1">
             <p className="text-base font-medium text-foreground">Sale pricing ends {PRICING_PROMO.endsLabel}.</p>
             <p className="text-sm text-muted-foreground">
-              App or CLI {formatUsd(appPlan?.currentPriceUsd || "9.99")} each, App + CLI{" "}
+              Use code {PRICING_PROMO.code}. App or CLI {formatUsd(appPlan?.currentPriceUsd || "9.99")} each, App + CLI{" "}
               {formatUsd(bundlePlan?.currentPriceUsd || "14.99")}. Regular prices return to{" "}
               {formatUsd(appPlan?.regularPriceUsd || "19.99")} and {formatUsd(bundlePlan?.regularPriceUsd || "29.99")}.
             </p>

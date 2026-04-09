@@ -36,6 +36,15 @@ export type PolarLicense = {
 
 type PolarError = Error & { status?: number };
 
+type DiscountListResponse = {
+  items?: Array<{
+    id?: string;
+    code?: string | null;
+  }>;
+};
+
+const discountIdByCodeCache = new Map<string, string | null>();
+
 export function getPolarApiBase() {
   return env.POLAR_SERVER === "production" ? PROD_API : SANDBOX_API;
 }
@@ -101,6 +110,29 @@ export async function polarFetch(path: string, options: PolarFetchOptions = {}) 
   }
 
   return parsed;
+}
+
+export async function findDiscountIdByCode(code: string) {
+  const normalizedCode = code.trim().toUpperCase();
+  if (!normalizedCode) {
+    return null;
+  }
+
+  if (discountIdByCodeCache.has(normalizedCode)) {
+    return discountIdByCodeCache.get(normalizedCode) ?? null;
+  }
+
+  const searchParams = new URLSearchParams({
+    organization_id: env.POLAR_ORGANIZATION_ID,
+    query: normalizedCode,
+    limit: "100",
+  });
+  const response = (await polarFetch(`/v1/discounts/?${searchParams.toString()}`)) as DiscountListResponse;
+  const discountId =
+    response.items?.find((item) => item.code?.toUpperCase() === normalizedCode)?.id ?? null;
+
+  discountIdByCodeCache.set(normalizedCode, discountId);
+  return discountId;
 }
 
 async function customerPortalLicenseRequest(

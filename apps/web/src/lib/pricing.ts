@@ -12,8 +12,11 @@ export type PricingPlan = {
 
 export const PRICING_PROMO = {
   discountLabel: "50% off",
+  code: "LAUNCH50",
   endsAtLocal: "2026-04-15T23:59:59",
   endsLabel: "April 15",
+  bannerLabel: "Launch week sale",
+  bannerMessage: "50% off through April 15 with code LAUNCH50",
 } as const;
 
 export const PRICING_PLANS: PricingPlan[] = [

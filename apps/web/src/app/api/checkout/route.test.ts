@@ -35,6 +35,7 @@ mock.module("@/lib/analytics/events.server", () => ({
 
 mock.module("@/lib/polar", () => ({
   activateLicenseKey: async () => ({ id: "activation_1" }),
+  findDiscountIdByCode: async (code: string) => (code === "LAUNCH50" ? "discount_launch50" : null),
   normalizeSurface: (surface: string) => surface,
   productIdFromKind: (kind: string) => `product_${kind}`,
   polarFetch: async (_path: string, options: RequestInit) => {
@@ -97,6 +98,8 @@ describe("POST /api/checkout", () => {
     expect(polarCalls.create).toHaveLength(1);
     expect(polarCalls.create[0]).toMatchObject({
       products: ["product_both"],
+      discount_id: "discount_launch50",
+      allow_discount_codes: true,
       metadata: {
         kind: "both",
         attr_usrc: "google",

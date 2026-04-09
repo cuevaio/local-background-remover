@@ -130,6 +130,10 @@
     @apply mx-auto w-full max-w-[1080px] border-x border-border bg-background/95;
   }
 
+  .promo-marquee {
+    animation: promo-marquee 26s linear infinite;
+  }
+
   .section-block {
     @apply px-5 py-14 md:px-10 md:py-20;
   }
@@ -152,5 +156,15 @@
 
   .section-copy {
     @apply max-w-3xl text-base text-muted-foreground md:text-xl md:leading-8;
+  }
+}
+
+@keyframes promo-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }

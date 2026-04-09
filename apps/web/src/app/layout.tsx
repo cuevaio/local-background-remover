@@ -10,6 +10,7 @@ import { GOOGLE_ADS_ID } from "@/lib/analytics/google-ads";
 import ExpLink from "@/components/experiments/ExpLink";
 import { BrandLogo } from "@/components/marketing/BrandLogo";
 import { Button } from "@/components/ui/button";
+import { PRICING_PROMO } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 import { BRAND_NAME, SITE_URL, serializeJsonLd } from "@/lib/seo";
 import "./globals.css";
@@ -121,7 +122,35 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Script id="organization-jsonld" type="application/ld+json">
           {serializeJsonLd(organizationJsonLd)}
         </Script>
-        <header className="sticky top-0 z-50 border-b border-border bg-background/88 backdrop-blur-md supports-[backdrop-filter]:bg-background/74">
+        <div className="sticky top-0 z-50 border-b border-border bg-black text-white">
+          <div className="site-frame flex h-16 items-center overflow-hidden border-x-0 bg-transparent md:border-x">
+            <p className="sr-only">
+              {PRICING_PROMO.bannerLabel}: {PRICING_PROMO.bannerMessage}
+            </p>
+            <div className="promo-marquee flex min-w-max items-center gap-4 whitespace-nowrap px-5 text-sm font-medium tracking-[0.2em] uppercase md:px-10">
+              {[
+                "promo-1",
+                "promo-2",
+                "promo-3",
+                "promo-4",
+                "promo-5",
+                "promo-6",
+                "promo-7",
+                "promo-8",
+              ].map((key) => (
+                <span key={key} className="inline-flex items-center gap-4">
+                  <span className="text-white/72">{PRICING_PROMO.bannerLabel}</span>
+                  <span>{PRICING_PROMO.discountLabel}</span>
+                  <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] tracking-[0.26em]">
+                    {PRICING_PROMO.code}
+                  </span>
+                  <span className="text-white/72">Through {PRICING_PROMO.endsLabel}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <header className="sticky top-16 z-40 border-b border-border bg-background/88 backdrop-blur-md supports-[backdrop-filter]:bg-background/74">
           <div className="site-frame flex min-h-16 items-center justify-between gap-4 px-5 md:px-10">
             <ExpLink href="/" className="inline-flex items-center">
               <BrandLogo />

@@ -122,7 +122,7 @@ export default function PricingClient({ ctaVariant, exp }: PricingClientProps) {
                 </p>
               </div>
               <p className="text-sm font-medium text-foreground">
-                {PRICING_PROMO.discountLabel} through {PRICING_PROMO.endsLabel}
+                {PRICING_PROMO.discountLabel} with code {PRICING_PROMO.code} through {PRICING_PROMO.endsLabel}
               </p>
               <ul className="ml-5 list-disc space-y-1 text-sm text-muted-foreground">
                 {plan.bullets.map((bullet) => (
