@@ -4,6 +4,7 @@ import { FlagValues } from "flags/react";
 
 import ExperimentExposureTracker from "@/components/analytics/ExperimentExposureTracker";
 import TrackedExpLink from "@/components/analytics/TrackedExpLink";
+import { GitHubStarButton } from "@/components/elements/github-star-button";
 import AutomationChats from "@/components/marketing/AutomationChats";
 import BeforeAfterShowcase from "@/components/marketing/BeforeAfterShowcase";
 import InputOptionsSection from "@/components/marketing/InputOptionsSection";
@@ -233,6 +234,40 @@ export default async function HomePage() {
               </TrackedExpLink>
             </Button>
           </div>
+        </section>
+
+        <section className="section-block section-divider">
+          <Card className="bg-card/95">
+            <CardContent className="flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl space-y-3">
+                <Badge variant="outline" className="w-fit bg-card">
+                  Open source
+                </Badge>
+                <div className="space-y-2">
+                  <h2 className="section-title">The code is open source</h2>
+                  <p className="text-sm text-muted-foreground md:text-base">
+                    Local Background Remover is built in public. You can inspect the app, CLI, licensing flow, and install scripts in the GitHub repo.
+                  </p>
+                </div>
+                <p className="text-sm text-muted-foreground md:text-base">
+                  If you want to audit how it works, follow development, or contribute improvements, the full source is available at cuevaio/local-background-remover.
+                </p>
+              </div>
+
+              <div className="flex shrink-0 flex-wrap items-center gap-3">
+                <GitHubStarButton owner="cuevaio" repo="local-background-remover" variant="outline" />
+                <Button asChild>
+                  <a
+                    href="https://github.com/cuevaio/local-background-remover"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View repository
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         <AutomationChats copy={pageCopy.automationChats} />
