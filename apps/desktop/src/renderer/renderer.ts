@@ -33,6 +33,28 @@ const focusSaveBtn = document.getElementById("focus-save-btn") as HTMLButtonElem
 const focusCopyBtn = document.getElementById("focus-copy-btn") as HTMLButtonElement | null;
 const focusOpenBtn = document.getElementById("focus-open-btn") as HTMLButtonElement | null;
 const focusDeleteBtn = document.getElementById("focus-delete-btn") as HTMLButtonElement | null;
+const focusTextBehindBtn = document.getElementById("focus-text-behind-btn") as HTMLButtonElement | null;
+
+const textBehindModal = document.getElementById("text-behind-modal");
+const textBehindCloseBtn = document.getElementById("text-behind-close-btn") as HTMLButtonElement | null;
+const textBehindCanvas = document.getElementById("text-behind-canvas") as HTMLCanvasElement | null;
+const tbTextInput = document.getElementById("tb-text") as HTMLInputElement | null;
+const tbFontSelect = document.getElementById("tb-font") as HTMLSelectElement | null;
+const tbWeightSelect = document.getElementById("tb-weight") as HTMLSelectElement | null;
+const tbSizeInput = document.getElementById("tb-size") as HTMLInputElement | null;
+const tbSizeOut = document.getElementById("tb-size-out") as HTMLOutputElement | null;
+const tbColorInput = document.getElementById("tb-color") as HTMLInputElement | null;
+const tbOpacityInput = document.getElementById("tb-opacity") as HTMLInputElement | null;
+const tbOpacityOut = document.getElementById("tb-opacity-out") as HTMLOutputElement | null;
+const tbRotationInput = document.getElementById("tb-rotation") as HTMLInputElement | null;
+const tbRotationOut = document.getElementById("tb-rotation-out") as HTMLOutputElement | null;
+const tbXInput = document.getElementById("tb-x") as HTMLInputElement | null;
+const tbXOut = document.getElementById("tb-x-out") as HTMLOutputElement | null;
+const tbYInput = document.getElementById("tb-y") as HTMLInputElement | null;
+const tbYOut = document.getElementById("tb-y-out") as HTMLOutputElement | null;
+const tbSaveBtn = document.getElementById("tb-save-btn") as HTMLButtonElement | null;
+const tbCopyBtn = document.getElementById("tb-copy-btn") as HTMLButtonElement | null;
+const tbCancelBtn = document.getElementById("tb-cancel-btn") as HTMLButtonElement | null;
 
 const gallery = document.getElementById("gallery");
 const emptyState = document.getElementById("empty-state");
@@ -302,6 +324,9 @@ function renderFocusPanel() {
   saveBtn.classList.toggle("hidden", !item.output_path);
   copyBtn.classList.toggle("hidden", !item.output_path);
   openBtn.classList.toggle("hidden", !item.output_path);
+  if (focusTextBehindBtn) {
+    focusTextBehindBtn.classList.toggle("hidden", !item.output_path);
+  }
   deleteBtn.disabled = processingIds.has(item.id);
 
   if (!runtimeSetupRequired && !item.output_path && !processingIds.has(item.id)) {
@@ -854,6 +879,284 @@ required(focusOpenBtn, "focus-open-btn").addEventListener("click", async () => {
 
 required(focusDeleteBtn, "focus-delete-btn").addEventListener("click", async () => {
   await deleteActiveItem();
+});
+
+type TextBehindOptions = {
+  text: string;
+  fontFamily: string;
+  fontWeight: string;
+  sizePct: number;
+  color: string;
+  opacity: number;
+  rotationDeg: number;
+  xPct: number;
+  yPct: number;
+};
+
+let textBehindOriginal: HTMLImageElement | null = null;
+let textBehindForeground: HTMLImageElement | null = null;
+let textBehindItemId: string | null = null;
+let textBehindRenderQueued = false;
+
+function loadImageElement(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Unable to load image"));
+    img.src = src;
+  });
+}
+
+function readTextBehindOptions(): TextBehindOptions {
+  return {
+    text: required(tbTextInput, "tb-text").value,
+    fontFamily: required(tbFontSelect, "tb-font").value,
+    fontWeight: required(tbWeightSelect, "tb-weight").value,
+    sizePct: Number.parseInt(required(tbSizeInput, "tb-size").value, 10) || 22,
+    color: required(tbColorInput, "tb-color").value,
+    opacity: (Number.parseInt(required(tbOpacityInput, "tb-opacity").value, 10) || 100) / 100,
+    rotationDeg: Number.parseInt(required(tbRotationInput, "tb-rotation").value, 10) || 0,
+    xPct: Number.parseInt(required(tbXInput, "tb-x").value, 10) || 50,
+    yPct: Number.parseInt(required(tbYInput, "tb-y").value, 10) || 50,
+  };
+}
+
+const fontLoadCache = new Map<string, Promise<void>>();
+
+function ensureFontLoaded(fontShorthand: string) {
+  if (typeof document === "undefined" || !document.fonts) {
+    return Promise.resolve();
+  }
+  const cached = fontLoadCache.get(fontShorthand);
+  if (cached) {
+    return cached;
+  }
+  const loading = document.fonts
+    .load(fontShorthand, "Ag")
+    .then(() => undefined)
+    .catch(() => undefined);
+  fontLoadCache.set(fontShorthand, loading);
+  return loading;
+}
+
+async function drawTextBehindToCanvas(canvas: HTMLCanvasElement, options: TextBehindOptions) {
+  if (!textBehindOriginal || !textBehindForeground) {
+    return;
+  }
+
+  const width = textBehindOriginal.naturalWidth;
+  const height = textBehindOriginal.naturalHeight;
+  if (!width || !height) {
+    return;
+  }
+
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return;
+  }
+
+  const fontPx = Math.max(8, Math.round((options.sizePct / 100) * Math.min(width, height) * 1.6));
+  const fontShorthand = `${options.fontWeight} ${fontPx}px ${options.fontFamily}`;
+
+  if (options.text.trim()) {
+    await ensureFontLoaded(fontShorthand);
+  }
+
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(textBehindOriginal, 0, 0, width, height);
+
+  if (options.text.trim()) {
+    ctx.save();
+    ctx.globalAlpha = options.opacity;
+    ctx.fillStyle = options.color;
+    ctx.font = fontShorthand;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const cx = (options.xPct / 100) * width;
+    const cy = (options.yPct / 100) * height;
+    ctx.translate(cx, cy);
+    ctx.rotate((options.rotationDeg * Math.PI) / 180);
+    ctx.fillText(options.text, 0, 0);
+    ctx.restore();
+  }
+
+  ctx.drawImage(textBehindForeground, 0, 0, width, height);
+}
+
+function scheduleTextBehindRender() {
+  if (textBehindRenderQueued || !textBehindCanvas) {
+    return;
+  }
+  textBehindRenderQueued = true;
+  requestAnimationFrame(() => {
+    textBehindRenderQueued = false;
+    void drawTextBehindToCanvas(textBehindCanvas, readTextBehindOptions());
+  });
+}
+
+function syncTextBehindOutputs() {
+  if (tbSizeOut && tbSizeInput) tbSizeOut.value = tbSizeInput.value;
+  if (tbOpacityOut && tbOpacityInput) tbOpacityOut.value = tbOpacityInput.value;
+  if (tbRotationOut && tbRotationInput) tbRotationOut.value = tbRotationInput.value;
+  if (tbXOut && tbXInput) tbXOut.value = tbXInput.value;
+  if (tbYOut && tbYInput) tbYOut.value = tbYInput.value;
+}
+
+function closeTextBehindModal() {
+  textBehindModal?.classList.add("hidden");
+  textBehindOriginal = null;
+  textBehindForeground = null;
+  textBehindItemId = null;
+}
+
+async function openTextBehindModal() {
+  const item = currentItem();
+  if (!item?.output_path) {
+    setGlobalStatus("Process the image before adding text behind.", { tone: "error" });
+    return;
+  }
+
+  setGlobalStatus("Loading editor...", { toast: false });
+  try {
+    const [originalImg, foregroundImg] = await Promise.all([
+      loadImageElement(toImageSrc(item.source_path)),
+      loadImageElement(toImageSrc(item.output_path)),
+    ]);
+    textBehindOriginal = originalImg;
+    textBehindForeground = foregroundImg;
+    textBehindItemId = item.id;
+
+    syncTextBehindOutputs();
+    textBehindModal?.classList.remove("hidden");
+    scheduleTextBehindRender();
+    setGlobalStatus("", { toast: false });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unable to load editor";
+    setGlobalStatus(message, { tone: "error" });
+  }
+}
+
+async function canvasToPngBytes(canvas: HTMLCanvasElement): Promise<Uint8Array> {
+  const blob: Blob | null = await new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
+  if (!blob) {
+    throw new Error("Failed to render image");
+  }
+  return new Uint8Array(await blob.arrayBuffer());
+}
+
+async function saveTextBehindResult() {
+  if (!textBehindCanvas || !textBehindItemId) {
+    return;
+  }
+  const item = libraryItems.find((candidate) => candidate.id === textBehindItemId);
+  if (!item) {
+    return;
+  }
+
+  const button = required(tbSaveBtn, "tb-save-btn");
+  button.disabled = true;
+  setGlobalStatus("Saving image...", { toast: false });
+  try {
+    await drawTextBehindToCanvas(textBehindCanvas, readTextBehindOptions());
+    const bytes = await canvasToPngBytes(textBehindCanvas);
+    const result = await window.rmbg.saveImageBytes({
+      bytes,
+      inputPath: item.source_path,
+      suffix: "text-behind",
+    });
+    if (result?.canceled) {
+      setGlobalStatus("Save canceled", { toast: false });
+      return;
+    }
+    if (!result?.ok || !result.output_path) {
+      throw new Error(result?.error || "Save failed");
+    }
+    setGlobalStatus(`Saved: ${result.output_path}`, { tone: "success" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Save failed";
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function copyTextBehindResult() {
+  if (!textBehindCanvas) {
+    return;
+  }
+  const button = required(tbCopyBtn, "tb-copy-btn");
+  button.disabled = true;
+  setGlobalStatus("Copying image...", { toast: false });
+  try {
+    await drawTextBehindToCanvas(textBehindCanvas, readTextBehindOptions());
+    const bytes = await canvasToPngBytes(textBehindCanvas);
+    const result = await window.rmbg.copyImageBytes({ bytes });
+    if (!result?.ok) {
+      throw new Error(result?.error || "Copy failed");
+    }
+    setGlobalStatus("Copied image to clipboard.", { tone: "success" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Copy failed";
+    setGlobalStatus(message, { tone: "error" });
+  } finally {
+    button.disabled = false;
+  }
+}
+
+focusTextBehindBtn?.addEventListener("click", () => {
+  void openTextBehindModal();
+});
+
+textBehindCloseBtn?.addEventListener("click", closeTextBehindModal);
+tbCancelBtn?.addEventListener("click", closeTextBehindModal);
+
+textBehindModal?.addEventListener("click", (event) => {
+  if (event.target === textBehindModal) {
+    closeTextBehindModal();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && textBehindModal && !textBehindModal.classList.contains("hidden")) {
+    closeTextBehindModal();
+  }
+});
+
+const textBehindControlInputs: (HTMLInputElement | HTMLSelectElement | null)[] = [
+  tbTextInput,
+  tbFontSelect,
+  tbWeightSelect,
+  tbSizeInput,
+  tbColorInput,
+  tbOpacityInput,
+  tbRotationInput,
+  tbXInput,
+  tbYInput,
+];
+
+for (const control of textBehindControlInputs) {
+  if (!control) continue;
+  control.addEventListener("input", () => {
+    syncTextBehindOutputs();
+    scheduleTextBehindRender();
+  });
+  control.addEventListener("change", () => {
+    syncTextBehindOutputs();
+    scheduleTextBehindRender();
+  });
+}
+
+tbSaveBtn?.addEventListener("click", () => {
+  void saveTextBehindResult();
+});
+
+tbCopyBtn?.addEventListener("click", () => {
+  void copyTextBehindResult();
 });
 
 updateEmptyState();

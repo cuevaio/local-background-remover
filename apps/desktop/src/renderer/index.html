@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Local Background Remover</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bebas+Neue&family=Black+Ops+One&family=Bungee&family=Bungee+Shade&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&family=Fugaz+One&family=Indie+Flower&family=Lobster&family=Monoton&family=Montserrat:wght@400;700;900&family=Oswald:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@400;700;900&family=Press+Start+2P&family=Righteous&family=Roboto:wght@400;700;900&family=Russo+One&family=Shrikhand&family=Special+Elite&family=Staatliches&family=Ultra&display=swap"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -84,6 +90,7 @@
           <footer class="focus-actions">
             <button id="focus-save-btn" class="btn secondary" type="button">Save as...</button>
             <button id="focus-copy-btn" class="btn ghost" type="button">Copy image</button>
+            <button id="focus-text-behind-btn" class="btn ghost" type="button">Text behind</button>
             <button id="focus-open-btn" class="btn ghost" type="button">Open folder</button>
             <button id="focus-delete-btn" class="btn danger focus-delete-btn" type="button">Delete image</button>
           </footer>
@@ -105,6 +112,126 @@
           </div>
         </div>
       </main>
+    </div>
+
+    <div id="text-behind-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="text-behind-title">
+      <div class="modal-card text-behind-card">
+        <header class="modal-head">
+          <h2 id="text-behind-title">Text behind image</h2>
+          <button id="text-behind-close-btn" class="modal-close" type="button" aria-label="Close">✕</button>
+        </header>
+
+        <div class="text-behind-body">
+          <div class="text-behind-canvas-wrap">
+            <canvas id="text-behind-canvas"></canvas>
+          </div>
+
+          <aside class="text-behind-controls">
+            <label class="control">
+              <span>Text</span>
+              <input id="tb-text" type="text" value="behind" maxlength="80" />
+            </label>
+
+            <label class="control">
+              <span>Font</span>
+              <select id="tb-font">
+                <optgroup label="System">
+                  <option value='"Space Grotesk", "Geist", sans-serif'>Space Grotesk</option>
+                  <option value='"Geist", "Avenir Next", sans-serif'>Geist</option>
+                  <option value="Impact, Charcoal, sans-serif">Impact</option>
+                  <option value='"Arial Black", Arial, sans-serif'>Arial Black</option>
+                  <option value="Arial, Helvetica, sans-serif">Arial</option>
+                  <option value='"Times New Roman", Times, serif'>Times New Roman</option>
+                  <option value="Georgia, serif">Georgia</option>
+                  <option value='"Courier New", Courier, monospace'>Courier New</option>
+                </optgroup>
+                <optgroup label="Display">
+                  <option value='"Anton", sans-serif'>Anton</option>
+                  <option value='"Archivo Black", sans-serif'>Archivo Black</option>
+                  <option value='"Bebas Neue", sans-serif'>Bebas Neue</option>
+                  <option value='"Black Ops One", sans-serif'>Black Ops One</option>
+                  <option value='"Bungee", sans-serif'>Bungee</option>
+                  <option value='"Bungee Shade", sans-serif'>Bungee Shade</option>
+                  <option value='"Fugaz One", sans-serif'>Fugaz One</option>
+                  <option value='"Monoton", sans-serif'>Monoton</option>
+                  <option value='"Righteous", sans-serif'>Righteous</option>
+                  <option value='"Russo One", sans-serif'>Russo One</option>
+                  <option value='"Shrikhand", sans-serif'>Shrikhand</option>
+                  <option value='"Staatliches", sans-serif'>Staatliches</option>
+                  <option value='"Ultra", serif'>Ultra</option>
+                </optgroup>
+                <optgroup label="Sans">
+                  <option value='"Montserrat", sans-serif'>Montserrat</option>
+                  <option value='"Oswald", sans-serif'>Oswald</option>
+                  <option value='"Poppins", sans-serif'>Poppins</option>
+                  <option value='"Roboto", sans-serif'>Roboto</option>
+                </optgroup>
+                <optgroup label="Serif">
+                  <option value='"Playfair Display", serif'>Playfair Display</option>
+                </optgroup>
+                <optgroup label="Script &amp; Handwritten">
+                  <option value='"Caveat", cursive'>Caveat</option>
+                  <option value='"Dancing Script", cursive'>Dancing Script</option>
+                  <option value='"Indie Flower", cursive'>Indie Flower</option>
+                  <option value='"Lobster", cursive'>Lobster</option>
+                  <option value='"Pacifico", cursive'>Pacifico</option>
+                  <option value='"Permanent Marker", cursive'>Permanent Marker</option>
+                </optgroup>
+                <optgroup label="Retro &amp; Pixel">
+                  <option value='"Press Start 2P", cursive'>Press Start 2P</option>
+                  <option value='"Special Elite", cursive'>Special Elite</option>
+                </optgroup>
+              </select>
+            </label>
+
+            <label class="control">
+              <span>Weight</span>
+              <select id="tb-weight">
+                <option value="400">Regular</option>
+                <option value="600">Semibold</option>
+                <option value="700">Bold</option>
+                <option value="900" selected>Black</option>
+              </select>
+            </label>
+
+            <label class="control">
+              <span>Size <output id="tb-size-out">22</output>%</span>
+              <input id="tb-size" type="range" min="4" max="60" value="22" />
+            </label>
+
+            <label class="control">
+              <span>Color</span>
+              <input id="tb-color" type="color" value="#ffffff" />
+            </label>
+
+            <label class="control">
+              <span>Opacity <output id="tb-opacity-out">100</output>%</span>
+              <input id="tb-opacity" type="range" min="10" max="100" value="100" />
+            </label>
+
+            <label class="control">
+              <span>Rotation <output id="tb-rotation-out">0</output>°</span>
+              <input id="tb-rotation" type="range" min="-45" max="45" value="0" />
+            </label>
+
+            <label class="control">
+              <span>Horizontal <output id="tb-x-out">50</output>%</span>
+              <input id="tb-x" type="range" min="0" max="100" value="50" />
+            </label>
+
+            <label class="control">
+              <span>Vertical <output id="tb-y-out">50</output>%</span>
+              <input id="tb-y" type="range" min="0" max="100" value="50" />
+            </label>
+          </aside>
+        </div>
+
+        <footer class="modal-actions">
+          <button id="tb-save-btn" class="btn primary" type="button">Save as...</button>
+          <button id="tb-copy-btn" class="btn secondary" type="button">Copy image</button>
+          <button id="tb-cancel-btn" class="btn ghost" type="button">Close</button>
+        </footer>
+      </div>
     </div>
 
     <div id="status-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>

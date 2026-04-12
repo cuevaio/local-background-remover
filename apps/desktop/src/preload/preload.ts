@@ -20,6 +20,16 @@ type CopyProcessedPayload = {
   sourcePath: string;
 };
 
+type SaveImageBytesPayload = {
+  bytes: Uint8Array;
+  inputPath: string;
+  suffix?: string;
+};
+
+type CopyImageBytesPayload = {
+  bytes: Uint8Array;
+};
+
 type LibraryImportFilesPayload = {
   paths: string[];
 };
@@ -91,6 +101,10 @@ contextBridge.exposeInMainWorld("rmbg", {
     ipcRenderer.invoke("save-processed-image", payload),
   copyProcessedImage: (payload: CopyProcessedPayload) =>
     ipcRenderer.invoke("copy-processed-image", payload),
+  saveImageBytes: (payload: SaveImageBytesPayload) =>
+    ipcRenderer.invoke("save-image-bytes", payload),
+  copyImageBytes: (payload: CopyImageBytesPayload) =>
+    ipcRenderer.invoke("copy-image-bytes", payload),
   openInFolder: (payload: OpenInFolderPayload) => ipcRenderer.invoke("open-in-folder", payload),
   licenseStatus: () => ipcRenderer.invoke("license-status"),
   licenseActivate: (payload: LicensePayload) => ipcRenderer.invoke("license-activate", payload),

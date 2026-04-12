@@ -78,6 +78,8 @@ interface Window {
     removeBackground: (payload: { inputPath: string; outputPath?: string }) => Promise<RemoveBackgroundResponse>;
     saveProcessedImage: (payload: { sourcePath: string; inputPath: string }) => Promise<SaveProcessedResponse>;
     copyProcessedImage: (payload: { sourcePath: string }) => Promise<CopyProcessedResponse>;
+    saveImageBytes: (payload: { bytes: Uint8Array; inputPath: string; suffix?: string }) => Promise<SaveProcessedResponse>;
+    copyImageBytes: (payload: { bytes: Uint8Array }) => Promise<CopyProcessedResponse>;
     openInFolder: (payload: { filePath: string }) => Promise<OpenInFolderResponse>;
     licenseStatus: () => Promise<LicenseStatusResponse>;
     licenseActivate: (payload: { key: string; surface: LicenseSurface }) => Promise<{ ok?: boolean; error?: string }>;
